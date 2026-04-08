@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <title>Neon-style video platform icon</title>
+  <defs>
+    
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur1"/>
+      <feColorMatrix in="blur1" type="matrix"
+        values="1 0 0 0 0
+                0 0.25 0 0 0
+                0 0 0.25 0 0
+                0 0 0 1 0" result="glow1"/>
+      <feGaussianBlur stdDeviation="18" result="blur2"/>
+      <feMerge>
+        <feMergeNode in="blur2"/>
+        <feMergeNode in="glow1"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+  </defs>
+  <g filter="url(#glow)">
+    
+    <rect x="90" y="120" width="332" height="210" rx="52" stroke="#ff3b30" stroke-width="14"/>
+    <path d="M225 185 L225 265 L300 225 Z" stroke="#ffffff" stroke-width="14" stroke-linejoin="round"/>
+    
+  </g>
+</svg>

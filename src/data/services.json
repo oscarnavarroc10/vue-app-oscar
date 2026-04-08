@@ -1,0 +1,65 @@
+[
+  {
+    "id": 1,
+    "name": "Instagram",
+    "description": "Servicios especializados para crecimiento y contenido en Instagram.",
+    "category": "Instagram",
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+  },
+  {
+    "id": 2,
+    "name": "Facebook",
+    "description": "Soluciones para publicaciones, campañas y gestión en Facebook.",
+    "category": "Facebook",
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+  },
+  {
+    "id": 3,
+    "name": "TikTok",
+    "description": "Edición y producción de contenido audiovisual para tus campañas.",
+    "category": "TikTok",
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+  },
+  {
+    "id": 4,
+    "name": "X",
+    "description": "Creativos, branding y piezas visuales para tus redes y negocio.",
+    "category": "X",
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+  },
+  {
+    "id": 5,
+    "name": "Discord",
+    "description": "Creativos, branding y piezas visuales para tus redes y negocio.",
+    "category": "Discord",
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+  },
+  {
+    "id": 6,
+    "name": "YouTube",
+    "description": "Creativos, branding y piezas visuales para tus redes y negocio.",
+    "category": "YouTube",
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+  },
+  {
+    "id": 7,
+    "name": "Twitch",
+    "description": "Creativos, branding y piezas visuales para tus redes y negocio.",
+    "category": "Twitch",
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+  },
+  {
+    "id": 8,
+    "name": "Spotify",
+    "description": "Creativos, branding y piezas visuales para tus redes y negocio.",
+    "category": "Spotify",
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+  },
+  {
+    "id": 9,
+    "name": "Snapchat",
+    "description": "Creativos, branding y piezas visuales para tus redes y negocio.",
+    "category": "Snapchat",
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+  }
+]

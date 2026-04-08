@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <title>Neon-style v-shaped icon</title>
+  <defs>
+    
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur1"/>
+      <feFlood flood-color="#57b6ff" flood-opacity="1" result="c"/>
+      <feComposite in="c" in2="blur1" operator="in" result="glow1"/>
+      <feGaussianBlur stdDeviation="16" in="glow1" result="glow2"/>
+      <feMerge>
+        <feMergeNode in="glow2"/>
+        <feMergeNode in="glow1"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+  </defs>
+  <g filter="url(#glow)">
+    
+    <path d="M118 182c14-14 27-21 39-21 29 0 42 40 59 103 12 46 23 69 34 69 9 0 22-14 39-42 31-52 46-95 80-95 19 0 33 11 43 28-23 67-61 124-104 154-22 15-43 23-63 23-46 0-79-40-96-100-15-52-26-88-41-88-7 0-16 6-28 18z" stroke="#6ec9ff" stroke-width="14" stroke-linejoin="round"/>
+    
+  </g>
+</svg>

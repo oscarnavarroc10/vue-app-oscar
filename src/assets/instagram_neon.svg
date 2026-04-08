@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <title>Neon-style photo app icon</title>
+  <defs>
+    
+    <linearGradient id="ig" x1="100" y1="420" x2="420" y2="100" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffd400"/>
+      <stop offset="0.45" stop-color="#ff4fd8"/>
+      <stop offset="1" stop-color="#8a5cff"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur1"/>
+      <feMerge>
+        <feMergeNode in="blur1"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+  </defs>
+  <g filter="url(#glow)">
+    
+    <rect x="92" y="92" width="328" height="328" rx="86" stroke="url(#ig)" stroke-width="16"/>
+    <circle cx="256" cy="256" r="78" stroke="#ffffff" stroke-width="14"/>
+    <circle cx="352" cy="160" r="14" fill="#ffffff"/>
+    
+  </g>
+</svg>

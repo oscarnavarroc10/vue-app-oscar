@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <title>Neon-style short video note icon</title>
+  <defs>
+    
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="7" result="blur1"/>
+      <feFlood flood-color="#7a3cff" flood-opacity="1" result="c"/>
+      <feComposite in="c" in2="blur1" operator="in" result="glow1"/>
+      <feGaussianBlur stdDeviation="16" in="glow1" result="glow2"/>
+      <feMerge>
+        <feMergeNode in="glow2"/>
+        <feMergeNode in="glow1"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+  </defs>
+  <g filter="url(#glow)">
+    
+    <path d="M300 95v145c-18-10-39-16-62-16-65 0-102 78-61 131 38 50 128 35 145-26 4-13 4-23 4-36V165c25 32 56 45 96 44v-53c-25 0-46-10-63-26-10-10-18-22-23-35z"
+          stroke="#8b5cff" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M275 149v145c-18-10-39-16-62-16-65 0-102 78-61 131 38 50 128 35 145-26 4-13 4-23 4-36V219c25 32 56 45 96 44"
+          stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" opacity="0.95"/>
+    
+  </g>
+</svg>

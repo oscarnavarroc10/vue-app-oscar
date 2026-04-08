@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <title>Neon-style bird icon</title>
+  <defs>
+    
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur1"/>
+      <feFlood flood-color="#56b9ff" flood-opacity="1" result="c"/>
+      <feComposite in="c" in2="blur1" operator="in" result="glow1"/>
+      <feGaussianBlur stdDeviation="16" in="glow1" result="glow2"/>
+      <feMerge>
+        <feMergeNode in="glow2"/>
+        <feMergeNode in="glow1"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+  </defs>
+  <g filter="url(#glow)">
+    
+    <path d="M400 164c-13 8-27 13-41 16 15-10 27-24 32-41-14 9-30 16-46 20-14-15-34-25-56-25-50 0-87 46-76 95-61-3-116-32-152-76-20 35-10 79 24 101-12 0-23-4-33-9 0 39 27 73 65 81-11 3-24 5-36 1 10 32 40 55 75 56-34 27-77 39-120 34 36 23 78 37 123 37 148 0 232-125 227-238 16-11 30-25 40-41z"
+          stroke="#7ed0ff" stroke-width="12" stroke-linejoin="round"/>
+    
+  </g>
+</svg>

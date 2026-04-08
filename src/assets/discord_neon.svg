@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <title>Neon-style chat community icon</title>
+  <defs>
+    
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur1"/>
+      <feFlood flood-color="#7b8cff" flood-opacity="1" result="c"/>
+      <feComposite in="c" in2="blur1" operator="in" result="glow1"/>
+      <feGaussianBlur stdDeviation="16" in="glow1" result="glow2"/>
+      <feMerge>
+        <feMergeNode in="glow2"/>
+        <feMergeNode in="glow1"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+  </defs>
+  <g filter="url(#glow)">
+    
+    <path d="M149 176c34-24 63-32 63-32l13 26c20-4 42-4 62 0l13-26s29 8 63 32c0 0 32 62 32 129 0 0-37 29-73 41l-18-30c18-6 32-14 43-23-25 18-55 28-89 28s-64-10-89-28c11 9 25 17 43 23l-18 30c-36-12-73-41-73-41 0-67 32-129 32-129z" stroke="#ffffff" stroke-width="12" stroke-linejoin="round"/>
+    <circle cx="213" cy="247" r="16" fill="#ffffff"/>
+    <circle cx="299" cy="247" r="16" fill="#ffffff"/>
+    <path d="M204 292c17 12 38 18 52 18s35-6 52-18" stroke="#ffffff" stroke-width="10" stroke-linecap="round"/>
+    
+  </g>
+</svg>

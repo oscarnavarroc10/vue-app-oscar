@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <title>Neon-style f icon</title>
+  <defs>
+    
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur1"/>
+      <feFlood flood-color="#60b5ff" flood-opacity="1" result="c"/>
+      <feComposite in="c" in2="blur1" operator="in" result="glow1"/>
+      <feGaussianBlur stdDeviation="16" in="glow1" result="glow2"/>
+      <feMerge>
+        <feMergeNode in="glow2"/>
+        <feMergeNode in="glow1"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+  </defs>
+  <g filter="url(#glow)">
+    
+    <path d="M297 114h57v58h-39c-14 0-21 8-21 22v38h60l-10 58h-50v108h-60V290h-43v-58h43v-45c0-46 29-73 63-73z"
+          stroke="#77c4ff" stroke-width="14" stroke-linejoin="round"/>
+    
+  </g>
+</svg>
