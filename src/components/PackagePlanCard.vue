@@ -91,26 +91,40 @@ const showCategory = (category, id) => {
 .package-card {
   position: relative;
   height: 100%;
-  min-height: 560px;
+  min-height: 520px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   border-radius: 28px;
   padding: 24px 22px 22px;
-  background: rgba(255, 255, 255, 0.78);
-  backdrop-filter: blur(14px);
-  border: 1px solid rgba(203, 213, 225, 0.8);
+
+  /* 💎 glass premium */
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.86),
+    rgba(248, 250, 252, 0.78)
+  );
+
+  backdrop-filter: blur(18px);
+
+  border: 1px solid rgba(255, 255, 255, 0.22);
+
   box-shadow:
-    0 20px 45px rgba(15, 23, 42, 0.1),
+    0 18px 40px rgba(2, 6, 23, 0.25),
     inset 0 1px 0 rgba(255, 255, 255, 0.55);
+
   transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease,
-    border-color 0.2s ease;
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.22s ease;
 }
 
 .package-card:hover {
-  transform: translateY(-6px);
+  transform: translateY(-8px) scale(1.01);
+
+  box-shadow:
+    0 28px 60px rgba(2, 6, 23, 0.35),
+    0 10px 25px rgba(124, 58, 237, 0.15);
 }
 
 .card-bg-orb {
@@ -183,7 +197,7 @@ const showCategory = (category, id) => {
   margin: 0 0 10px;
   font-size: 1.55rem;
   line-height: 1.1;
-  color: #0f172a;
+  color: #020617;
   text-align: center;
 }
 
@@ -340,10 +354,9 @@ const showCategory = (category, id) => {
 }
 
 .pro-card:hover {
-  transform: translateY(-6px);
   box-shadow:
-    0 34px 65px rgba(236, 72, 153, 0.18),
-    0 16px 30px rgba(15, 23, 42, 0.12);
+    0 30px 70px rgba(236, 72, 153, 0.35),
+    0 12px 30px rgba(2, 6, 23, 0.25);
 }
 
 .pro-card .orb-1 {

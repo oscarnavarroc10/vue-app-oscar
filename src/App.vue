@@ -1,38 +1,73 @@
 <template>
+  <div class="background-layer"></div>
+  <div class="background-fade"></div>
+
   <main class="page">
-    <header class="hero">
-      <span class="hero-kicker">Impulsa tus redes</span>
-      <h1>Arma tu paquete de servicios</h1>
-      <p>
-        Elige un paquete sugerido o personaliza tu plan seleccionando solo lo
-        que realmente necesitas.
-      </p>
+    <header class="top-nav">
+      <a class="brand" href="#top">Emmanuela Porkba</a>
+
+      <nav class="nav-links">
+        <a href="#planes">Planes</a>
+        <a href="#comentarios">Comentarios</a>
+        <a href="#faq">Preguntas</a>
+        <a href="#contacto">Contacto</a>
+      </nav>
+
+      <button
+        v-if="viewMode === 'landing'"
+        class="nav-cta"
+        type="button"
+        @click="goToCustomize"
+      >
+        Personalizar
+      </button>
+      <button
+        v-else
+        class="nav-cta"
+        type="button"
+        @click="goToLanding"
+      >
+        Volver a home
+      </button>
     </header>
 
+    <section id="top" class="top-spacer"></section>
+
     <section v-if="viewMode === 'landing'" class="landing-section">
-      <PlansBanner @customize="goToCustomize" />
+      <section class="intro-section">
+        <span class="intro-kicker">Impulsa tus redes</span>
+        <h1>Servicios premium para crecer con imagen, estrategia y resultados</h1>
+        <p>
+          Elige un paquete sugerido o personaliza tu plan seleccionando solo lo
+          que realmente necesitas.
+        </p>
+      </section>
 
-      <div class="section-header">
-        <div>
-          <h2>Paquetes recomendados</h2>
-          <p class="section-subtitle">
-            Diseñados para crecer en redes con distintos niveles de alcance.
-          </p>
+      <section id="planes">
+        <PlansBanner @customize="goToCustomize" />
+
+        <div class="section-header">
+          <div>
+            <h2>Paquetes recomendados</h2>
+            <p class="section-subtitle">
+              Diseñados para crecer en redes con distintos niveles de alcance.
+            </p>
+          </div>
+          <span>{{ packagePlans.length }} opciones</span>
         </div>
-        <span>{{ packagePlans.length }} opciones</span>
-      </div>
 
-      <div class="packages-grid">
-        <PackagePlanCard
-          v-for="plan in packagePlans"
-          :key="plan.id"
-          :plan="plan"
-          :resolved-items="getPlanItems(plan)"
-          @choose="choosePlan"
-        />
-      </div>
+        <div class="packages-grid">
+          <PackagePlanCard
+            v-for="plan in packagePlans"
+            :key="plan.id"
+            :plan="plan"
+            :resolved-items="getPlanItems(plan)"
+            @choose="choosePlan"
+          />
+        </div>
+      </section>
 
-      <section class="customers-section">
+      <section id="comentarios" class="customers-section">
         <div class="section-header section-header-left">
           <div>
             <h2>Clientes satisfechos</h2>
@@ -81,7 +116,7 @@
         </div>
       </section>
 
-      <section class="faq-section">
+      <section id="faq" class="faq-section">
         <div class="section-header section-header-left">
           <div>
             <h2>Preguntas frecuentes</h2>
@@ -126,7 +161,7 @@
         </div>
       </section>
 
-      <section class="contact-section">
+      <section id="contacto" class="contact-section">
         <div class="contact-copy">
           <span class="contact-kicker">Contacto</span>
           <h2>Hablemos de tu negocio</h2>
@@ -241,6 +276,7 @@
         @update-quantity="updateQuantity"
       />
     </section>
+
     <FloatingSocials />
   </main>
 </template>
@@ -285,12 +321,6 @@ const getCartItemKey = (item) => {
   return `${item.id}::${item.profile || ""}`;
 };
 
-const getSelectedQuantity = (serviceId) => {
-  return cart.value
-    .filter((item) => item.id === serviceId)
-    .reduce((sum, item) => sum + (Number(item.quantity) || 0), 0);
-};
-
 const handleCartUpdate = (value) => {
   const mergedMap = new Map();
 
@@ -328,6 +358,7 @@ const goToCustomize = () => {
 const goToLanding = () => {
   viewMode.value = "landing";
   selectedService.value = null;
+  window.scrollTo({ top: 0, behavior: "smooth" });
 };
 
 const selectService = (service) => {
@@ -363,6 +394,7 @@ const choosePlan = (plan) => {
 
   viewMode.value = "customize";
   selectedService.value = null;
+  window.scrollTo({ top: 0, behavior: "smooth" });
 };
 
 const formatPrice = (value) => {
@@ -378,71 +410,166 @@ const formatPrice = (value) => {
   box-sizing: border-box;
 }
 
-.page {
-  min-height: 100vh;
-  padding: 32px;
-  position: relative;
-  overflow: hidden;
-
-  background:
-    radial-gradient(circle at 10% 20%, rgba(255, 0, 128, 0.15), transparent 25%),
-    radial-gradient(circle at 90% 10%, rgba(0, 200, 255, 0.15), transparent 25%),
-    radial-gradient(circle at 70% 80%, rgba(140, 82, 255, 0.12), transparent 30%),
-    linear-gradient(180deg, #050816 0%, #0a0f1f 40%, #0f172a 100%);
-
-  color: #e2e8f0;
+:global(html) {
+  scroll-behavior: smooth;
 }
 
-.page::before {
-  content: '';
+.background-layer {
   position: fixed;
   inset: 0;
-  pointer-events: none;
   z-index: 0;
-
-  background:
-    radial-gradient(circle at 20% 10%, rgba(255, 0, 153, 0.12), transparent 20%),
-    radial-gradient(circle at 80% 20%, rgba(0, 224, 255, 0.12), transparent 20%),
-    radial-gradient(circle at 50% 50%, rgba(147, 51, 234, 0.10), transparent 25%);
-
-  filter: blur(40px);
+  pointer-events: none;
+  background: url("./assets/background.png") center top / cover no-repeat;
 }
 
-.page > * {
+.background-fade {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(3, 7, 18, 0.18) 0%,
+      rgba(3, 7, 18, 0.34) 22%,
+      rgba(3, 7, 18, 0.62) 42%,
+      rgba(7, 12, 24, 0.86) 58%,
+      rgba(10, 16, 28, 0.96) 74%,
+      rgba(15, 23, 42, 1) 100%
+    );
+}
+
+.page {
   position: relative;
   z-index: 1;
+  min-height: 100vh;
+  padding: 24px 32px 32px;
+  color: #1f2937;
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
 }
 
-.hero {
-  max-width: 1000px;
+.top-nav {
+  position: sticky;
+  top: 14px;
+  z-index: 30;
+  max-width: 1400px;
   margin: 0 auto 28px;
-  text-align: center;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  border-radius: 24px;
+  background: rgba(9, 15, 30, 0.45);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 18px 45px rgba(2, 6, 23, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
-.hero-kicker {
+.brand {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+}
+
+.nav-links a {
+  color: rgba(226, 232, 240, 0.86);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.98rem;
+  transition:
+    color 0.18s ease,
+    text-shadow 0.18s ease,
+    opacity 0.18s ease;
+}
+
+.nav-links a:hover {
+  color: #ffffff;
+  text-shadow: 0 0 18px rgba(96, 165, 250, 0.38);
+}
+
+.nav-cta {
+  border: none;
+  border-radius: 14px;
+  padding: 11px 16px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  color: #ffffff;
+  background: linear-gradient(135deg, #7c3aed, #2563eb);
+  box-shadow:
+    0 12px 24px rgba(37, 99, 235, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.top-spacer {
+  height: 8px;
+}
+
+.intro-section {
+  max-width: 900px;
+  margin: 34px auto 42px;
+  text-align: center;
+  padding: 34px 20px 10px;
+}
+
+.intro-kicker {
   display: inline-flex;
   padding: 8px 14px;
   border-radius: 999px;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
   font-size: 0.85rem;
   font-weight: 700;
-  color: #7c3aed;
-  background: rgba(168, 85, 247, 0.08);
-  border: 1px solid rgba(168, 85, 247, 0.12);
+  color: #e9d5ff;
+  background: rgba(124, 58, 237, 0.16);
+  border: 1px solid rgba(168, 85, 247, 0.24);
+  backdrop-filter: blur(10px);
 }
 
-.hero h1 {
+.intro-section h1 {
+  margin: 0 0 14px;
+  font-size: clamp(2.2rem, 5vw, 4.2rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
   color: #ffffff;
+  text-shadow: 0 8px 35px rgba(15, 23, 42, 0.3);
 }
 
-.hero p {
-  color: rgba(226, 232, 240, 0.7);
+.intro-section p {
+  margin: 0 auto;
+  max-width: 760px;
+  color: rgba(226, 232, 240, 0.82);
+  font-size: 1.08rem;
+  line-height: 1.65;
 }
 
 .landing-section,
 .details-layout {
   max-width: 1400px;
   margin: 0 auto;
+}
+
+#planes,
+#comentarios,
+#faq,
+#contacto {
+  scroll-margin-top: 110px;
 }
 
 .section-header {
@@ -458,14 +585,16 @@ const formatPrice = (value) => {
 }
 
 .section-header h2 {
-  color: #f1f5f9;
+  margin: 0;
+  font-size: 1.6rem;
+  color: #f8fafc;
 }
 
 .section-header span,
 .selected-chip,
 .section-subtitle,
 .selected-description {
-  color: #64748b;
+  color: #cbd5e1;
 }
 
 .section-subtitle {
@@ -489,9 +618,12 @@ const formatPrice = (value) => {
 }
 
 .details-main {
-  background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(18px);
+  background: rgba(15, 23, 42, 0.72);
+  backdrop-filter: blur(14px);
   border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  padding: 20px;
+  box-shadow: 0 18px 42px rgba(2, 6, 23, 0.28);
 }
 
 .main-services-grid {
@@ -519,7 +651,7 @@ const formatPrice = (value) => {
   font-size: 0.95rem;
   font-weight: 700;
   cursor: pointer;
-  background: #e2e8f0;
+  background: rgba(226, 232, 240, 0.9);
   color: #0f172a;
   margin-bottom: 12px;
 }
@@ -529,11 +661,11 @@ const formatPrice = (value) => {
 }
 
 .selected-chip {
-  background: rgba(59, 130, 246, 0.08);
-  color: #2563eb;
+  background: rgba(59, 130, 246, 0.12);
+  color: #93c5fd;
   border-radius: 999px;
   padding: 8px 12px;
-  border: 1px solid rgba(59, 130, 246, 0.14);
+  border: 1px solid rgba(59, 130, 246, 0.2);
 }
 
 .customers-section,
@@ -699,11 +831,25 @@ const formatPrice = (value) => {
 
 @media (max-width: 900px) {
   .page {
-    padding: 20px 20px 100px;
+    padding: 16px 20px 100px;
   }
 
-  .hero h1 {
-    font-size: 2.3rem;
+  .top-nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+    padding: 14px;
+  }
+
+  .nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px 18px;
+  }
+
+  .intro-section {
+    margin-top: 16px;
+    padding-top: 22px;
   }
 
   .packages-grid,
@@ -717,11 +863,5 @@ const formatPrice = (value) => {
     flex-direction: column;
     align-items: flex-start;
   }
-
-  .main-service-card:hover {
-  box-shadow:
-    0 0 0 1px rgba(255,255,255,0.08),
-    0 10px 40px rgba(0, 224, 255, 0.15);
-}
 }
 </style>
