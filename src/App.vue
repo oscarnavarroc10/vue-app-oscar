@@ -4,7 +4,7 @@
 
   <main class="page">
     <header class="top-nav">
-      <a class="brand" href="#top">Emmanuela Porkba</a>
+      <a class="brand" href="#top">ImpulsoRedes</a>
 
       <nav class="nav-links">
         <a href="#planes">Planes</a>
@@ -21,12 +21,7 @@
       >
         Personalizar
       </button>
-      <button
-        v-else
-        class="nav-cta"
-        type="button"
-        @click="goToLanding"
-      >
+      <button v-else class="nav-cta" type="button" @click="goToLanding">
         Volver a home
       </button>
     </header>
@@ -36,7 +31,9 @@
     <section v-if="viewMode === 'landing'" class="landing-section">
       <section class="intro-section">
         <span class="intro-kicker">Impulsa tus redes</span>
-        <h1>Servicios premium para crecer con imagen, estrategia y resultados</h1>
+        <h1>
+          Servicios premium para crecer con imagen, estrategia y resultados
+        </h1>
         <p>
           Elige un paquete sugerido o personaliza tu plan seleccionando solo lo
           que realmente necesitas.
@@ -45,7 +42,6 @@
 
       <section id="planes">
         <PlansBanner @customize="goToCustomize" />
-
         <div class="section-header">
           <div>
             <h2>Paquetes recomendados</h2>
@@ -195,13 +191,18 @@
       </section>
     </section>
 
-    <section v-else class="details-layout">
+    <section
+      v-else
+      class="details-layout"
+      :class="{ 'details-layout--full': !shouldShowCart }"
+    >
       <div class="details-main">
         <div class="section-header details-header">
           <div>
             <button class="back-btn" type="button" @click="goToLanding">
               ← Volver a home
             </button>
+
             <h2 v-if="!selectedService">Selecciona una categoría</h2>
             <h2 v-else>{{ selectedService.name }}</h2>
 
@@ -223,7 +224,7 @@
 
         <div v-if="!selectedService" class="main-services-grid">
           <MainServiceCard
-            v-for="service in availableServices"
+            v-for="service in enabledServices"
             :key="service.id"
             :service="service"
             :background-style="getCardBackgroundStyle(service)"
@@ -262,19 +263,24 @@
         </template>
       </div>
 
-      <CartPanel
-        :cart="cart"
-        :subtotal="subtotal"
-        :discount-percentage="discountPercentage"
-        :discount-amount="discountAmount"
-        :total="total"
-        :format-price="formatPrice"
-        @update:cart="handleCartUpdate"
-        @remove="removeFromCart"
-        @increase="increaseQuantity"
-        @decrease="decreaseQuantity"
-        @update-quantity="updateQuantity"
-      />
+      <div
+        class="cart-panel-wrap"
+        :class="{ 'cart-panel-wrap--hidden': !shouldShowCart }"
+      >
+        <CartPanel
+          :cart="cart"
+          :subtotal="subtotal"
+          :discount-percentage="discountPercentage"
+          :discount-amount="discountAmount"
+          :total="total"
+          :format-price="formatPrice"
+          @update:cart="handleCartUpdate"
+          @remove="removeFromCart"
+          @increase="increaseQuantity"
+          @decrease="decreaseQuantity"
+          @update-quantity="updateQuantity"
+        />
+      </div>
     </section>
 
     <FloatingSocials />
@@ -299,6 +305,10 @@ import { useBannerResolver } from "./composables/useBannerResolver";
 const availableServices = ref(servicesData);
 const serviceOptions = ref(serviceOptionsData);
 const packagePlans = ref(packagePlansData);
+
+const enabledServices = computed(() => {
+  return availableServices.value.filter((service) => service.isEnabled);
+});
 
 const viewMode = ref("landing");
 const selectedService = ref(null);
@@ -376,6 +386,12 @@ const filteredOptions = computed(() => {
   );
 });
 
+const hasCartItems = computed(() => cart.value.length > 0);
+
+const shouldShowCart = computed(() => {
+  return !!selectedService.value || hasCartItems.value;
+});
+
 const getPlanItems = (plan) => {
   return serviceOptions.value.filter((item) =>
     plan.includedOptionIds.includes(item.id),
@@ -427,16 +443,15 @@ const formatPrice = (value) => {
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(3, 7, 18, 0.18) 0%,
-      rgba(3, 7, 18, 0.34) 22%,
-      rgba(3, 7, 18, 0.62) 42%,
-      rgba(7, 12, 24, 0.86) 58%,
-      rgba(10, 16, 28, 0.96) 74%,
-      rgba(15, 23, 42, 1) 100%
-    );
+  background: linear-gradient(
+    to bottom,
+    rgba(3, 7, 18, 0.18) 0%,
+    rgba(3, 7, 18, 0.34) 22%,
+    rgba(3, 7, 18, 0.62) 42%,
+    rgba(7, 12, 24, 0.86) 58%,
+    rgba(10, 16, 28, 0.96) 74%,
+    rgba(15, 23, 42, 1) 100%
+  );
 }
 
 .page {
@@ -615,6 +630,14 @@ const formatPrice = (value) => {
   grid-template-columns: minmax(0, 2fr) 390px;
   gap: 24px;
   align-items: start;
+  transition:
+    grid-template-columns 0.45s ease,
+    gap 0.45s ease;
+}
+
+.details-layout--full {
+  grid-template-columns: minmax(0, 1fr) 0;
+  gap: 0;
 }
 
 .details-main {
@@ -624,6 +647,7 @@ const formatPrice = (value) => {
   border-radius: 24px;
   padding: 20px;
   box-shadow: 0 18px 42px rgba(2, 6, 23, 0.28);
+  min-width: 0;
 }
 
 .main-services-grid {
@@ -807,6 +831,26 @@ const formatPrice = (value) => {
   background: #2563eb;
 }
 
+.cart-panel-wrap {
+  width: 390px;
+  min-width: 0;
+  overflow: hidden;
+  opacity: 1;
+  transform: translateX(0);
+  transition:
+    width 0.45s ease,
+    opacity 0.35s ease,
+    transform 0.45s ease;
+  will-change: width, opacity, transform;
+}
+
+.cart-panel-wrap--hidden {
+  width: 0;
+  opacity: 0;
+  transform: translateX(36px);
+  pointer-events: none;
+}
+
 @media (max-width: 1280px) {
   .packages-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -816,6 +860,19 @@ const formatPrice = (value) => {
 @media (max-width: 1100px) {
   .details-layout {
     grid-template-columns: 1fr;
+  }
+
+  .details-layout--full {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .cart-panel-wrap,
+  .cart-panel-wrap--hidden {
+    width: 100%;
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
   }
 
   .main-services-grid,

@@ -4,7 +4,10 @@
       <div class="section-header-left">
         <h2>Tu carrito</h2>
         <p class="section-subtitle">
-          {{ uniqueServicesCount }} servicio<span v-if="uniqueServicesCount !== 1">s</span>
+          {{ uniqueServicesCount }} servicio<span
+            v-if="uniqueServicesCount !== 1"
+            >s</span
+          >
           · {{ totalUnits }} unidades
         </p>
       </div>
@@ -85,7 +88,9 @@
               type="number"
               min="100"
               step="100"
-              @change="$emit('update-quantity', element.cartId, $event.target.value)"
+              @change="
+                $emit('update-quantity', element.cartId, $event.target.value)
+              "
             />
 
             <button
@@ -139,8 +144,8 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import draggable from 'vuedraggable'
+import { computed } from "vue";
+import draggable from "vuedraggable";
 
 const props = defineProps({
   cart: {
@@ -167,71 +172,74 @@ const props = defineProps({
     type: Function,
     required: true,
   },
-})
+});
 
 const emit = defineEmits([
-  'update:cart',
-  'remove',
-  'increase',
-  'decrease',
-  'update-quantity',
-])
+  "update:cart",
+  "remove",
+  "increase",
+  "decrease",
+  "update-quantity",
+]);
 
 const localCart = computed({
   get: () => props.cart,
-  set: (value) => emit('update:cart', value),
-})
+  set: (value) => emit("update:cart", value),
+});
 
-const uniqueServicesCount = computed(() => props.cart.length)
+const uniqueServicesCount = computed(() => props.cart.length);
 
 const totalUnits = computed(() => {
-  return props.cart.reduce((sum, item) => sum + (Number(item.quantity) || 0), 0)
-})
+  return props.cart.reduce(
+    (sum, item) => sum + (Number(item.quantity) || 0),
+    0,
+  );
+});
 
 const getItemTotal = (item) => {
-  return (Number(item.price || 0) / 100) * (Number(item.quantity) || 0)
-}
+  return (Number(item.price || 0) / 100) * (Number(item.quantity) || 0);
+};
 
 const getCategoryPillClass = (category) => {
   const classMap = {
-    Instagram: 'pill-instagram',
-    Facebook: 'pill-facebook',
-    TikTok: 'pill-tiktok',
-    YouTube: 'pill-youtube',
-    Snapchat: 'pill-snapchat',
-    X: 'pill-x',
-    Discord: 'pill-discord',
-    Twitch: 'pill-twitch',
-    Spotify: 'pill-spotify',
-  }
+    Instagram: "pill-instagram",
+    Facebook: "pill-facebook",
+    TikTok: "pill-tiktok",
+    YouTube: "pill-youtube",
+    Snapchat: "pill-snapchat",
+    X: "pill-x",
+    Discord: "pill-discord",
+    Twitch: "pill-twitch",
+    Spotify: "pill-spotify",
+  };
 
-  return classMap[category] || 'pill-default'
-}
+  return classMap[category] || "pill-default";
+};
 
 const sendWhatsApp = () => {
-  const phone = '525578883006'
+  const phone = "529992649728";
 
   const servicesText = props.cart
     .map((item, index) => {
       return `${index + 1}. Servicio: ${item.quantity} ${item.name} para ${item.category}
-Perfil: ${item.profile}`
+Perfil: ${item.profile}`;
     })
-    .join('\n\n')
+    .join("\n\n");
 
-  const finalMessage = `Hola 👋
+  const finalMessage = `Hola Porkba👋
 
-Quiero cotizar lo siguiente:
+Quiero solicitar lo(s) siguiente(s) servicio(s):
 
 ${servicesText}
 
 Resumen:
 - Servicios: ${uniqueServicesCount.value}
 - Unidades: ${totalUnits.value}
-- Total: $${props.formatPrice(props.total)} MXN`
+- Total: $${props.formatPrice(props.total)} MXN`;
 
-  const url = `https://wa.me/${phone}?text=${encodeURIComponent(finalMessage)}`
-  window.open(url, '_blank', 'noopener,noreferrer')
-}
+  const url = `https://wa.me/${phone}?text=${encodeURIComponent(finalMessage)}`;
+  window.open(url, "_blank", "noopener,noreferrer");
+};
 </script>
 
 <style scoped>

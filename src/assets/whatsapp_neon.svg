@@ -1,0 +1,24 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur1"/>
+      <feColorMatrix in="blur1" type="matrix" values="0 0 0 0 0.145 0 0 0 0 0.827 0 0 0 0 0.400 0 0 0 1 0" result="glow1"/>
+      <feGaussianBlur stdDeviation="14" result="blur2"/>
+      <feColorMatrix in="blur2" type="matrix" values="0 0 0 0 0.145 0 0 0 0 0.827 0 0 0 0 0.400 0 0 0 0.65 0" result="glow2"/>
+      <feMerge>
+        <feMergeNode in="glow2"/>
+        <feMergeNode in="glow1"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="greenStroke" x1="110" y1="110" x2="400" y2="400" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#52FF9A"/>
+      <stop offset="1" stop-color="#25D366"/>
+    </linearGradient>
+  </defs>
+
+  <g filter="url(#glow)" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M256 72C154.38 72 72 154.38 72 256C72 291.21 81.91 324.11 99.1 352.04L82 430L161.14 413.58C189.16 428.16 221.01 440 256 440C357.62 440 440 357.62 440 256C440 154.38 357.62 72 256 72Z" stroke="url(#greenStroke)" stroke-width="18"/>
+    <path d="M204.41 171.45C196.92 171.45 189.94 174.97 185.31 181.03C172.8 197.42 165 220.08 165 244.59C165 300.25 209.75 345 265.41 345C289.92 345 312.58 337.2 328.97 324.69C335.03 320.06 338.55 313.08 338.55 305.59V283.46C338.55 278.03 334.95 273.26 329.72 271.77L286.82 259.49C281.49 257.97 275.78 259.68 272.16 263.86L261.18 276.52C257.68 280.57 251.74 281.94 246.81 279.93C228.12 272.28 212.72 256.88 205.07 238.19C203.06 233.26 204.43 227.32 208.48 223.82L221.14 212.84C225.32 209.22 227.03 203.51 225.51 198.18L213.23 155.28C211.74 150.05 206.97 146.45 201.54 146.45H179.41C176.95 146.45 174.54 147.18 172.5 148.57" stroke="#F6FFF8" stroke-width="18"/>
+  </g>
+</svg>

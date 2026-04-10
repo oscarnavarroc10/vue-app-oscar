@@ -16,7 +16,7 @@
     </div>
 
     <div class="main-card-body">
-      <br />
+      <h3>{{ getCardTitle(normalizedCategory) }}</h3>
       <p>{{ service.description }}</p>
     </div>
 
@@ -40,6 +40,8 @@ import xIcon from "@/assets/twitter_neon.svg";
 import discordIcon from "@/assets/discord_neon.svg";
 import twitchIcon from "@/assets/twitch_neon.svg";
 import spotifyIcon from "@/assets/spotify_neon.svg";
+import whatsappIcon from "@/assets/whatsapp_neon.svg";
+import telegramIcon from "@/assets/telegram_neon.svg";
 
 const props = defineProps({
   service: {
@@ -56,8 +58,17 @@ const handleOpen = () => {
 
 const normalizeCategory = (cat) => {
   const map = {
+    instagram: "Instagram",
+    facebook: "Facebook",
     tiktok: "TikTok",
     youtube: "YouTube",
+    x: "X",
+    discord: "Discord",
+    twitch: "Twitch",
+    spotify: "Spotify",
+    snapchat: "Snapchat",
+    telegram: "Telegram",
+    whatsapp: "WhatsApp",
   };
 
   return map[cat?.toLowerCase()] || cat;
@@ -66,6 +77,24 @@ const normalizeCategory = (cat) => {
 const normalizedCategory = computed(() =>
   normalizeCategory(props.service.category),
 );
+
+const getCardTitle = (category) => {
+  const titles = {
+    Instagram: "Haz crecer tu perfil",
+    Facebook: "Aumenta tu interacción",
+    TikTok: "Haz viral tu contenido",
+    X: "Impulsa tu alcance",
+    YouTube: "Haz crecer tu canal",
+    Spotify: "Gana más visibilidad",
+    Snapchat: "Conecta con tu audiencia",
+    Telegram: "Impulsa tu comunidad",
+    WhatsApp: "Haz crecer tu canal",
+    Discord: "Fortalece tu servidor",
+    Twitch: "Aumenta tu presencia",
+  };
+
+  return titles[category] || `Servicios para ${category}`;
+};
 
 const CATEGORY_THEME_MAP = {
   Instagram: {
@@ -167,6 +196,28 @@ const CATEGORY_THEME_MAP = {
       "linear-gradient(135deg, rgba(250, 204, 21, 0.10), rgba(245, 158, 11, 0.10))",
     iconBorder: "rgba(245, 158, 11, 0.14)",
   },
+  Telegram: {
+    icon: telegramIcon,
+    glow1: "rgba(0, 136, 204, 0.16)",
+    glow2: "rgba(56, 189, 248, 0.12)",
+    badgeBg: "rgba(0, 136, 204, 0.10)",
+    badgeColor: "#0b6fa4",
+    buttonGradient: "linear-gradient(135deg, #0088cc, #38bdf8)",
+    iconBg:
+      "linear-gradient(135deg, rgba(0, 136, 204, 0.08), rgba(56, 189, 248, 0.10))",
+    iconBorder: "rgba(0, 136, 204, 0.14)",
+  },
+  WhatsApp: {
+    icon: whatsappIcon,
+    glow1: "rgba(37, 211, 102, 0.16)",
+    glow2: "rgba(134, 239, 172, 0.12)",
+    badgeBg: "rgba(37, 211, 102, 0.10)",
+    badgeColor: "#15803d",
+    buttonGradient: "linear-gradient(135deg, #25d366, #4ade80)",
+    iconBg:
+      "linear-gradient(135deg, rgba(37, 211, 102, 0.08), rgba(134, 239, 172, 0.10))",
+    iconBorder: "rgba(37, 211, 102, 0.14)",
+  },
   default: {
     icon: null,
     glow1: "rgba(148, 163, 184, 0.14)",
@@ -200,31 +251,30 @@ const cardStyle = computed(() => ({
 <style scoped>
 .main-service-card {
   position: relative;
-  min-height: 220px;
+  min-height: 320px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   overflow: hidden;
-  border-radius: 26px;
-  padding: 20px;
+  border-radius: 28px;
+  padding: 22px;
   cursor: pointer;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(12px);
   border: 1px solid rgba(203, 213, 225, 0.85);
   box-shadow:
     0 18px 35px rgba(15, 23, 42, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.75);
+    inset 0 1px 0 rgba(255, 255, 255, 0.78);
   transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease,
-    border-color 0.18s ease;
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.22s ease;
 }
 
-.main-card-icon-wrap {
-  position: relative;
-  width: 80px;
-  height: 80px;
-  flex-shrink: 0;
+.main-service-card:hover {
+  transform: translateY(-6px);
+  box-shadow:
+    0 26px 40px rgba(15, 23, 42, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.78);
 }
 
 .main-card-glow {
@@ -255,11 +305,11 @@ const cardStyle = computed(() => ({
 
 .main-card-icon-wrap {
   position: absolute;
-  top: 18px;
-  right: 18px;
-  width: 74px;
-  height: 74px;
-  border-radius: 20px;
+  top: 20px;
+  right: 20px;
+  width: 82px;
+  height: 82px;
+  border-radius: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -267,16 +317,15 @@ const cardStyle = computed(() => ({
   border: 1px solid var(--icon-border);
   box-shadow:
     0 10px 24px rgba(15, 23, 42, 0.06),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
   z-index: 1;
 }
 
 .main-card-icon {
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   object-fit: contain;
-  opacity: 0.95;
-  filter: none;
+  opacity: 0.96;
 }
 
 .main-card-top,
@@ -286,12 +335,16 @@ const cardStyle = computed(() => ({
   z-index: 2;
 }
 
+.main-card-top {
+  margin-bottom: 22px;
+}
+
 .main-card-badge {
   display: inline-flex;
   align-items: center;
-  padding: 8px 12px;
+  padding: 8px 14px;
   border-radius: 999px;
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   font-weight: 800;
   background: var(--badge-bg);
   color: var(--badge-color);
@@ -299,34 +352,50 @@ const cardStyle = computed(() => ({
 }
 
 .main-card-body {
-  max-width: calc(100% - 88px);
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 10px;
+  padding-top: 22px;
 }
 
 .main-card-body h3 {
-  margin: 16px 0 10px;
-  font-size: 1.28rem;
-  color: #0f172a;
-  line-height: 1.15;
+  margin: 0;
+  font-size: 1.15rem;
+  line-height: 1.2;
   font-weight: 800;
+  color: #1f2a44;
+  letter-spacing: -0.02em;
 }
 
 .main-card-body p {
   margin: 0;
-  color: #475569;
-  line-height: 1.55;
-  font-size: 0.98rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+
+  color: rgba(30, 41, 59, 0.72);
+
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .main-card-footer {
-  margin-top: 18px;
+  margin-top: auto;
+  padding-top: 18px;
 }
 
 .main-card-btn {
   width: 100%;
   border: none;
-  border-radius: 16px;
-  padding: 14px 16px;
-  font-size: 0.95rem;
+  border-radius: 18px;
+  padding: 15px 16px;
+  font-size: 1rem;
   font-weight: 800;
   cursor: pointer;
   color: #ffffff;
@@ -338,28 +407,29 @@ const cardStyle = computed(() => ({
 
 @media (max-width: 768px) {
   .main-service-card {
-    min-height: 210px;
+    min-height: 290px;
     padding: 18px;
   }
 
-  .main-card-icon-wrap {
-    width: 66px;
-    height: 66px;
-    top: 16px;
-    right: 16px;
-  }
+ .main-card-icon-wrap {
+  top: 18px;
+  right: 18px;
+  width: 74px;
+  height: 74px;
+}
 
-  .main-card-icon {
-    width: 38px;
-    height: 38px;
-  }
+.main-card-icon {
+  width: 40px;
+  height: 40px;
+}
 
   .main-card-body {
-    max-width: calc(100% - 78px);
+    max-width: calc(100% - 82px);
+    gap: 10px;
   }
 
   .main-card-body h3 {
-    font-size: 1.18rem;
+    font-size: 1.35rem;
   }
 
   .main-card-body p {

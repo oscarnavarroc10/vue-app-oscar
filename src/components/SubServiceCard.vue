@@ -14,7 +14,7 @@
         {{ service.category }}
       </span>
       <strong class="sub-card-price">
-        Precio: ${{ formatPrice(service.price) }} por cada 100
+        Precio: ${{ formatPrice(service.price) }} por cada 1000
       </strong>
     </div>
     <div class="sub-card-body">
@@ -30,7 +30,7 @@
     <div class="sub-card-profile">
       <div class="profile-label-row">
         <label class="profile-label" :for="`profile-${service.id}`">
-          Link de tu perfil
+          Link
         </label>
         <div
           class="profile-help-wrap"
@@ -47,7 +47,7 @@
             !
           </button>
           <div v-if="showHelp" class="profile-help-tooltip">
-            El link del perfil es necesario
+            El link es necesario
           </div>
         </div>
       </div>
@@ -60,7 +60,7 @@
         :placeholder="profilePlaceholder"
       />
       <small v-if="showProfileError" class="profile-error-label">
-        Indica un link válido del perfil
+        Indica un link válido
       </small>
     </div>
     <div class="sub-card-footer">
@@ -82,6 +82,8 @@ import xIcon from "@/assets/twitter_neon.svg";
 import discordIcon from "@/assets/discord_neon.svg";
 import twitchIcon from "@/assets/twitch_neon.svg";
 import spotifyIcon from "@/assets/spotify_neon.svg";
+import whatsappIcon from "@/assets/whatsapp_neon.svg";
+import telegramIcon from "@/assets/telegram_neon.svg";
 
 const props = defineProps({
   service: {
@@ -267,6 +269,28 @@ const SOCIAL_THEME_MAP = {
     buttonGradient: "linear-gradient(135deg, #1db954, #22c55e)",
     icon: spotifyIcon,
   },
+  Telegram: {
+    glow1: "rgba(0, 136, 204, 0.18)",
+    glow2: "rgba(56, 189, 248, 0.14)",
+    badgeBg:
+      "linear-gradient(135deg, rgba(0, 136, 204, 0.16), rgba(56, 189, 248, 0.18))",
+    badgeColor: "#0b6fa4",
+    badgeBorder: "rgba(0, 136, 204, 0.24)",
+    badgeShadow: "rgba(0, 136, 204, 0.16)",
+    buttonGradient: "linear-gradient(135deg, #0088cc, #38bdf8)",
+    icon: telegramIcon,
+  },
+  WhatsApp: {
+    glow1: "rgba(37, 211, 102, 0.18)",
+    glow2: "rgba(134, 239, 172, 0.14)",
+    badgeBg:
+      "linear-gradient(135deg, rgba(37, 211, 102, 0.16), rgba(74, 222, 128, 0.18))",
+    badgeColor: "#15803d",
+    badgeBorder: "rgba(37, 211, 102, 0.24)",
+    badgeShadow: "rgba(37, 211, 102, 0.16)",
+    buttonGradient: "linear-gradient(135deg, #25d366, #4ade80)",
+    icon: whatsappIcon,
+  },
   default: {
     glow1: "rgba(148, 163, 184, 0.16)",
     glow2: "rgba(203, 213, 225, 0.12)",
@@ -288,15 +312,15 @@ const platformIcon = computed(() => socialTheme.value.icon);
 
 const profilePlaceholder = computed(() => {
   const map = {
-    Instagram: "https://www.instagram.com/tu_usuario/",
-    Facebook: "https://www.facebook.com/tu_perfil/",
-    TikTok: "https://www.tiktok.com/@tu_usuario",
-    YouTube: "https://www.youtube.com/@tu_canal",
-    Snapchat: "https://www.snapchat.com/add/tu_usuario",
-    X: "https://x.com/tu_usuario",
-    Discord: "https://discord.gg/tu-servidor",
-    Twitch: "https://www.twitch.tv/tu_canal",
-    Spotify: "https://open.spotify.com/artist/...",
+    Instagram: "ejemplo: https://www.instagram.com/tu_usuario/",
+    Facebook: "ejemplo: https://www.facebook.com/tu_perfil/",
+    TikTok: "ejemplo: https://www.tiktok.com/@tu_usuario",
+    YouTube: "ejemplo: https://www.youtube.com/@tu_canal",
+    Snapchat: "ejemplo: https://www.snapchat.com/add/tu_usuario",
+    X: "ejemplo: https://x.com/tu_usuario",
+    Discord: "ejemplo: https://discord.gg/tu-servidor",
+    Twitch: "ejemplo: https://www.twitch.tv/tu_canal",
+    Spotify: "ejemplo: https://open.spotify.com/artist/...",
   };
 
   return map[props.service.category] || "Pega aquí tu perfil o enlace";
@@ -313,6 +337,13 @@ const cardStyle = computed(() => ({
 }));
 </script>
 <style scoped>
+.profile-error-label {
+  font-size: 0.75rem;
+  color: #ef4444; /* rojo moderno (tailwind red-500) */
+  margin-top: 4px;
+  display: block;
+}
+
 .profile-label-row {
   display: flex;
   align-items: center;

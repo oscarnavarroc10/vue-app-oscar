@@ -2,64 +2,89 @@
   {
     "id": 1,
     "name": "Instagram",
-    "description": "Servicios especializados para crecimiento y contenido en Instagram.",
+    "description": "Impulsa tu perfil con seguidores, likes y views reales para destacar y crecer más rápido que tu competencia.",
     "category": "Instagram",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "isEnabled": true
   },
   {
     "id": 2,
     "name": "Facebook",
-    "description": "Soluciones para publicaciones, campañas y gestión en Facebook.",
+    "description": "Aumenta la interacción en tu página con seguidores, likes y views que fortalecen tu presencia y credibilidad.",
     "category": "Facebook",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "isEnabled": true
   },
   {
     "id": 3,
     "name": "TikTok",
-    "description": "Edición y producción de contenido audiovisual para tus campañas.",
+    "description": "Haz viral tu contenido con más views, likes y seguidores para destacar en tendencias y crecer sin límites.",
     "category": "TikTok",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "isEnabled": true
   },
   {
     "id": 4,
     "name": "X",
-    "description": "Creativos, branding y piezas visuales para tus redes y negocio.",
+    "description": "Incrementa tu alcance con seguidores, retweets y likes que posicionan tu cuenta y hacen crecer tu impacto.",
     "category": "X",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "isEnabled": true
   },
   {
     "id": 5,
     "name": "Discord",
-    "description": "Creativos, branding y piezas visuales para tus redes y negocio.",
+    "description": "Lleva tu canal al siguiente nivel con suscriptores, views y engagement para crecer de forma constante.",
     "category": "Discord",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "isEnabled": false
   },
   {
     "id": 6,
     "name": "YouTube",
-    "description": "Creativos, branding y piezas visuales para tus redes y negocio.",
+    "description": "Lleva tu canal al siguiente nivel con suscriptores, views y engagement para crecer de forma constante.",
     "category": "YouTube",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "isEnabled": true
   },
   {
     "id": 7,
     "name": "Twitch",
-    "description": "Creativos, branding y piezas visuales para tus redes y negocio.",
+    "description": "Servicios para Twitch",
     "category": "Twitch",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "isEnabled": false
   },
   {
     "id": 8,
     "name": "Spotify",
-    "description": "Creativos, branding y piezas visuales para tus redes y negocio.",
+    "description": "Aumenta tus reproducciones, seguidores y oyentes para posicionar tu música y ganar más visibilidad.",
     "category": "Spotify",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "isEnabled": true
   },
   {
     "id": 9,
     "name": "Snapchat",
-    "description": "Creativos, branding y piezas visuales para tus redes y negocio.",
+    "description": "Servicios para Snapchat",
     "category": "Snapchat",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "isEnabled": false
+  },
+  {
+    "id": 10,
+    "name": "Telegram",
+    "description": "Haz crecer tu comunidad con miembros, reacciones y comentarios que aumentan tu autoridad.",
+    "category": "Telegram",
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "isEnabled": true
+  },
+  {
+    "id": 11,
+    "name": "WhatsApp",
+    "description": "Potencia tu canal con más miembros, seguidores y reacciones para crear una comunidad sólida.",
+    "category": "WhatsApp",
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "isEnabled": true
   }
 ]
