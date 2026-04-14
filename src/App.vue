@@ -4,7 +4,13 @@
 
   <main class="page">
     <header class="top-nav">
-      <a class="brand" href="#top">ImpulsoRedes</a>
+      <a class="brand" href="#top" aria-label="Impulso Redes">
+        <img
+          :src="logoImpulso"
+          alt="Impulso Redes Logo"
+          class="brand-logo"
+        />
+      </a>
 
       <nav class="nav-links">
         <a href="#planes">Planes</a>
@@ -21,7 +27,13 @@
       >
         Personalizar
       </button>
-      <button v-else class="nav-cta" type="button" @click="goToLanding">
+
+      <button
+        v-else
+        class="nav-cta"
+        type="button"
+        @click="goToLanding"
+      >
         Volver a home
       </button>
     </header>
@@ -276,6 +288,7 @@
           :format-price="formatPrice"
           @update:cart="handleCartUpdate"
           @remove="removeFromCart"
+          @clear-cart="clearCart"
           @increase="increaseQuantity"
           @decrease="decreaseQuantity"
           @update-quantity="updateQuantity"
@@ -301,6 +314,7 @@ import CartPanel from "./components/CartPanel.vue";
 import PackagePlanCard from "./components/PackagePlanCard.vue";
 import { useCart } from "./composables/useCart";
 import { useBannerResolver } from "./composables/useBannerResolver";
+import logoImpulso from "./assets/impulso_redes_logo.png";
 
 const availableServices = ref(servicesData);
 const serviceOptions = ref(serviceOptionsData);
@@ -321,6 +335,7 @@ const {
   total,
   addToCart,
   removeFromCart,
+  clearCart,
   cloneService,
   increaseQuantity,
   decreaseQuantity,
@@ -335,6 +350,15 @@ const handleCartUpdate = (value) => {
   const mergedMap = new Map();
 
   value.forEach((item) => {
+    if (item.cartType === "plan") {
+      mergedMap.set(item.cartId, {
+        ...item,
+        cartId: item.cartId,
+        quantity: Number(item.quantity || 1),
+      });
+      return;
+    }
+
     const key = getCartItemKey(item);
     const existing = mergedMap.get(key);
 
@@ -346,6 +370,7 @@ const handleCartUpdate = (value) => {
         cartId: item.cartId || key,
         quantity: Number(item.quantity || 100),
         profile: item.profile || "",
+        cartType: "service",
       });
     }
   });
@@ -393,19 +418,45 @@ const shouldShowCart = computed(() => {
 });
 
 const getPlanItems = (plan) => {
-  return serviceOptions.value.filter((item) =>
-    plan.includedOptionIds.includes(item.id),
-  );
+  return plan.includedOptions
+    .map((opt) => {
+      const service = serviceOptions.value.find(
+        (item) => item.id === opt.optionId,
+      );
+
+      if (!service) return null;
+
+      return {
+        ...service,
+        quantity: opt.quantity,
+      };
+    })
+    .filter(Boolean);
 };
 
 const choosePlan = (plan) => {
   const items = getPlanItems(plan);
 
-  items.forEach((item) => {
-    addToCart({
-      ...item,
-      profile: item.profile || "",
-    });
+  const planTotal = items.reduce((sum, item) => {
+    return sum + (Number(item.price || 0) / 100) * Number(item.quantity || 0);
+  }, 0);
+
+  addToCart({
+    id: `plan-${plan.id}`,
+    cartType: "plan",
+    name: plan.name,
+    category: "Paquete",
+    price: plan.price ?? planTotal,
+    quantity: 1,
+    profile: "",
+    planId: plan.id,
+    planItems: items.map((item) => ({
+      id: item.id,
+      name: item.name,
+      category: item.category,
+      quantity: item.quantity,
+      price: item.price,
+    })),
   });
 
   viewMode.value = "customize";
@@ -474,12 +525,13 @@ const formatPrice = (value) => {
   top: 14px;
   z-index: 30;
   max-width: 1400px;
-  margin: 0 auto 28px;
-  padding: 14px 18px;
+  margin: 0 auto 22px;
+  padding: 6px 22px;
+  min-height: auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 18px;
+  gap: 20px;
   border-radius: 24px;
   background: rgba(9, 15, 30, 0.45);
   backdrop-filter: blur(18px);
@@ -490,11 +542,23 @@ const formatPrice = (value) => {
 }
 
 .brand {
-  color: #ffffff;
+  display: flex;
+  align-items: center;
   text-decoration: none;
-  font-size: 1.35rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  flex-shrink: 0;
+}
+
+.brand-logo {
+  height: 152px;
+  width: auto;
+  max-width: 240px;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.25s ease;
+}
+
+.brand-logo:hover {
+  transform: scale(1.03);
 }
 
 .nav-links {
@@ -896,6 +960,12 @@ const formatPrice = (value) => {
     justify-content: center;
     gap: 14px;
     padding: 14px;
+    min-height: unset;
+  }
+
+  .brand-logo {
+    height: 58px;
+    max-width: 180px;
   }
 
   .nav-links {

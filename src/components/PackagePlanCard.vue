@@ -5,31 +5,28 @@
     <div class="card-top-line"></div>
 
     <div class="package-card-header">
-      <div class="package-top-row">
-        <span class="package-tag">{{ displayTag }}</span>
-        <span v-if="isPremium" class="premium-crown" aria-label="Premium"
-          >👑</span
-        >
-      </div>
-
       <h3>{{ plan.name }}</h3>
-      <p>{{ plan.description }}</p>
+      <p v-html="formattedDescription"></p>
     </div>
 
     <ul class="package-list">
-      <li v-for="item in resolvedItems" :key="item.id">
-        <span class="bullet">✦</span>
-        <span>
-          <strong v-if="showCategory(item.category, item.id)">
-            {{ item.category }}:
-          </strong>
+      <li
+        v-for="item in props.resolvedItems || []"
+        :key="item.id"
+        class="package-item"
+      >
+        <span class="item-quantity">
+          {{ formatNumber(item.quantity) }}
+        </span>
+
+        <span class="item-name">
           {{ item.name }}
         </span>
       </li>
     </ul>
 
     <div class="package-footer">
-      <button class="package-btn" type="button" @click="$emit('choose', plan)">
+      <button class="package-btn" @click="$emit('choose', plan)">
         {{ plan.buttonText }}
       </button>
     </div>
@@ -46,108 +43,81 @@ const props = defineProps({
   },
   resolvedItems: {
     type: Array,
-    required: true,
+    default: () => [],
   },
 });
 
 defineEmits(["choose"]);
 
-const normalizedName = computed(() => props.plan.name.toLowerCase());
+const formatNumber = (num) => {
+  return new Intl.NumberFormat("es-MX").format(num);
+};
 
-const isFree = computed(() => normalizedName.value.includes("free"));
-const isPlus = computed(
-  () =>
-    normalizedName.value.includes("plus") &&
-    !normalizedName.value.includes("pro"),
-);
-const isPro = computed(() => normalizedName.value.includes("pro"));
-const isPremium = computed(() => normalizedName.value.includes("premium"));
-
-const displayTag = computed(() => {
-  if (isPremium.value) return "Elite";
-  if (isPro.value) return "Más popular";
-  if (isPlus.value) return "Crecimiento";
-  if (isFree.value) return "Entrada";
-  return "Plan";
+const formattedDescription = computed(() => {
+  return props.plan.description?.replace(/\n/g, "<br>") || "";
 });
 
 const cardClass = computed(() => {
-  if (isPremium.value) return "premium-card";
-  if (isPro.value) return "pro-card";
-  if (isPlus.value) return "plus-card";
-  if (isFree.value) return "free-card";
-  return "default-card";
+  return props.plan.style ? `${props.plan.style}-card` : "default-card";
 });
-
-const showCategory = (category, id) => {
-  const firstWithCategory = props.resolvedItems.find(
-    (item) => item.category === category,
-  );
-  return firstWithCategory?.id === id;
-};
 </script>
 
 <style scoped>
 .package-card {
   position: relative;
-  height: 100%;
   min-height: 520px;
+  height: 100%;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  border-radius: 28px;
+  gap: 18px;
   padding: 24px 22px 22px;
-
-  /* 💎 glass premium */
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.86),
-    rgba(248, 250, 252, 0.78)
-  );
-
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(15, 23, 42, 0.92),
+      rgba(15, 23, 42, 0.82)
+    );
   backdrop-filter: blur(18px);
-
-  border: 1px solid rgba(255, 255, 255, 0.22);
-
   box-shadow:
-    0 18px 40px rgba(2, 6, 23, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.55);
-
+    0 18px 45px rgba(2, 6, 23, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
   transition:
-    transform 0.22s ease,
-    box-shadow 0.22s ease,
-    border-color 0.22s ease;
+    transform 0.24s ease,
+    box-shadow 0.24s ease,
+    border-color 0.24s ease;
 }
 
 .package-card:hover {
-  transform: translateY(-8px) scale(1.01);
-
+  transform: translateY(-8px);
   box-shadow:
-    0 28px 60px rgba(2, 6, 23, 0.35),
-    0 10px 25px rgba(124, 58, 237, 0.15);
+    0 28px 60px rgba(2, 6, 23, 0.4),
+    0 10px 24px rgba(59, 130, 246, 0.16);
 }
 
 .card-bg-orb {
   position: absolute;
   border-radius: 999px;
-  filter: blur(18px);
-  opacity: 0.9;
+  filter: blur(22px);
+  opacity: 0.8;
   pointer-events: none;
 }
 
 .orb-1 {
-  width: 140px;
-  height: 140px;
-  top: -30px;
-  right: -20px;
+  width: 150px;
+  height: 150px;
+  top: -42px;
+  right: -26px;
 }
 
 .orb-2 {
-  width: 90px;
-  height: 90px;
-  bottom: 70px;
-  left: -18px;
-  opacity: 0.55;
+  width: 100px;
+  height: 100px;
+  bottom: 82px;
+  left: -22px;
+  opacity: 0.45;
 }
 
 .card-top-line {
@@ -168,10 +138,10 @@ const showCategory = (category, id) => {
 
 .package-top-row {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 14px;
+  min-height: 34px;
+  margin-bottom: 4px;
 }
 
 .package-tag {
@@ -184,76 +154,89 @@ const showCategory = (category, id) => {
   font-size: 0.8rem;
   font-weight: 800;
   letter-spacing: 0.01em;
-  border: 1px solid transparent;
-}
-
-.premium-crown {
-  font-size: 1.5rem;
-  line-height: 1;
-  filter: drop-shadow(0 4px 10px rgba(245, 158, 11, 0.35));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
+  color: #e2e8f0;
 }
 
 .package-card-header h3 {
   margin: 0 0 10px;
-  font-size: 1.55rem;
-  line-height: 1.1;
-  color: #020617;
+  font-size: 1.2rem;
+  line-height: 1.08;
+  text-align: justify;
   text-align: center;
+  color: #f8fafc;
+  letter-spacing: -0.02em;
 }
 
 .package-card-header p {
   margin: 0;
-  color: #475569;
-  line-height: 1.55;
-  text-align: center;
-  font-size: 0.95rem;
+  text-align: justify;
+  color: #cbd5e1;
+  line-height: 1.6;
+  font-size: 0.96rem;
 }
 
 .package-list {
   list-style: none;
   padding: 0;
-  margin: 24px 0;
+  margin: 8px 0 0;
   display: flex;
   flex-direction: column;
-  gap: 13px;
+  gap: 12px;
   flex: 1;
 }
 
-.package-list li {
+.package-item {
   display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  color: #334155;
-  line-height: 1.45;
-  font-size: 0.95rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(30, 41, 59, 0.72);
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
-.package-list li strong {
-  color: #0f172a;
-}
-
-.bullet {
+.item-quantity {
   flex-shrink: 0;
-  margin-top: 1px;
-  font-size: 0.9rem;
+  min-width: 84px;
+  text-align: center;
+  padding: 8px 10px;
+  border-radius: 10px;
   font-weight: 900;
+  font-size: 0.95rem;
+  background: rgba(34, 197, 94, 0.14);
+  color: #86efac;
+  border: 1px solid rgba(34, 197, 94, 0.24);
+}
+
+.item-name {
+  flex: 1;
+  text-align: right;
+  font-weight: 700;
+  color: #e2e8f0;
+  line-height: 1.35;
 }
 
 .package-footer {
   display: flex;
   justify-content: center;
   margin-top: auto;
+  padding-top: 4px;
 }
 
 .package-btn {
   width: 100%;
-  min-height: 50px;
+  min-height: 52px;
   border: none;
   border-radius: 16px;
   padding: 14px 18px;
-  font-size: 0.96rem;
+  font-size: 0.98rem;
   font-weight: 800;
   cursor: pointer;
+  color: #ffffff;
   transition:
     transform 0.15s ease,
     box-shadow 0.15s ease,
@@ -264,103 +247,63 @@ const showCategory = (category, id) => {
   transform: translateY(-1px);
 }
 
-.free-card {
-  border-color: rgba(16, 185, 129, 0.22);
-  box-shadow:
-    0 20px 40px rgba(16, 185, 129, 0.08),
-    0 10px 24px rgba(15, 23, 42, 0.08);
-}
-
-.free-card:hover {
-  box-shadow:
-    0 28px 50px rgba(16, 185, 129, 0.12),
-    0 14px 28px rgba(15, 23, 42, 0.1);
-}
-
-.free-card .orb-1 {
-  background: rgba(16, 185, 129, 0.18);
-}
-
-.free-card .orb-2 {
-  background: rgba(52, 211, 153, 0.16);
-}
-
-.free-card .card-top-line {
-  background: linear-gradient(90deg, #10b981, #6ee7b7);
-}
-
-.free-card .package-tag {
-  background: rgba(16, 185, 129, 0.1);
-  color: #047857;
-  border-color: rgba(16, 185, 129, 0.18);
-}
-
-.free-card .bullet {
-  color: #10b981;
-}
-
-.free-card .package-btn {
-  background: linear-gradient(135deg, #059669, #10b981);
-  color: #ffffff;
-  box-shadow: 0 12px 24px rgba(16, 185, 129, 0.22);
-}
-
-.plus-card {
-  border-color: rgba(59, 130, 246, 0.22);
-  box-shadow:
-    0 20px 40px rgba(59, 130, 246, 0.08),
-    0 10px 24px rgba(15, 23, 42, 0.08);
-}
-
-.plus-card:hover {
-  box-shadow:
-    0 28px 50px rgba(59, 130, 246, 0.14),
-    0 14px 28px rgba(15, 23, 42, 0.1);
-}
-
-.plus-card .orb-1 {
-  background: rgba(59, 130, 246, 0.2);
-}
-
-.plus-card .orb-2 {
-  background: rgba(96, 165, 250, 0.18);
-}
-
-.plus-card .card-top-line {
-  background: linear-gradient(90deg, #2563eb, #60a5fa);
-}
-
-.plus-card .package-tag {
-  background: rgba(59, 130, 246, 0.1);
-  color: #1d4ed8;
+/* default */
+.default-card {
   border-color: rgba(59, 130, 246, 0.18);
 }
 
-.plus-card .bullet {
-  color: #2563eb;
+.default-card .orb-1 {
+  background: rgba(59, 130, 246, 0.22);
+}
+
+.default-card .orb-2 {
+  background: rgba(147, 197, 253, 0.18);
+}
+
+.default-card .card-top-line {
+  background: linear-gradient(90deg, #2563eb, #60a5fa);
+}
+
+.default-card .package-btn {
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  box-shadow: 0 12px 24px rgba(59, 130, 246, 0.24);
+}
+
+/* plus */
+.plus-card {
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+.plus-card .orb-1 {
+  background: rgba(16, 185, 129, 0.24);
+}
+
+.plus-card .orb-2 {
+  background: rgba(52, 211, 153, 0.18);
+}
+
+.plus-card .card-top-line {
+  background: linear-gradient(90deg, #10b981, #34d399);
+}
+
+.plus-card .package-tag {
+  background: rgba(16, 185, 129, 0.12);
+  color: #86efac;
+  border-color: rgba(16, 185, 129, 0.2);
 }
 
 .plus-card .package-btn {
-  background: linear-gradient(135deg, #1d4ed8, #3b82f6);
-  color: #ffffff;
-  box-shadow: 0 12px 24px rgba(59, 130, 246, 0.22);
+  background: linear-gradient(135deg, #059669, #10b981);
+  box-shadow: 0 12px 24px rgba(16, 185, 129, 0.24);
 }
 
+/* pro */
 .pro-card {
-  border-color: rgba(236, 72, 153, 0.25);
-  box-shadow:
-    0 30px 60px rgba(236, 72, 153, 0.18),
-    0 12px 26px rgba(15, 23, 42, 0.1);
-}
-
-.pro-card:hover {
-  box-shadow:
-    0 30px 70px rgba(236, 72, 153, 0.35),
-    0 12px 30px rgba(2, 6, 23, 0.25);
+  border-color: rgba(236, 72, 153, 0.22);
 }
 
 .pro-card .orb-1 {
-  background: rgba(236, 72, 153, 0.2);
+  background: rgba(236, 72, 153, 0.24);
 }
 
 .pro-card .orb-2 {
@@ -372,40 +315,27 @@ const showCategory = (category, id) => {
 }
 
 .pro-card .package-tag {
-  background: rgba(236, 72, 153, 0.11);
-  color: #be185d;
-  border-color: rgba(236, 72, 153, 0.18);
-}
-
-.pro-card .bullet {
-  color: #db2777;
+  background: rgba(236, 72, 153, 0.12);
+  color: #f9a8d4;
+  border-color: rgba(236, 72, 153, 0.22);
 }
 
 .pro-card .package-btn {
   background: linear-gradient(135deg, #db2777, #f472b6);
-  color: #ffffff;
-  box-shadow: 0 14px 28px rgba(236, 72, 153, 0.24);
+  box-shadow: 0 12px 24px rgba(236, 72, 153, 0.24);
 }
 
+/* premium */
 .premium-card {
-  border-color: rgba(168, 85, 247, 0.28);
-  box-shadow:
-    0 30px 60px rgba(168, 85, 247, 0.16),
-    0 12px 26px rgba(15, 23, 42, 0.1);
-}
-
-.premium-card:hover {
-  box-shadow:
-    0 36px 70px rgba(168, 85, 247, 0.2),
-    0 16px 30px rgba(15, 23, 42, 0.12);
+  border-color: rgba(168, 85, 247, 0.24);
 }
 
 .premium-card .orb-1 {
-  background: rgba(168, 85, 247, 0.22);
+  background: rgba(168, 85, 247, 0.24);
 }
 
 .premium-card .orb-2 {
-  background: rgba(245, 158, 11, 0.2);
+  background: rgba(245, 158, 11, 0.18);
 }
 
 .premium-card .card-top-line {
@@ -415,64 +345,39 @@ const showCategory = (category, id) => {
 .premium-card .package-tag {
   background: linear-gradient(
     135deg,
-    rgba(124, 58, 237, 0.1),
-    rgba(245, 158, 11, 0.1)
+    rgba(124, 58, 237, 0.14),
+    rgba(245, 158, 11, 0.14)
   );
-  color: #7c3aed;
-  border-color: rgba(124, 58, 237, 0.16);
-}
-
-.premium-card .bullet {
-  color: #a855f7;
+  color: #e9d5ff;
+  border-color: rgba(168, 85, 247, 0.24);
 }
 
 .premium-card .package-btn {
   background: linear-gradient(135deg, #7c3aed, #f59e0b);
-  color: #ffffff;
-  box-shadow: 0 16px 30px rgba(124, 58, 237, 0.24);
-}
-
-.default-card .orb-1 {
-  background: rgba(148, 163, 184, 0.16);
-}
-
-.default-card .orb-2 {
-  background: rgba(203, 213, 225, 0.14);
-}
-
-.default-card .card-top-line {
-  background: linear-gradient(90deg, #64748b, #cbd5e1);
-}
-
-.default-card .package-tag {
-  background: rgba(148, 163, 184, 0.1);
-  color: #475569;
-  border-color: rgba(148, 163, 184, 0.16);
-}
-
-.default-card .bullet {
-  color: #64748b;
-}
-
-.default-card .package-btn {
-  background: linear-gradient(135deg, #334155, #64748b);
-  color: #ffffff;
-}
-
-@media (max-width: 1400px) {
-  .package-card {
-    min-height: 520px;
-  }
+  box-shadow: 0 12px 24px rgba(124, 58, 237, 0.26);
 }
 
 @media (max-width: 900px) {
   .package-card {
     min-height: auto;
-    transform: none;
+    padding: 20px 18px 18px;
   }
 
-  .pro-card:hover {
-    transform: translateY(-4px);
+  .package-card-header h3 {
+    font-size: 1.35rem;
+  }
+
+  .package-item {
+    padding: 10px 12px;
+  }
+
+  .item-quantity {
+    min-width: 74px;
+    font-size: 0.9rem;
+  }
+
+  .item-name {
+    font-size: 0.94rem;
   }
 }
 </style>

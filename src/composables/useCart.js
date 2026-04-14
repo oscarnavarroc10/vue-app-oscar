@@ -19,26 +19,42 @@ export function useCart() {
       cartId: crypto.randomUUID(),
       quantity: Number(service.quantity ?? 100),
       profile: normalizedProfile,
+      cartType: service.cartType || "service",
     };
   };
 
   const addToCart = (service) => {
+    const isPlan = service.cartType === "plan";
+
+    if (isPlan) {
+      cart.value.push({
+        ...service,
+        cartId: crypto.randomUUID(),
+        quantity: Number(service.quantity ?? 1),
+      });
+      return;
+    }
+
     const normalizedProfile = normalizeProfile(service.profile);
+    const incomingQuantity = Number(service.quantity ?? 100);
 
     const existing = cart.value.find(
       (item) =>
+        item.cartType !== "plan" &&
         item.id === service.id &&
         normalizeProfile(item.profile) === normalizedProfile,
     );
 
     if (existing) {
-      existing.quantity += 100;
+      existing.quantity += incomingQuantity;
       return;
     }
 
     cart.value.push({
       ...cloneService(service),
+      quantity: incomingQuantity,
       profile: normalizedProfile,
+      cartType: "service",
     });
   };
 
@@ -53,7 +69,17 @@ export function useCart() {
 
     const parsedQuantity = Number(quantity);
 
-    if (Number.isNaN(parsedQuantity) || parsedQuantity < 100) {
+    if (Number.isNaN(parsedQuantity)) {
+      item.quantity = item.cartType === "plan" ? 1 : 100;
+      return;
+    }
+
+    if (item.cartType === "plan") {
+      item.quantity = Math.max(1, parsedQuantity);
+      return;
+    }
+
+    if (parsedQuantity < 100) {
       item.quantity = 100;
       return;
     }
@@ -66,6 +92,11 @@ export function useCart() {
 
     if (!item) return;
 
+    if (item.cartType === "plan") {
+      item.quantity += 1;
+      return;
+    }
+
     item.quantity += 100;
   };
 
@@ -73,6 +104,11 @@ export function useCart() {
     const item = cart.value.find((item) => item.cartId === cartId);
 
     if (!item) return;
+
+    if (item.cartType === "plan") {
+      item.quantity = Math.max(1, item.quantity - 1);
+      return;
+    }
 
     item.quantity = Math.max(100, item.quantity - 100);
   };
@@ -82,6 +118,10 @@ export function useCart() {
   };
 
   const getItemTotal = (item) => {
+    if (item.cartType === "plan") {
+      return Number(item.price || 0) * Number(item.quantity || 1);
+    }
+
     return (getItemUnitPrice(item) / 100) * Number(item.quantity || 0);
   };
 
@@ -90,10 +130,19 @@ export function useCart() {
   });
 
   const totalUnits = computed(() => {
-    return cart.value.reduce(
-      (sum, item) => sum + (Number(item.quantity) || 0),
-      0,
-    );
+    return cart.value.reduce((sum, item) => {
+      if (item.cartType === "plan") {
+        return (
+          sum +
+          (item.planItems || []).reduce(
+            (innerSum, planItem) => innerSum + (Number(planItem.quantity) || 0),
+            0,
+          ) * Number(item.quantity || 1)
+        );
+      }
+
+      return sum + (Number(item.quantity) || 0);
+    }, 0);
   });
 
   const discountPercentage = computed(() => {
@@ -107,10 +156,15 @@ export function useCart() {
   const discountAmount = computed(() => {
     return subtotal.value * (discountPercentage.value / 100);
   });
+  
 
   const total = computed(() => {
     return subtotal.value - discountAmount.value;
   });
+  
+  const clearCart = () => {
+  cart.value = [];
+};
 
   return {
     cart,
@@ -128,5 +182,6 @@ export function useCart() {
     getItemTotal,
     cloneService,
     buildCartItemKey,
+    clearCart,
   };
 }

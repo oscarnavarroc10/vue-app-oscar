@@ -1,19 +1,30 @@
 <template>
   <aside class="cart-panel">
     <div class="section-header">
-      <div class="section-header-left">
-        <h2>Tu carrito</h2>
-        <p class="section-subtitle">
-          {{ uniqueServicesCount }} servicio<span
-            v-if="uniqueServicesCount !== 1"
-            >s</span
-          >
-          · {{ totalUnits }} unidades
-        </p>
-      </div>
+  <div class="section-header-left">
+    <h2>Tu carrito</h2>
+    <p class="section-subtitle">
+      {{ uniqueServicesCount }} seleccionado<span v-if="uniqueServicesCount !== 1">s</span>
+      · {{ totalUnits }} unidades
+    </p>
+  </div>
 
-      <span>{{ cart.length }} seleccionados</span>
-    </div>
+  <div class="cart-header-actions">
+    <span>{{ cart.length }} seleccionados</span>
+
+<button
+  v-if="cart.length > 0"
+  class="clear-cart-btn"
+  type="button"
+  @click="$emit('clear-cart')"
+  aria-label="Vaciar carrito"
+  title="Vaciar carrito"
+>
+  <span class="trash-icon">🗑️</span>
+  <span>Vaciar carrito</span>
+</button>
+  </div>
+</div>
 
     <draggable
       v-model="localCart"
@@ -23,84 +34,147 @@
     >
       <template #item="{ element }">
         <article class="cart-item">
-          <div class="cart-item-top">
-            <div class="cart-item-title-wrap">
-              <div class="cart-item-heading">
-                <div class="cart-item-heading-text">
-                  <span
-                    class="cart-item-category-pill"
-                    :class="getCategoryPillClass(element.category)"
-                  >
-                    {{ element.category }}
+          <!-- PLAN -->
+          <template v-if="element.cartType === 'plan'">
+            <div class="cart-item-top cart-item-top--plan">
+              <div class="cart-plan-header">
+                <div class="cart-plan-header-left">
+                  <span class="cart-item-category-pill pill-plan">
+                    Paquete
                   </span>
 
                   <h3>{{ element.name }}</h3>
+
+                  <div class="cart-item-meta">
+                    <span>{{ element.planItems?.length || 0 }} servicios incluidos</span>
+                  </div>
                 </div>
 
-                <span v-if="element.quantity > 0" class="quantity-badge">
-                  {{ element.quantity }}
-                </span>
+                <div class="cart-item-right cart-item-right--plan">
+                  <span class="quantity-badge">
+                    Plan
+                  </span>
+
+                  <strong>${{ formatPrice(getItemTotal(element)) }}</strong>
+
+                  <button
+                    class="remove-btn"
+                    type="button"
+                    @click="$emit('remove', element.cartId)"
+                  >
+                    Quitar
+                  </button>
+                </div>
               </div>
 
-              <div v-if="element.profile" class="cart-item-profile">
-                <span class="cart-item-profile-label">Url del perfil:</span>
-                <a
-                  :href="element.profile"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="cart-item-profile-link"
+              <ul class="cart-plan-list">
+                <li
+                  v-for="planItem in element.planItems || []"
+                  :key="`${element.cartId}-${planItem.id}`"
+                  class="cart-plan-item"
                 >
-                  {{ element.profile }}
-                </a>
+                  <div class="cart-plan-item-left">
+                    <span
+                      class="cart-item-category-pill cart-plan-pill"
+                      :class="getCategoryPillClass(planItem.category)"
+                    >
+                      {{ planItem.category }}
+                    </span>
+
+                    <span class="cart-plan-item-name">
+                      {{ planItem.name }}
+                    </span>
+                  </div>
+
+                  <span class="cart-plan-item-qty">
+                    {{ planItem.quantity }}
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </template>
+
+          <!-- SERVICIO NORMAL -->
+          <template v-else>
+            <div class="cart-item-top">
+              <div class="cart-item-title-wrap">
+                <div class="cart-item-heading">
+                  <div class="cart-item-heading-text">
+                    <span
+                      class="cart-item-category-pill"
+                      :class="getCategoryPillClass(element.category)"
+                    >
+                      {{ element.category }}
+                    </span>
+
+                    <h3>{{ element.name }}</h3>
+                  </div>
+
+                  <span v-if="element.quantity > 0" class="quantity-badge">
+                    {{ element.quantity }}
+                  </span>
+                </div>
+
+                <div v-if="element.profile" class="cart-item-profile">
+                  <span class="cart-item-profile-label">Url del perfil:</span>
+
+                  <a
+                    :href="element.profile"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="cart-item-profile-link"
+                  >
+                    {{ element.profile }}
+                  </a>
+                </div>
+
+                <div class="cart-item-meta">
+                  <span>${{ formatPrice(element.price) }} / 100</span>
+                  <span>·</span>
+                  <span>{{ element.quantity }} unidades</span>
+                </div>
               </div>
 
-              <div class="cart-item-meta">
-                <span>${{ formatPrice(element.price) }} / 100</span>
-                <span>·</span>
-                <span>{{ element.quantity }} unidades</span>
+              <div class="cart-item-right">
+                <strong>${{ formatPrice(getItemTotal(element)) }}</strong>
+
+                <button
+                  class="remove-btn"
+                  type="button"
+                  @click="$emit('remove', element.cartId)"
+                >
+                  Quitar
+                </button>
               </div>
             </div>
 
-            <div class="cart-item-right">
-              <strong>${{ formatPrice(getItemTotal(element)) }}</strong>
+            <div class="cart-item-controls">
               <button
-                class="remove-btn"
+                class="qty-btn"
                 type="button"
-                @click="$emit('remove', element.cartId)"
+                @click="$emit('decrease', element.cartId)"
               >
-                Quitar
+                −
+              </button>
+
+              <input
+                class="qty-input"
+                :value="element.quantity"
+                type="number"
+                min="100"
+                step="100"
+                @change="$emit('update-quantity', element.cartId, $event.target.value)"
+              />
+
+              <button
+                class="qty-btn"
+                type="button"
+                @click="$emit('increase', element.cartId)"
+              >
+                +
               </button>
             </div>
-          </div>
-
-          <div class="cart-item-controls">
-            <button
-              class="qty-btn"
-              type="button"
-              @click="$emit('decrease', element.cartId)"
-            >
-              −
-            </button>
-
-            <input
-              class="qty-input"
-              :value="element.quantity"
-              type="number"
-              min="100"
-              step="100"
-              @change="
-                $emit('update-quantity', element.cartId, $event.target.value)
-              "
-            />
-
-            <button
-              class="qty-btn"
-              type="button"
-              @click="$emit('increase', element.cartId)"
-            >
-              +
-            </button>
-          </div>
+          </template>
         </article>
       </template>
     </draggable>
@@ -109,11 +183,6 @@
       <div class="summary-row">
         <span>Servicios</span>
         <strong>{{ uniqueServicesCount }}</strong>
-      </div>
-
-      <div class="summary-row">
-        <span>Unidades</span>
-        <strong>{{ totalUnits }}</strong>
       </div>
 
       <div class="summary-row">
@@ -148,35 +217,18 @@ import { computed } from "vue";
 import draggable from "vuedraggable";
 
 const props = defineProps({
-  cart: {
-    type: Array,
-    required: true,
-  },
-  subtotal: {
-    type: Number,
-    required: true,
-  },
-  discountPercentage: {
-    type: Number,
-    required: true,
-  },
-  discountAmount: {
-    type: Number,
-    required: true,
-  },
-  total: {
-    type: Number,
-    required: true,
-  },
-  formatPrice: {
-    type: Function,
-    required: true,
-  },
+  cart: { type: Array, required: true },
+  subtotal: { type: Number, required: true },
+  discountPercentage: { type: Number, required: true },
+  discountAmount: { type: Number, required: true },
+  total: { type: Number, required: true },
+  formatPrice: { type: Function, required: true },
 });
 
 const emit = defineEmits([
   "update:cart",
   "remove",
+  "clear-cart",
   "increase",
   "decrease",
   "update-quantity",
@@ -190,13 +242,27 @@ const localCart = computed({
 const uniqueServicesCount = computed(() => props.cart.length);
 
 const totalUnits = computed(() => {
-  return props.cart.reduce(
-    (sum, item) => sum + (Number(item.quantity) || 0),
-    0,
-  );
+  return props.cart.reduce((sum, item) => {
+    if (item.cartType === "plan") {
+      return (
+        sum +
+        (item.planItems || []).reduce(
+          (innerSum, planItem) =>
+            innerSum + (Number(planItem.quantity) || 0),
+          0,
+        )
+      );
+    }
+
+    return sum + (Number(item.quantity) || 0);
+  }, 0);
 });
 
 const getItemTotal = (item) => {
+  if (item.cartType === "plan") {
+    return Number(item.price || 0) * Number(item.quantity || 1);
+  }
+
   return (Number(item.price || 0) / 100) * (Number(item.quantity) || 0);
 };
 
@@ -211,6 +277,8 @@ const getCategoryPillClass = (category) => {
     Discord: "pill-discord",
     Twitch: "pill-twitch",
     Spotify: "pill-spotify",
+    Telegram: "pill-telegram",
+    WhatsApp: "pill-whatsapp",
   };
 
   return classMap[category] || "pill-default";
@@ -221,20 +289,32 @@ const sendWhatsApp = () => {
 
   const servicesText = props.cart
     .map((item, index) => {
+      if (item.cartType === "plan") {
+        const included = (item.planItems || [])
+          .map(
+            (planItem) =>
+              `   - ${planItem.category}: ${planItem.name} (${planItem.quantity})`,
+          )
+          .join("\n");
+
+        return `${index + 1}. Paquete: ${item.name}
+Incluye:
+${included}`;
+      }
+
       return `${index + 1}. Servicio: ${item.quantity} ${item.name} para ${item.category}
-Perfil: ${item.profile}`;
+Perfil: ${item.profile || "No especificado"}`;
     })
     .join("\n\n");
 
   const finalMessage = `Hola Porkba👋
 
-Quiero solicitar lo(s) siguiente(s) servicio(s):
+Quiero solicitar lo(s) siguiente(s):
 
 ${servicesText}
 
 Resumen:
-- Servicios: ${uniqueServicesCount.value}
-- Unidades: ${totalUnits.value}
+- Seleccionados: ${uniqueServicesCount.value}
 - Total: $${props.formatPrice(props.total)} MXN`;
 
   const url = `https://wa.me/${phone}?text=${encodeURIComponent(finalMessage)}`;
@@ -271,15 +351,11 @@ Resumen:
   font-size: 1.35rem;
 }
 
-.section-header span {
+.section-header span,
+.section-subtitle {
   color: #6b7280;
   font-size: 0.95rem;
-}
-
-.section-subtitle {
   margin: 0;
-  color: #6b7280;
-  font-size: 0.92rem;
 }
 
 .cart-list {
@@ -303,9 +379,31 @@ Resumen:
   gap: 14px;
 }
 
+.cart-item-top--plan {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+}
+
+.cart-plan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  width: 100%;
+}
+
+.cart-plan-header-left,
 .cart-item-title-wrap {
   flex: 1;
   min-width: 0;
+}
+
+.cart-plan-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .cart-item-heading {
@@ -323,7 +421,7 @@ Resumen:
   min-width: 0;
 }
 
-.cart-item-title-wrap h3 {
+.cart-item h3 {
   margin: 0;
   font-size: 1rem;
   line-height: 1.25;
@@ -343,6 +441,16 @@ Resumen:
   border: 1px solid transparent;
 }
 
+.pill-plan {
+  background: linear-gradient(
+    135deg,
+    rgba(124, 58, 237, 0.1),
+    rgba(37, 99, 235, 0.12)
+  );
+  color: #5b21b6;
+  border-color: rgba(124, 58, 237, 0.15);
+}
+
 .pill-instagram {
   background: linear-gradient(
     135deg,
@@ -351,7 +459,6 @@ Resumen:
     rgba(129, 52, 175, 0.1)
   );
   color: #b4236b;
-  border-color: rgba(221, 42, 123, 0.12);
 }
 
 .pill-facebook {
@@ -361,7 +468,6 @@ Resumen:
     rgba(96, 165, 250, 0.12)
   );
   color: #1454b8;
-  border-color: rgba(24, 119, 242, 0.14);
 }
 
 .pill-tiktok {
@@ -372,7 +478,6 @@ Resumen:
     rgba(254, 44, 85, 0.08)
   );
   color: #111827;
-  border-color: rgba(17, 24, 39, 0.1);
 }
 
 .pill-youtube {
@@ -382,7 +487,6 @@ Resumen:
     rgba(239, 68, 68, 0.1)
   );
   color: #b91c1c;
-  border-color: rgba(220, 38, 38, 0.12);
 }
 
 .pill-snapchat {
@@ -392,7 +496,6 @@ Resumen:
     rgba(245, 158, 11, 0.1)
   );
   color: #854d0e;
-  border-color: rgba(245, 158, 11, 0.14);
 }
 
 .pill-x {
@@ -402,7 +505,6 @@ Resumen:
     rgba(71, 85, 105, 0.1)
   );
   color: #0f172a;
-  border-color: rgba(51, 65, 85, 0.12);
 }
 
 .pill-discord {
@@ -412,7 +514,6 @@ Resumen:
     rgba(129, 140, 248, 0.12)
   );
   color: #4338ca;
-  border-color: rgba(88, 101, 242, 0.14);
 }
 
 .pill-twitch {
@@ -422,7 +523,6 @@ Resumen:
     rgba(168, 85, 247, 0.12)
   );
   color: #6d28d9;
-  border-color: rgba(145, 70, 255, 0.14);
 }
 
 .pill-spotify {
@@ -432,17 +532,29 @@ Resumen:
     rgba(34, 197, 94, 0.12)
   );
   color: #166534;
-  border-color: rgba(29, 185, 84, 0.14);
+}
+
+.pill-telegram {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 136, 204, 0.1),
+    rgba(56, 189, 248, 0.12)
+  );
+  color: #0b6fa4;
+}
+
+.pill-whatsapp {
+  background: linear-gradient(
+    135deg,
+    rgba(37, 211, 102, 0.1),
+    rgba(74, 222, 128, 0.12)
+  );
+  color: #15803d;
 }
 
 .pill-default {
-  background: linear-gradient(
-    135deg,
-    rgba(148, 163, 184, 0.1),
-    rgba(203, 213, 225, 0.12)
-  );
+  background: rgba(148, 163, 184, 0.1);
   color: #475569;
-  border-color: rgba(148, 163, 184, 0.14);
 }
 
 .quantity-badge {
@@ -457,7 +569,37 @@ Resumen:
   color: #1d4ed8;
   font-size: 0.85rem;
   font-weight: 800;
+}
+
+.cart-item-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: #6b7280;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.cart-item-right,
+.cart-item-right--plan {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   flex-shrink: 0;
+}
+
+.cart-item-right {
+  align-items: flex-end;
+}
+
+.cart-item-right--plan {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.cart-item-right strong {
+  color: #111827;
+  font-size: 1rem;
 }
 
 .cart-item-profile {
@@ -485,28 +627,6 @@ Resumen:
   text-decoration: underline;
 }
 
-.cart-item-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  color: #6b7280;
-  font-size: 0.82rem;
-  font-weight: 600;
-}
-
-.cart-item-right {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
-  flex-shrink: 0;
-}
-
-.cart-item-right strong {
-  color: #111827;
-  font-size: 1rem;
-}
-
 .cart-item-controls {
   display: flex;
   align-items: center;
@@ -520,14 +640,46 @@ Resumen:
   border: 1px solid #cbd5e1;
   border-radius: 10px;
   background: #f8fafc;
-  color: #111827;
   font-size: 1.2rem;
   font-weight: 700;
   cursor: pointer;
 }
 
-.qty-btn:hover {
-  background: #eef2ff;
+.cart-header-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.clear-cart-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 42px;
+  border: 1px solid rgba(220, 38, 38, 0.22);
+  background: rgba(220, 38, 38, 0.08);
+  color: #dc2626;
+  border-radius: 12px;
+  padding: 0 14px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition:    
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.clear-cart-btn:hover {
+  background: rgba(220, 38, 38, 0.14);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(220, 38, 38, 0.12);
+}
+
+.trash-icon {
+  font-size: 1rem;
+  line-height: 1;
 }
 
 .qty-input {
@@ -538,8 +690,6 @@ Resumen:
   padding: 0 12px;
   font-size: 0.95rem;
   font-weight: 700;
-  color: #111827;
-  background: #fff;
 }
 
 .remove-btn {
@@ -549,6 +699,57 @@ Resumen:
   font-weight: 700;
   cursor: pointer;
   padding: 0;
+}
+
+.cart-plan-list {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cart-plan-item {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+}
+
+.cart-plan-item-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.cart-plan-pill {
+  min-height: 28px;
+  padding: 0 12px;
+  font-size: 0.75rem;
+}
+
+.cart-plan-item-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.cart-plan-item-qty {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #2563eb;
+  flex-shrink: 0;
 }
 
 .summary {
@@ -564,7 +765,6 @@ Resumen:
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 12px;
 }
 
 .total-row {
@@ -588,13 +788,21 @@ Resumen:
 }
 
 @media (max-width: 900px) {
+  .section-header,
+  .cart-plan-header,
   .cart-item-top {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .cart-item-right {
+  .cart-header-actions {
+  align-items: flex-start;
+}
+
+  .cart-item-right,
+  .cart-item-right--plan {
     align-items: flex-start;
+    text-align: left;
   }
 
   .cart-item-controls {
@@ -605,8 +813,13 @@ Resumen:
     flex: 1;
   }
 
-  .section-header {
+  .cart-plan-item {
     flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cart-plan-item-left {
+    width: 100%;
   }
 }
 </style>

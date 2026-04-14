@@ -1,30 +1,17 @@
 [
   {
     "id": 1,
-    "name": "Personalizado",
-    "description": "Arma tu paquete a tu manera, agrega solo lo que necesites",
-    "includedOptionIds": [101, 102],
-    "buttonText": "Elegir paquete"
-  },
-  {
-    "id": 2,
-    "name": "Paquete Plus",
-    "description": "Ideal para empezar con presencia constante y crecimiento inicial en redes.",
-    "includedOptionIds": [101, 301, 201, 202],
-    "buttonText": "Elegir paquete"
-  },
-  {
-    "id": 3,
-    "name": "Paquete Pro+",
-    "description": "Más alcance, más contenido y una estrategia más completa para tu marca.",
-    "includedOptionIds": [101, 102, 301, 201, 202, 401],
-    "buttonText": "Elegir paquete"
-  },
-  {
-    "id": 4,
-    "name": "Premium",
-    "description": "La solución más completa, con cobertura amplia de categorías y contenido.",
-    "includedOptionIds": [101, 102, 103, 201, 202, 301, 401, 402],
-    "buttonText": "Elegir paquete"
+    "name": "🟢 Arranque Viral 🚀",
+    "description": "💥 Entrega rápida ⚡\n💥 Seguro 🔒\n💥Sin contraseña 🔑\n💥 Ideal para comenzar 📈",
+    "includedOptions": [
+      { "optionId": 101, "quantity": 1500 },
+      { "optionId": 102, "quantity": 2500 },
+      { "optionId": 103, "quantity": 20000 }
+    ],
+    "buttonText": "Comprar ahora por WhatsApp 📲",
+    "tag": "🔥 Recomendado",
+    "style": "default",
+    "price": 550,
+    "oldPrice": 935
   }
 ]
