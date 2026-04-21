@@ -254,7 +254,9 @@
       </div>
     </section>
 
-    <FloatingSocials />
+    <div class="floating-socials-wrap">
+      <FloatingSocials />
+    </div>
   </main>
 </template>
 
@@ -262,13 +264,11 @@
 import { computed, ref } from "vue";
 import servicesData from "./data/services.json";
 import packagePlansData from "./data/package-plans.json";
-import { useCart } from "./composables/useCart";
 import serviceOptionsData from "./data/service-options.json";
-import PlansBanner from "./components/PlansBanner.vue";
+import { useCart } from "./composables/useCart";
 import FloatingSocials from "./components/FloatingSocials.vue";
 import SocialTabsBuilder from "./components/SocialTabsBuilder.vue";
 import CartPanel from "./components/CartPanel.vue";
-
 import logoImpulso from "./assets/impulso_redes_logo.png";
 
 /* =========================
@@ -422,10 +422,10 @@ const formatPrice = (value) => {
   z-index: 0;
   background: linear-gradient(
     to bottom,
-    rgba(3, 7, 18, 0.18) 0%,
-    rgba(3, 7, 18, 0.38) 22%,
-    rgba(3, 7, 18, 0.68) 46%,
-    rgba(15, 23, 42, 1) 100%
+    rgba(3, 7, 18, 0.14) 0%,
+    rgba(3, 7, 18, 0.3) 22%,
+    rgba(3, 7, 18, 0.6) 46%,
+    rgba(15, 23, 42, 0.96) 100%
   );
 }
 
@@ -433,7 +433,7 @@ const formatPrice = (value) => {
   position: relative;
   z-index: 1;
   min-height: 100vh;
-  padding: 24px 32px 60px;
+  padding: 18px 28px 56px;
   font-family:
     Inter,
     system-ui,
@@ -442,49 +442,98 @@ const formatPrice = (value) => {
 
 .top-nav {
   position: sticky;
-  top: 14px;
+  top: 12px;
   z-index: 30;
   max-width: 1400px;
-  margin: 0 auto 22px;
-  padding: 10px 22px;
+  margin: 0 auto 18px;
+  padding: 12px 22px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
+  gap: 18px;
+
   border-radius: 24px;
-  background: rgba(9, 15, 30, 0.45);
-  backdrop-filter: blur(18px);
   border: 1px solid rgba(255, 255, 255, 0.08);
+
+  background: linear-gradient(
+    180deg,
+    rgba(7, 12, 24, 0.82) 0%,
+    rgba(7, 12, 24, 0.72) 100%
+  );
+
+  box-shadow:
+    0 18px 36px rgba(2, 6, 23, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
 }
 
 .brand-logo {
-  height: 152px;
+  height: 84px;
   display: block;
+  object-fit: contain;
 }
 
 .nav-links {
   display: flex;
-  gap: 24px;
+  align-items: center;
+  justify-content: center;
+  gap: 26px;
+  flex: 1;
 }
 
 .nav-links a {
   color: #e2e8f0;
   text-decoration: none;
-  font-weight: 700;
+  font-weight: 800;
+  font-size: 1rem;
+  transition:
+    color 0.18s ease,
+    opacity 0.18s ease;
+}
+
+.nav-links a:hover {
+  color: #ffffff;
+  opacity: 1;
 }
 
 .nav-cta {
+  flex-shrink: 0;
   border: none;
-  padding: 12px 18px;
+  min-height: 46px;
+  padding: 0 20px;
   border-radius: 14px;
   cursor: pointer;
+
   color: white;
   font-weight: 800;
+  font-size: 0.95rem;
+
   background: linear-gradient(135deg, #7c3aed, #2563eb);
+  box-shadow: 0 12px 24px rgba(99, 102, 241, 0.22);
+
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    filter 0.18s ease;
+}
+
+.nav-cta:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.03);
+  box-shadow: 0 16px 28px rgba(99, 102, 241, 0.26);
 }
 
 .top-spacer {
-  height: 8px;
+  height: 4px;
 }
 
 .landing-section,
@@ -493,39 +542,11 @@ const formatPrice = (value) => {
   margin: 0 auto;
 }
 
-.intro-section {
-  text-align: center;
-  max-width: 900px;
-  margin: 20px auto 44px;
-}
-
-.intro-kicker {
-  display: inline-flex;
-  padding: 8px 14px;
-  border-radius: 999px;
-  margin-bottom: 14px;
-  background: rgba(124, 58, 237, 0.16);
-  color: #ddd6fe;
-  font-weight: 800;
-}
-
-.intro-section h1 {
-  margin: 0 0 14px;
-  font-size: clamp(2.2rem, 5vw, 4rem);
-  line-height: 1.02;
-  color: white;
-}
-
-.intro-section p {
-  color: #94a3b8;
-  font-size: 1.06rem;
-}
-
 #planes,
 #comentarios,
 #faq,
 #contacto {
-  scroll-margin-top: 110px;
+  scroll-margin-top: 96px;
 }
 
 .section-header {
@@ -533,12 +554,13 @@ const formatPrice = (value) => {
   justify-content: space-between;
   align-items: end;
   gap: 14px;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .section-header h2 {
   margin: 0;
   color: white;
+  line-height: 1.08;
 }
 
 .section-header span,
@@ -550,12 +572,12 @@ const formatPrice = (value) => {
 .customers-section,
 .faq-section,
 .contact-section {
-  margin-top: 40px;
+  margin-top: 34px;
 }
 
 .customers-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
 }
 
@@ -563,8 +585,13 @@ const formatPrice = (value) => {
 .faq-item {
   border-radius: 22px;
   padding: 22px;
-  background: rgba(15, 23, 42, 0.82);
+  background: rgba(15, 23, 42, 0.76);
   border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow:
+    0 14px 30px rgba(2, 6, 23, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .customer-card p,
@@ -581,6 +608,12 @@ const formatPrice = (value) => {
 .stars {
   color: #fbbf24;
   margin-bottom: 12px;
+}
+
+.customer-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .customer-meta span {
@@ -600,19 +633,28 @@ const formatPrice = (value) => {
 .contact-section {
   display: flex;
   justify-content: space-between;
-  gap: 20px;
+  gap: 22px;
   padding: 28px;
   border-radius: 28px;
-  background: rgba(15, 23, 42, 0.88);
+  background: rgba(15, 23, 42, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow:
+    0 18px 40px rgba(2, 6, 23, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .contact-copy h2 {
   color: white;
   margin: 0 0 8px;
+  line-height: 1.08;
 }
 
 .contact-copy p {
   color: #94a3b8;
+  line-height: 1.6;
+  max-width: 640px;
 }
 
 .contact-kicker {
@@ -624,6 +666,7 @@ const formatPrice = (value) => {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
+  align-items: center;
 }
 
 .contact-btn {
@@ -632,6 +675,15 @@ const formatPrice = (value) => {
   border-radius: 14px;
   color: white;
   font-weight: 800;
+  box-shadow: 0 10px 20px rgba(2, 6, 23, 0.16);
+  transition:
+    transform 0.18s ease,
+    filter 0.18s ease;
+}
+
+.contact-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.03);
 }
 
 .whatsapp-btn {
@@ -649,8 +701,8 @@ const formatPrice = (value) => {
 /* CUSTOMIZE LAYOUT */
 .details-layout {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) 390px;
-  gap: 24px;
+  grid-template-columns: minmax(0, 1.7fr) 380px;
+  gap: 20px;
   align-items: start;
   transition:
     grid-template-columns 0.45s ease,
@@ -663,32 +715,56 @@ const formatPrice = (value) => {
 }
 
 .details-main {
-  background: rgba(15, 23, 42, 0.78);
-  border-radius: 24px;
-  padding: 26px;
+  background: rgba(15, 23, 42, 0.7);
+  border-radius: 26px;
+  padding: 24px;
   overflow: visible;
   min-width: 0;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow:
+    0 18px 40px rgba(2, 6, 23, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.details-header {
+  margin-bottom: 20px;
 }
 
 .back-btn {
   border: none;
-  padding: 12px 16px;
+  padding: 11px 16px;
   border-radius: 14px;
   cursor: pointer;
   margin-bottom: 12px;
   font-weight: 800;
+  color: #0f172a;
+  background: #f8fafc;
+  box-shadow: 0 10px 18px rgba(2, 6, 23, 0.12);
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    filter 0.18s ease;
+}
+
+.back-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.01);
+  box-shadow: 0 12px 22px rgba(2, 6, 23, 0.16);
 }
 
 .selected-chip {
-  padding: 8px 14px;
+  padding: 10px 16px;
   border-radius: 999px;
-  background: rgba(59, 130, 246, 0.16);
+  background: rgba(59, 130, 246, 0.14);
   color: #93c5fd;
   font-weight: 800;
+  border: 1px solid rgba(59, 130, 246, 0.12);
 }
 
 .cart-panel-wrap {
-  width: 390px;
+  width: 380px;
   min-width: 0;
   overflow: hidden;
   opacity: 1;
@@ -703,8 +779,36 @@ const formatPrice = (value) => {
 .cart-panel-wrap--hidden {
   width: 0;
   opacity: 0;
-  transform: translateX(36px);
+  transform: translateX(28px);
   pointer-events: none;
+}
+
+.floating-socials-wrap {
+  position: relative;
+  z-index: 8;
+}
+
+@media (max-width: 1200px) {
+  .top-nav {
+    padding: 12px 18px;
+  }
+
+  .brand-logo {
+    height: 72px;
+  }
+
+  .nav-links {
+    gap: 20px;
+  }
+
+  .details-layout {
+    grid-template-columns: minmax(0, 1fr) 360px;
+    gap: 18px;
+  }
+
+  .cart-panel-wrap {
+    width: 360px;
+  }
 }
 
 @media (max-width: 1100px) {
@@ -722,7 +826,7 @@ const formatPrice = (value) => {
 
   .details-layout--full {
     grid-template-columns: 1fr;
-    gap: 24px;
+    gap: 22px;
   }
 
   .cart-panel-wrap,
@@ -736,21 +840,35 @@ const formatPrice = (value) => {
 
 @media (max-width: 900px) {
   .page {
-    padding: 16px 18px 80px;
+    padding: 14px 16px 76px;
   }
 
   .top-nav {
     flex-wrap: wrap;
     justify-content: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border-radius: 20px;
   }
 
   .brand-logo {
-    height: 60px;
+    height: 58px;
   }
 
   .nav-links {
     flex-wrap: wrap;
     justify-content: center;
+    gap: 16px 18px;
+  }
+
+  .nav-links a {
+    font-size: 0.95rem;
+  }
+
+  .nav-cta {
+    min-height: 44px;
+    padding: 0 18px;
+    font-size: 0.92rem;
   }
 
   .customers-grid {
@@ -760,6 +878,52 @@ const formatPrice = (value) => {
   .section-header {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .details-main {
+    padding: 18px;
+    border-radius: 22px;
+  }
+
+  .contact-section {
+    padding: 22px;
+    border-radius: 22px;
+  }
+
+  #planes,
+  #comentarios,
+  #faq,
+  #contacto {
+    scroll-margin-top: 84px;
+  }
+}
+
+@media (max-width: 600px) {
+  .top-nav {
+    margin-bottom: 14px;
+  }
+
+  .brand-logo {
+    height: 52px;
+  }
+
+  .details-main {
+    padding: 16px;
+  }
+
+  .back-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .contact-actions {
+    width: 100%;
+  }
+
+  .contact-btn {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
   }
 }
 </style>
