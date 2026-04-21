@@ -47,7 +47,7 @@
   {
     "id": 201,
     "serviceId": 2,
-    "name": "Seguidores Página",
+    "name": "Seguidores",
     "description": "Seguidores para tu página de Facebook",
     "price": 120,
     "category": "Facebook",
@@ -101,10 +101,55 @@
   {
     "id": 207,
     "serviceId": 2,
-    "name": "Views Video",
+    "name": "Views",
     "description": "Views para videos o reels",
     "price": 40,
     "category": "Facebook",
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+  },
+  {
+    "id": 301,
+    "serviceId": 3,
+    "name": "Seguidores",
+    "description": "Seguidores para tu cuenta de Tiktok",
+    "price": 140,
+    "category": "TikTok",
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+  },
+  {
+    "id": 302,
+    "serviceId": 3,
+    "name": "Me Gusta",
+    "description": "Me Gusta para tus videos de Tiktok",
+    "price": 50,
+    "category": "TikTok",
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+  },
+  {
+    "id": 303,
+    "serviceId": 3,
+    "name": "Views",
+    "description": "Añade Views para tus videos",
+    "price": 30,
+    "category": "TikTok",
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+  },
+  {
+    "id": 304,
+    "serviceId": 3,
+    "name": "Shares",
+    "description": "Shares para tus posts",
+    "price": 70,
+    "category": "TikTok",
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+  },
+  {
+    "id": 305,
+    "serviceId": 3,
+    "name": "Guardados",
+    "description": "Guardados para tus publicaciones",
+    "price": 60,
+    "category": "TikTok",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
   {

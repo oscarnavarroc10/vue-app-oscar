@@ -65,25 +65,37 @@ const cardClass = computed(() => {
 <style scoped>
 .package-card {
   position: relative;
-  min-height: 520px;
-  height: 100%;
+  width: 100%;
+  max-width: 300px;
+
+  min-height: auto;
+  height: auto;
+
   overflow: hidden;
+
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  padding: 24px 22px 22px;
-  border-radius: 28px;
+  justify-content: flex-start;
+  gap: 16px;
+
+  padding: 22px 20px 20px;
+
+  border-radius: 26px;
   border: 1px solid rgba(255, 255, 255, 0.14);
+
   background:
     linear-gradient(
       180deg,
       rgba(15, 23, 42, 0.92),
       rgba(15, 23, 42, 0.82)
     );
+
   backdrop-filter: blur(18px);
+
   box-shadow:
     0 18px 45px rgba(2, 6, 23, 0.28),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
   transition:
     transform 0.24s ease,
     box-shadow 0.24s ease,
@@ -91,10 +103,11 @@ const cardClass = computed(() => {
 }
 
 .package-card:hover {
-  transform: translateY(-8px);
+  transform: translateY(-6px);
+
   box-shadow:
-    0 28px 60px rgba(2, 6, 23, 0.4),
-    0 10px 24px rgba(59, 130, 246, 0.16);
+    0 26px 55px rgba(2, 6, 23, 0.4),
+    0 10px 24px rgba(59, 130, 246, 0.14);
 }
 
 .card-bg-orb {
@@ -106,25 +119,25 @@ const cardClass = computed(() => {
 }
 
 .orb-1 {
-  width: 150px;
-  height: 150px;
-  top: -42px;
-  right: -26px;
+  width: 130px;
+  height: 130px;
+  top: -36px;
+  right: -20px;
 }
 
 .orb-2 {
-  width: 100px;
-  height: 100px;
-  bottom: 82px;
-  left: -22px;
+  width: 90px;
+  height: 90px;
+  bottom: 60px;
+  left: -18px;
   opacity: 0.45;
 }
 
 .card-top-line {
   position: absolute;
   top: 0;
-  left: 18px;
-  right: 18px;
+  left: 16px;
+  right: 16px;
   height: 4px;
   border-radius: 999px;
 }
@@ -136,79 +149,68 @@ const cardClass = computed(() => {
   z-index: 1;
 }
 
-.package-top-row {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  min-height: 34px;
-  margin-bottom: 4px;
-}
-
-.package-tag {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 34px;
-  padding: 8px 14px;
-  border-radius: 999px;
-  font-size: 0.8rem;
-  font-weight: 800;
-  letter-spacing: 0.01em;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.08);
-  color: #e2e8f0;
-}
-
 .package-card-header h3 {
   margin: 0 0 10px;
-  font-size: 1.2rem;
-  line-height: 1.08;
-  text-align: justify;
+  font-size: 1.05rem;
+  line-height: 1.2;
   text-align: center;
   color: #f8fafc;
-  letter-spacing: -0.02em;
+  font-weight: 900;
 }
 
 .package-card-header p {
   margin: 0;
-  text-align: justify;
+  text-align: left;
   color: #cbd5e1;
-  line-height: 1.6;
-  font-size: 0.96rem;
+  line-height: 1.55;
+  font-size: 0.95rem;
 }
 
 .package-list {
   list-style: none;
   padding: 0;
-  margin: 8px 0 0;
+  margin: 2px 0 0;
+
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  flex: 1;
+  gap: 10px;
+
+  flex: unset;
 }
 
 .package-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
-  padding: 12px 14px;
+  gap: 12px;
+
+  padding: 10px 12px;
+
   border-radius: 14px;
+
   background: rgba(30, 41, 59, 0.72);
   border: 1px solid rgba(148, 163, 184, 0.14);
+
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .item-quantity {
   flex-shrink: 0;
+
   min-width: 84px;
+
   text-align: center;
+
   padding: 8px 10px;
+
   border-radius: 10px;
+
   font-weight: 900;
   font-size: 0.95rem;
+
   background: rgba(34, 197, 94, 0.14);
   color: #86efac;
+
   border: 1px solid rgba(34, 197, 94, 0.24);
 }
 
@@ -223,20 +225,26 @@ const cardClass = computed(() => {
 .package-footer {
   display: flex;
   justify-content: center;
+
   margin-top: auto;
-  padding-top: 4px;
+  padding-top: 14px;
 }
 
 .package-btn {
   width: 100%;
-  min-height: 52px;
+  min-height: 50px;
+
   border: none;
   border-radius: 16px;
+
   padding: 14px 18px;
-  font-size: 0.98rem;
+
+  font-size: 0.96rem;
   font-weight: 800;
+
   cursor: pointer;
   color: #ffffff;
+
   transition:
     transform 0.15s ease,
     box-shadow 0.15s ease,
@@ -286,12 +294,6 @@ const cardClass = computed(() => {
   background: linear-gradient(90deg, #10b981, #34d399);
 }
 
-.plus-card .package-tag {
-  background: rgba(16, 185, 129, 0.12);
-  color: #86efac;
-  border-color: rgba(16, 185, 129, 0.2);
-}
-
 .plus-card .package-btn {
   background: linear-gradient(135deg, #059669, #10b981);
   box-shadow: 0 12px 24px rgba(16, 185, 129, 0.24);
@@ -312,12 +314,6 @@ const cardClass = computed(() => {
 
 .pro-card .card-top-line {
   background: linear-gradient(90deg, #db2777, #f472b6);
-}
-
-.pro-card .package-tag {
-  background: rgba(236, 72, 153, 0.12);
-  color: #f9a8d4;
-  border-color: rgba(236, 72, 153, 0.22);
 }
 
 .pro-card .package-btn {
@@ -342,16 +338,6 @@ const cardClass = computed(() => {
   background: linear-gradient(90deg, #7c3aed, #f59e0b);
 }
 
-.premium-card .package-tag {
-  background: linear-gradient(
-    135deg,
-    rgba(124, 58, 237, 0.14),
-    rgba(245, 158, 11, 0.14)
-  );
-  color: #e9d5ff;
-  border-color: rgba(168, 85, 247, 0.24);
-}
-
 .premium-card .package-btn {
   background: linear-gradient(135deg, #7c3aed, #f59e0b);
   box-shadow: 0 12px 24px rgba(124, 58, 237, 0.26);
@@ -359,25 +345,25 @@ const cardClass = computed(() => {
 
 @media (max-width: 900px) {
   .package-card {
-    min-height: auto;
-    padding: 20px 18px 18px;
+    max-width: 100%;
+    padding: 18px;
   }
 
   .package-card-header h3 {
-    font-size: 1.35rem;
+    font-size: 1rem;
   }
 
   .package-item {
-    padding: 10px 12px;
+    padding: 10px;
   }
 
   .item-quantity {
     min-width: 74px;
-    font-size: 0.9rem;
+    font-size: 0.88rem;
   }
 
   .item-name {
-    font-size: 0.94rem;
+    font-size: 0.92rem;
   }
 }
 </style>

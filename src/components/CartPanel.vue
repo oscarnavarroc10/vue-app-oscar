@@ -3,14 +3,8 @@
     <div class="section-header">
   <div class="section-header-left">
     <h2>Tu carrito</h2>
-    <p class="section-subtitle">
-      {{ uniqueServicesCount }} seleccionado<span v-if="uniqueServicesCount !== 1">s</span>
-      · {{ totalUnits }} unidades
-    </p>
   </div>
-
   <div class="cart-header-actions">
-    <span>{{ cart.length }} seleccionados</span>
 
 <button
   v-if="cart.length > 0"
@@ -181,11 +175,6 @@
 
     <div class="summary">
       <div class="summary-row">
-        <span>Servicios</span>
-        <strong>{{ uniqueServicesCount }}</strong>
-      </div>
-
-      <div class="summary-row">
         <span>Subtotal</span>
         <strong>${{ formatPrice(subtotal) }}</strong>
       </div>
@@ -351,8 +340,7 @@ Resumen:
   font-size: 1.35rem;
 }
 
-.section-header span,
-.section-subtitle {
+.section-header span{
   color: #6b7280;
   font-size: 0.95rem;
   margin: 0;
