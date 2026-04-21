@@ -8,6 +8,16 @@
 
       <div class="cart-header-actions">
         <button
+          class="close-cart-btn"
+          type="button"
+          @click="$emit('close-cart')"
+          aria-label="Cerrar carrito"
+          title="Cerrar carrito"
+        >
+          ✕
+        </button>
+
+        <button
           v-if="cart.length > 0"
           class="clear-cart-btn"
           type="button"
@@ -29,7 +39,6 @@
     >
       <template #item="{ element }">
         <article class="cart-item">
-          <!-- PLAN -->
           <template v-if="element.cartType === 'plan'">
             <div class="cart-item-top cart-item-top--plan">
               <div class="cart-plan-header">
@@ -91,7 +100,6 @@
             </div>
           </template>
 
-          <!-- SERVICIO NORMAL -->
           <template v-else>
             <div class="cart-item-top">
               <div class="cart-item-title-wrap">
@@ -224,6 +232,7 @@ const emit = defineEmits([
   "increase",
   "decrease",
   "update-quantity",
+  "close-cart",
 ]);
 
 const localCart = computed({
@@ -232,22 +241,6 @@ const localCart = computed({
 });
 
 const uniqueServicesCount = computed(() => props.cart.length);
-
-const totalUnits = computed(() => {
-  return props.cart.reduce((sum, item) => {
-    if (item.cartType === "plan") {
-      return (
-        sum +
-        (item.planItems || []).reduce(
-          (innerSum, planItem) => innerSum + (Number(planItem.quantity) || 0),
-          0
-        )
-      );
-    }
-
-    return sum + (Number(item.quantity) || 0);
-  }, 0);
-});
 
 const getItemTotal = (item) => {
   if (item.cartType === "plan") {
@@ -367,6 +360,26 @@ Resumen:
   flex-direction: column;
   align-items: flex-end;
   gap: 8px;
+}
+
+.close-cart-btn {
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.close-cart-btn:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .clear-cart-btn {

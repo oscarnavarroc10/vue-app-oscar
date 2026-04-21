@@ -20,14 +20,34 @@
         <a href="#contacto">Contacto</a>
       </nav>
 
-      <button
-        v-if="viewMode === 'landing'"
-        class="nav-cta"
-        type="button"
-        @click="goToCustomize"
-      >
-        Personalizar
-      </button>
+      <div v-if="viewMode === 'landing'" class="nav-actions">
+        <button
+          v-if="cartItemsCount > 0"
+          class="nav-cta nav-cta--cart"
+          type="button"
+          @click="openCartFromNav"
+        >
+          <span class="nav-cart-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path
+                d="M3 4h2l2.2 10.2a1 1 0 0 0 .98.8H17a1 1 0 0 0 .97-.76L20 7H7"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <circle cx="10" cy="19" r="1.6" fill="currentColor" />
+              <circle cx="17" cy="19" r="1.6" fill="currentColor" />
+            </svg>
+          </span>
+
+          <span>Carrito</span>
+
+          <span class="nav-cart-badge">
+            {{ cartItemsCount }}
+          </span>
+        </button>
+      </div>
 
       <button
         v-else
@@ -52,16 +72,9 @@
         />
       </section>
 
-      <!-- CUSTOMER BANNER -->
-      <CustomPackageBanner @customize="goToCustomize" />
-
-      <!-- TESTIMONIOS -->
+      <CustomPackageBanner @customize="goToCustomBuilder" />
       <TestimonialsSection />
-
-      <!-- FAQ -->
       <FaqSection />
-
-      <!-- CONTACTO -->
       <ContactLeadSection />
     </section>
 
@@ -70,33 +83,145 @@
       v-else
       class="details-layout"
       :class="{ 'details-layout--full': !shouldShowCart }"
->
+    >
       <div class="details-main">
-        <div class="section-header details-header">
-          <div>
-            <button class="back-btn" type="button" @click="goToLanding">
-              ← Volver a home
-            </button>
+        <!-- MODO PAQUETES -->
+        <template v-if="customizeMode === 'packages'">
+          <div class="section-header details-header">
+            <div>
+              <h2>Paquetes por red social</h2>
 
-            <h2>Paquetes por red social</h2>
+              <p class="selected-description">
+                Selecciona una pestaña, revisa los planes disponibles y agrégalos
+                al carrito.
+              </p>
+            </div>
 
-            <p class="selected-description">
-              Selecciona una pestaña, revisa los planes disponibles y agrégalos
-              al carrito.
-            </p>
+            <div class="selected-chip">
+              {{ enabledServices.length }} categorías
+            </div>
           </div>
 
-          <div class="selected-chip">
-            {{ enabledServices.length }} categorías
-          </div>
-        </div>
+          <SocialTabsBuilder
+            :services="enabledServices"
+            :package-plans="packagePlans"
+            :get-plan-items="getPlanItems"
+            @choose="choosePlan"
+          />
+        </template>
 
-        <SocialTabsBuilder
-          :services="enabledServices"
-          :package-plans="packagePlans"
-          :get-plan-items="getPlanItems"
-          @choose="choosePlan"
-        />
+        <!-- MODO BUILDER -->
+        <template v-else>
+          <div class="section-header details-header">
+            <div>
+              <button class="back-btn" type="button" @click="goToLanding">
+                ← Volver a home
+              </button>
+
+              <h2>Crea tu paquete personalizado</h2>
+
+              <p class="selected-description">
+                Elige una red social, explora sus servicios y agrega únicamente lo
+                que sí necesitas para tu negocio o tu página.
+              </p>
+            </div>
+
+            <div class="selected-chip">
+              {{ enabledServices.length }} categorías
+            </div>
+          </div>
+
+          <Transition name="builder-switch" mode="out-in">
+            <section
+              v-if="!selectedService"
+              key="platforms"
+              class="builder-stage"
+            >
+              <section class="custom-builder-hero">
+                <div class="custom-builder-copy">
+                  <span class="custom-builder-kicker">
+                    Constructor personalizado
+                  </span>
+
+                  <h3>Selecciona una plataforma para empezar</h3>
+
+                  <p>
+                    Aquí puedes construir tu paquete a la medida. Primero elige la
+                    red social que quieres impulsar y después selecciona los
+                    servicios que deseas agregar.
+                  </p>
+                </div>
+
+                <div class="custom-builder-badge">
+                  Tú eliges qué incluir
+                </div>
+              </section>
+
+              <section class="main-services-grid">
+                <MainServiceCard
+                  v-for="service in enabledServices"
+                  :key="service.id"
+                  :service="service"
+                  @open="handleOpenMainService"
+                />
+              </section>
+            </section>
+
+            <section
+              v-else
+              key="subservices"
+              class="builder-stage"
+            >
+              <section class="subservices-stage-head">
+                <button
+                  class="subservices-back-btn"
+                  type="button"
+                  @click="handleBackToMainServices"
+                >
+                  ← Cambiar plataforma
+                </button>
+
+                <div class="subservices-stage-copy">
+                  <span class="subservices-kicker">
+                    {{ selectedService.category }}
+                  </span>
+
+                  <h3>{{ selectedService.name }}</h3>
+
+                  <p>
+                    {{ selectedService.description }}
+                  </p>
+                </div>
+
+                <div class="subservices-counter">
+                  {{ filteredSubServices.length }} servicios
+                </div>
+              </section>
+
+              <section v-if="filteredSubServices.length" class="subservices-grid">
+                <SubServiceCard
+                  v-for="subService in filteredSubServices"
+                  :key="subService.id"
+                  :service="subService"
+                  :cart="cart"
+                  :format-price="formatPrice"
+                  @add="handleAddSubService"
+                />
+              </section>
+
+              <div v-else class="subservices-empty">
+                <div class="subservices-empty-icon">✨</div>
+
+                <h4>Próximamente más servicios</h4>
+
+                <p>
+                  Estamos preparando más opciones para
+                  {{ selectedService.category }}.
+                </p>
+              </div>
+            </section>
+          </Transition>
+        </template>
       </div>
 
       <div
@@ -116,6 +241,7 @@
           @increase="increaseQuantity"
           @decrease="decreaseQuantity"
           @update-quantity="updateQuantity"
+          @close-cart="closeCartPanel"
         />
       </div>
     </section>
@@ -127,7 +253,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, nextTick } from "vue";
 import servicesData from "./data/services.json";
 import packagePlansData from "./data/package-plans.json";
 import serviceOptionsData from "./data/service-options.json";
@@ -135,16 +261,14 @@ import { useCart } from "./composables/useCart";
 import FloatingSocials from "./components/FloatingSocials.vue";
 import SocialTabsBuilder from "./components/SocialTabsBuilder.vue";
 import CartPanel from "./components/CartPanel.vue";
-import logoImpulso from "./assets/impulso_redes_logo.png";
 import ContactLeadSection from "./components/ContactLeadSection.vue";
 import FaqSection from "./components/FaqSection.vue";
 import TestimonialsSection from "./components/TestimonialsSection.vue";
 import CustomPackageBanner from "./components/CustomPackageBanner.vue";
 import MainServiceCard from "./components/MainServiceCard.vue";
+import SubServiceCard from "./components/SubServiceCard.vue";
+import logoImpulso from "./assets/impulso_redes_logo.png";
 
-/* =========================
-   CART
-========================= */
 const {
   cart,
   subtotal,
@@ -159,41 +283,92 @@ const {
   updateQuantity,
 } = useCart();
 
-/* =========================
-   DATA
-========================= */
 const availableServices = ref(servicesData);
 const packagePlans = ref(packagePlansData);
 const serviceOptions = ref(serviceOptionsData);
 const viewMode = ref("landing");
+const customizeMode = ref("packages"); // packages | builder
+const selectedService = ref(null);
+const isCartOpen = ref(false);
 
-/* =========================
-   COMPUTED
-========================= */
 const enabledServices = computed(() => {
   return availableServices.value.filter((service) => service.isEnabled);
 });
 
+const cartItemsCount = computed(() => cart.value.length);
+
 const shouldShowCart = computed(() => {
-  return cart.value.length > 0;
+  return cart.value.length > 0 && isCartOpen.value;
 });
 
-/* =========================
-   NAVIGATION
-========================= */
-const goToCustomize = () => {
-  viewMode.value = "customize";
-  window.scrollTo({ top: 0, behavior: "smooth" });
-};
+const filteredSubServices = computed(() => {
+  if (!selectedService.value) return [];
+
+  return serviceOptions.value.filter(
+    (item) =>
+      item.serviceId === selectedService.value.id ||
+      item.category === selectedService.value.category
+  );
+});
 
 const goToLanding = () => {
   viewMode.value = "landing";
+  customizeMode.value = "packages";
+  selectedService.value = null;
+  isCartOpen.value = false;
+
   window.scrollTo({ top: 0, behavior: "smooth" });
 };
 
-/* =========================
-   PLAN HELPERS
-========================= */
+const goToPackagesView = ({ openCart = false } = {}) => {
+  viewMode.value = "customize";
+  customizeMode.value = "packages";
+  selectedService.value = null;
+  isCartOpen.value = openCart;
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
+
+const goToCustomBuilder = () => {
+  viewMode.value = "customize";
+  customizeMode.value = "builder";
+  selectedService.value = null;
+  isCartOpen.value = false;
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
+
+const openCartFromNav = () => {
+  if (!cart.value.length) return;
+  goToPackagesView({ openCart: true });
+};
+
+const closeCartPanel = () => {
+  isCartOpen.value = false;
+};
+
+const handleOpenMainService = async (service) => {
+  selectedService.value = service;
+
+  await nextTick();
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+};
+
+const handleBackToMainServices = async () => {
+  selectedService.value = null;
+
+  await nextTick();
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+};
+
 const getPlanItems = (plan) => {
   return (plan.includedOptions || []).map((included) => {
     const option = serviceOptions.value.find(
@@ -224,7 +399,17 @@ const choosePlan = (plan) => {
     planItems: getPlanItems(plan),
   });
 
-  goToCustomize();
+  // Ya NO abrimos el carrito automáticamente
+};
+
+const handleAddSubService = (service) => {
+  addToCart({
+    ...service,
+    id: service.id,
+    price: Number(service.price || 0),
+    quantity: Number(service.quantity || 100),
+    cartType: "service",
+  });
 };
 
 const getCartItemKey = (item) => {
@@ -318,25 +503,20 @@ const formatPrice = (value) => {
   max-width: 1400px;
   margin: 0 auto 18px;
   padding: 12px 22px;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 18px;
-
   border-radius: 24px;
   border: 1px solid rgba(255, 255, 255, 0.08);
-
   background: linear-gradient(
     180deg,
     rgba(7, 12, 24, 0.82) 0%,
     rgba(7, 12, 24, 0.72) 100%
   );
-
   box-shadow:
     0 18px 36px rgba(2, 6, 23, 0.22),
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
-
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
 }
@@ -376,6 +556,13 @@ const formatPrice = (value) => {
   opacity: 1;
 }
 
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
 .nav-cta {
   flex-shrink: 0;
   border: none;
@@ -383,14 +570,11 @@ const formatPrice = (value) => {
   padding: 0 20px;
   border-radius: 14px;
   cursor: pointer;
-
   color: white;
   font-weight: 800;
   font-size: 0.95rem;
-
   background: linear-gradient(135deg, #7c3aed, #2563eb);
   box-shadow: 0 12px 24px rgba(99, 102, 241, 0.22);
-
   transition:
     transform 0.18s ease,
     box-shadow 0.18s ease,
@@ -401,6 +585,49 @@ const formatPrice = (value) => {
   transform: translateY(-1px);
   filter: brightness(1.03);
   box-shadow: 0 16px 28px rgba(99, 102, 241, 0.26);
+}
+
+.nav-cta--secondary {
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow:
+    0 12px 24px rgba(2, 6, 23, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.nav-cta--cart {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-cart-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+}
+
+.nav-cart-icon svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+.nav-cart-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 900;
+  line-height: 1;
 }
 
 .top-spacer {
@@ -440,136 +667,6 @@ const formatPrice = (value) => {
   color: #94a3b8;
 }
 
-.customers-section,
-.faq-section,
-.contact-section {
-  margin-top: 34px;
-}
-
-.customers-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
-}
-
-.customer-card,
-.faq-item {
-  border-radius: 22px;
-  padding: 22px;
-  background: rgba(15, 23, 42, 0.76);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow:
-    0 14px 30px rgba(2, 6, 23, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-.customer-card p,
-.faq-item p {
-  color: #cbd5e1;
-  line-height: 1.6;
-}
-
-.customer-meta strong,
-.faq-item summary {
-  color: white;
-}
-
-.stars {
-  color: #fbbf24;
-  margin-bottom: 12px;
-}
-
-.customer-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.customer-meta span {
-  color: #94a3b8;
-}
-
-.faq-list {
-  display: grid;
-  gap: 14px;
-}
-
-.faq-item summary {
-  cursor: pointer;
-  font-weight: 800;
-}
-
-.contact-section {
-  display: flex;
-  justify-content: space-between;
-  gap: 22px;
-  padding: 28px;
-  border-radius: 28px;
-  background: rgba(15, 23, 42, 0.82);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow:
-    0 18px 40px rgba(2, 6, 23, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-.contact-copy h2 {
-  color: white;
-  margin: 0 0 8px;
-  line-height: 1.08;
-}
-
-.contact-copy p {
-  color: #94a3b8;
-  line-height: 1.6;
-  max-width: 640px;
-}
-
-.contact-kicker {
-  color: #93c5fd;
-  font-weight: 800;
-}
-
-.contact-actions {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.contact-btn {
-  text-decoration: none;
-  padding: 14px 18px;
-  border-radius: 14px;
-  color: white;
-  font-weight: 800;
-  box-shadow: 0 10px 20px rgba(2, 6, 23, 0.16);
-  transition:
-    transform 0.18s ease,
-    filter 0.18s ease;
-}
-
-.contact-btn:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.03);
-}
-
-.whatsapp-btn {
-  background: #25d366;
-}
-
-.instagram-btn {
-  background: linear-gradient(135deg, #f58529, #dd2a7b, #8134af);
-}
-
-.mail-btn {
-  background: #2563eb;
-}
-
-/* CUSTOMIZE LAYOUT */
 .details-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.7fr) 380px;
@@ -589,7 +686,7 @@ const formatPrice = (value) => {
   background: rgba(15, 23, 42, 0.7);
   border-radius: 26px;
   padding: 24px;
-  overflow: visible;
+  overflow: hidden;
   min-width: 0;
   border: 1px solid rgba(255, 255, 255, 0.06);
   box-shadow:
@@ -634,6 +731,158 @@ const formatPrice = (value) => {
   border: 1px solid rgba(59, 130, 246, 0.12);
 }
 
+.builder-stage {
+  width: 100%;
+}
+
+.custom-builder-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+  margin-bottom: 24px;
+  padding: 22px 22px 20px;
+  border-radius: 24px;
+  background: linear-gradient(
+    180deg,
+    rgba(10, 18, 34, 0.74) 0%,
+    rgba(8, 14, 26, 0.84) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow:
+    0 16px 30px rgba(2, 6, 23, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.custom-builder-copy {
+  min-width: 0;
+}
+
+.custom-builder-kicker,
+.subservices-kicker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(124, 58, 237, 0.16);
+  color: #ddd6fe;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.custom-builder-copy h3,
+.subservices-stage-copy h3 {
+  margin: 0 0 10px;
+  color: #ffffff;
+  font-size: clamp(1.45rem, 3vw, 2rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+
+.custom-builder-copy p,
+.subservices-stage-copy p {
+  margin: 0;
+  max-width: 760px;
+  color: #94a3b8;
+  line-height: 1.7;
+}
+
+.custom-builder-badge,
+.subservices-counter {
+  flex-shrink: 0;
+  padding: 12px 16px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #e2e8f0;
+  font-weight: 800;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.main-services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.subservices-stage-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+  margin-bottom: 22px;
+  padding: 22px;
+  border-radius: 24px;
+  background: linear-gradient(
+    180deg,
+    rgba(10, 18, 34, 0.74) 0%,
+    rgba(8, 14, 26, 0.84) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow:
+    0 16px 30px rgba(2, 6, 23, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.subservices-stage-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.subservices-back-btn {
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  min-height: 46px;
+  padding: 0 16px;
+  border-radius: 14px;
+  cursor: pointer;
+  color: #ffffff;
+  font-weight: 800;
+  background: rgba(255, 255, 255, 0.05);
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.subservices-back-btn:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.subservices-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.subservices-empty {
+  padding: 36px 20px;
+  border-radius: 22px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.subservices-empty-icon {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.subservices-empty h4 {
+  margin: 0 0 8px;
+  color: #ffffff;
+}
+
+.subservices-empty p {
+  margin: 0;
+  color: #94a3b8;
+}
+
 .cart-panel-wrap {
   width: 380px;
   min-width: 0;
@@ -659,6 +908,26 @@ const formatPrice = (value) => {
   z-index: 8;
 }
 
+.builder-switch-enter-active,
+.builder-switch-leave-active {
+  transition:
+    opacity 0.34s ease,
+    transform 0.34s ease,
+    filter 0.34s ease;
+}
+
+.builder-switch-enter-from {
+  opacity: 0;
+  transform: translateY(24px) scale(0.985);
+  filter: blur(8px);
+}
+
+.builder-switch-leave-to {
+  opacity: 0;
+  transform: translateY(-16px) scale(0.99);
+  filter: blur(8px);
+}
+
 @media (max-width: 1200px) {
   .top-nav {
     padding: 12px 18px;
@@ -680,17 +949,17 @@ const formatPrice = (value) => {
   .cart-panel-wrap {
     width: 360px;
   }
+
+  .main-services-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .subservices-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 1100px) {
-  .customers-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .contact-section {
-    flex-direction: column;
-  }
-
   .details-layout {
     grid-template-columns: 1fr;
   }
@@ -736,17 +1005,21 @@ const formatPrice = (value) => {
     font-size: 0.95rem;
   }
 
+  .nav-actions {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
   .nav-cta {
     min-height: 44px;
     padding: 0 18px;
     font-size: 0.92rem;
   }
 
-  .customers-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .section-header {
+  .section-header,
+  .custom-builder-hero,
+  .subservices-stage-head {
     flex-direction: column;
     align-items: flex-start;
   }
@@ -756,9 +1029,9 @@ const formatPrice = (value) => {
     border-radius: 22px;
   }
 
-  .contact-section {
-    padding: 22px;
-    border-radius: 22px;
+  .main-services-grid,
+  .subservices-grid {
+    grid-template-columns: 1fr;
   }
 
   #planes,
@@ -782,19 +1055,10 @@ const formatPrice = (value) => {
     padding: 16px;
   }
 
-  .back-btn {
+  .back-btn,
+  .subservices-back-btn {
     width: 100%;
     justify-content: center;
-  }
-
-  .contact-actions {
-    width: 100%;
-  }
-
-  .contact-btn {
-    width: 100%;
-    justify-content: center;
-    text-align: center;
   }
 }
 </style>
