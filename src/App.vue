@@ -52,151 +52,17 @@
         />
       </section>
 
+      <!-- CUSTOMER BANNER -->
+      <CustomPackageBanner @customize="goToCustomize" />
+
       <!-- TESTIMONIOS -->
-      <section id="comentarios" class="customers-section">
-        <div class="section-header section-header-left">
-          <div>
-            <h2>Clientes satisfechos</h2>
-
-            <p class="section-subtitle">
-              Resultados reales para negocios que buscaban crecer en redes.
-            </p>
-          </div>
-        </div>
-
-        <div class="customers-grid">
-          <article class="customer-card">
-            <div class="stars">★★★★★</div>
-
-            <p>
-              “Nos ayudaron a organizar mejor el contenido y subir el alcance de
-              Instagram en pocas semanas.”
-            </p>
-
-            <div class="customer-meta">
-              <strong>Emmanuel</strong>
-              <span>Moda y lifestyle</span>
-            </div>
-          </article>
-
-          <article class="customer-card">
-            <div class="stars">★★★★★</div>
-
-            <p>
-              “Lo mejor fue poder elegir exactamente los servicios que sí
-              necesitábamos sin pagar de más.”
-            </p>
-
-            <div class="customer-meta">
-              <strong>Café Central</strong>
-              <span>Restaurante</span>
-            </div>
-          </article>
-
-          <article class="customer-card">
-            <div class="stars">★★★★★</div>
-
-            <p>
-              “Los reels y el diseño visual hicieron que nuestra marca ya se
-              viera mucho más profesional.”
-            </p>
-
-            <div class="customer-meta">
-              <strong>Oscar N.</strong>
-              <span>Salud y bienestar</span>
-            </div>
-          </article>
-        </div>
-      </section>
+      <TestimonialsSection />
 
       <!-- FAQ -->
-      <section id="faq" class="faq-section">
-        <div class="section-header section-header-left">
-          <div>
-            <h2>Preguntas frecuentes</h2>
-
-            <p class="section-subtitle">
-              Respuestas rápidas antes de solicitar tu plan.
-            </p>
-          </div>
-        </div>
-
-        <div class="faq-list">
-          <details class="faq-item">
-            <summary>¿Puedo contratar solo una parte del paquete?</summary>
-
-            <p>
-              Sí. Puedes personalizar tu plan y seleccionar solo los servicios
-              que realmente necesites.
-            </p>
-          </details>
-
-          <details class="faq-item">
-            <summary>¿La prueba gratis aplica para todos?</summary>
-
-            <p>
-              No siempre. Depende del tipo de negocio, disponibilidad y alcance
-              de la propuesta solicitada.
-            </p>
-          </details>
-
-          <details class="faq-item">
-            <summary>¿Puedo combinar Instagram, Facebook y diseño?</summary>
-
-            <p>
-              Sí. Justo la idea es que puedas mezclar categorías y armar un plan
-              a la medida.
-            </p>
-          </details>
-
-          <details class="faq-item">
-            <summary>¿También hacen edición de reels?</summary>
-
-            <p>
-              Sí. Puedes incluir reels, diseño visual, administración y otros
-              servicios según tu objetivo.
-            </p>
-          </details>
-        </div>
-      </section>
+      <FaqSection />
 
       <!-- CONTACTO -->
-      <section id="contacto" class="contact-section">
-        <div class="contact-copy">
-          <span class="contact-kicker">Contacto</span>
-
-          <h2>Hablemos de tu negocio</h2>
-
-          <p>
-            Cuéntanos qué necesitas y te ayudamos a armar un plan que sí tenga
-            sentido para tu marca.
-          </p>
-        </div>
-
-        <div class="contact-actions">
-          <a
-            href="https://wa.me/5219999999999"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="contact-btn whatsapp-btn"
-          >
-            WhatsApp
-          </a>
-
-          <a
-            href="https://instagram.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="contact-btn instagram-btn"
-          >
-            Instagram
-          </a>
-
-          <a href="mailto:hola@tuagencia.com" class="contact-btn mail-btn">
-            Correo
-          </a>
-        </div>
-      </section>
+      <ContactLeadSection />
     </section>
 
     <!-- CUSTOMIZE / CARRITO -->
@@ -204,7 +70,7 @@
       v-else
       class="details-layout"
       :class="{ 'details-layout--full': !shouldShowCart }"
-    >
+>
       <div class="details-main">
         <div class="section-header details-header">
           <div>
@@ -270,6 +136,11 @@ import FloatingSocials from "./components/FloatingSocials.vue";
 import SocialTabsBuilder from "./components/SocialTabsBuilder.vue";
 import CartPanel from "./components/CartPanel.vue";
 import logoImpulso from "./assets/impulso_redes_logo.png";
+import ContactLeadSection from "./components/ContactLeadSection.vue";
+import FaqSection from "./components/FaqSection.vue";
+import TestimonialsSection from "./components/TestimonialsSection.vue";
+import CustomPackageBanner from "./components/CustomPackageBanner.vue";
+import MainServiceCard from "./components/MainServiceCard.vue";
 
 /* =========================
    CART
