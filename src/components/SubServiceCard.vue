@@ -31,6 +31,13 @@
         Agrega la cantidad que necesitas y el enlace del perfil o página donde
         quieres aplicar el servicio.
       </p>
+
+      <div v-if="selectedQuantity > 0" class="selected-info">
+        <span class="selected-badge">
+          {{ formatNumber(selectedQuantity) }}
+        </span>
+        <small>ya agregados para este link</small>
+      </div>
     </div>
 
     <div class="sub-card-form">
@@ -112,7 +119,12 @@
     </div>
 
     <div class="sub-card-footer">
-      <button class="sub-card-btn" type="button" @click="handleAddToCart">
+      <button
+        ref="addBtnRef"
+        class="sub-card-btn"
+        type="button"
+        @click="handleAddToCart"
+      >
         {{ selectedQuantity > 0 ? "Agregar más al carrito" : "Agregar al carrito" }}
       </button>
     </div>
@@ -150,6 +162,7 @@ const props = defineProps({
 
 const emit = defineEmits(["add"]);
 
+const addBtnRef = ref(null);
 const showHelp = ref(false);
 const profileLink = ref("");
 const quantityInput = ref(100);
@@ -232,9 +245,12 @@ const handleAddToCart = () => {
   const normalizedProfile = normalizeProfile(profileLink.value);
 
   emit("add", {
-    ...props.service,
-    profile: normalizedProfile,
-    quantity: Number(quantityInput.value),
+    service: {
+      ...props.service,
+      profile: normalizedProfile,
+      quantity: Number(quantityInput.value),
+    },
+    sourceEl: addBtnRef.value,
   });
 };
 
@@ -428,26 +444,19 @@ const cardStyle = computed(() => ({
   display: flex;
   flex-direction: column;
   overflow: hidden;
-
   border-radius: 28px;
   padding: 22px;
-
-  background:
-    linear-gradient(
-      180deg,
-      rgba(10, 18, 34, 0.9) 0%,
-      rgba(8, 14, 26, 0.94) 100%
-    );
-
+  background: linear-gradient(
+    180deg,
+    rgba(10, 18, 34, 0.9) 0%,
+    rgba(8, 14, 26, 0.94) 100%
+  );
   border: 1px solid rgba(255, 255, 255, 0.08);
-
   box-shadow:
     0 20px 40px rgba(2, 6, 23, 0.24),
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
-
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-
   transition:
     transform 0.22s ease,
     box-shadow 0.22s ease,
@@ -457,7 +466,6 @@ const cardStyle = computed(() => ({
 .sub-service-card:hover {
   transform: translateY(-4px);
   border-color: rgba(255, 255, 255, 0.12);
-
   box-shadow:
     0 26px 46px rgba(2, 6, 23, 0.28),
     0 0 18px rgba(59, 130, 246, 0.06),
@@ -526,15 +534,12 @@ const cardStyle = computed(() => ({
   gap: 10px;
   padding: 8px 14px;
   border-radius: 999px;
-
   font-size: 0.8rem;
   font-weight: 800;
   letter-spacing: 0.01em;
-
   background: var(--badge-bg);
   color: var(--badge-color);
   border: 1px solid var(--badge-border);
-
   box-shadow:
     0 8px 18px var(--badge-shadow),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
@@ -606,10 +611,8 @@ const cardStyle = computed(() => ({
   height: 30px;
   padding: 0 12px;
   border-radius: 999px;
-
   background: rgba(255, 255, 255, 0.06);
   color: #ffffff;
-
   font-size: 0.82rem;
   font-weight: 800;
 }
@@ -669,18 +672,13 @@ const cardStyle = computed(() => ({
   width: 100%;
   box-sizing: border-box;
   min-height: 48px;
-
   border-radius: 16px;
   border: 1px solid rgba(148, 163, 184, 0.16);
-
   padding: 0 14px;
-
   font-size: 0.95rem;
   font-weight: 600;
   color: #ffffff;
-
   background: rgba(255, 255, 255, 0.05);
-
   transition:
     border-color 0.18s ease,
     box-shadow 0.18s ease,
@@ -714,22 +712,17 @@ const cardStyle = computed(() => ({
   height: 22px;
   border: none;
   border-radius: 999px;
-
   background: rgba(255, 255, 255, 0.08);
   color: #ffffff;
-
   font-size: 0.76rem;
   font-weight: 900;
   line-height: 1;
-
   cursor: pointer;
-
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 0;
   flex-shrink: 0;
-
   transition: background 0.18s ease, transform 0.18s ease;
 }
 
@@ -744,23 +737,17 @@ const cardStyle = computed(() => ({
   left: calc(100% + 10px);
   transform: translateY(-50%);
   z-index: 30;
-
   min-width: 210px;
   max-width: 260px;
-
   padding: 10px 12px;
   border-radius: 12px;
-
   background: rgba(7, 12, 24, 0.96);
   color: #ffffff;
-
   font-size: 0.78rem;
   line-height: 1.45;
-
   box-shadow:
     0 14px 28px rgba(2, 6, 23, 0.26),
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
-
   border: 1px solid rgba(255, 255, 255, 0.06);
   white-space: normal;
 }
@@ -784,23 +771,18 @@ const cardStyle = computed(() => ({
 .sub-card-btn {
   width: 100%;
   min-height: 52px;
-
   border: none;
   border-radius: 18px;
   padding: 14px 16px;
-
   font-size: 1rem;
   font-weight: 900;
   letter-spacing: 0.01em;
   cursor: pointer;
   color: #ffffff;
-
   background: var(--button-gradient);
-
   box-shadow:
     0 14px 24px rgba(15, 23, 42, 0.16),
     inset 0 1px 0 rgba(255, 255, 255, 0.14);
-
   transition:
     transform 0.18s ease,
     box-shadow 0.18s ease,

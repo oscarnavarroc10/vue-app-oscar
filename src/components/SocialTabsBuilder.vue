@@ -99,13 +99,7 @@
 </template>
 
 <script setup>
-import {
-  computed,
-  ref,
-  watch,
-  nextTick,
-} from "vue";
-
+import { computed, ref, watch, nextTick } from "vue";
 import PackagePlanCard from "./PackagePlanCard.vue";
 
 const props = defineProps({
@@ -141,9 +135,7 @@ watch(
   (value) => {
     if (!value.length) return;
 
-    const exists = value.some(
-      (item) => item.category === activeTab.value
-    );
+    const exists = value.some((item) => item.category === activeTab.value);
 
     if (!exists) {
       activeTab.value = value[0].category;
@@ -153,32 +145,29 @@ watch(
 );
 
 const currentService = computed(() => {
-  return enabledServices.value.find(
-    (item) => item.category === activeTab.value
-  );
+  return enabledServices.value.find((item) => item.category === activeTab.value);
 });
 
 const filteredPlans = computed(() => {
-  return props.packagePlans.filter(
-    (plan) => plan.category === activeTab.value
-  );
+  return props.packagePlans.filter((plan) => plan.category === activeTab.value);
 });
 
 watch(
   () => filteredPlans.value,
   async () => {
     await nextTick();
-    updateArrows();
 
     if (sliderRef.value) {
       sliderRef.value.scrollLeft = 0;
     }
+
+    updateArrows();
   },
   { immediate: true }
 );
 
-const emitChoose = (plan) => {
-  emit("choose", plan);
+const emitChoose = (payload) => {
+  emit("choose", payload);
 };
 
 const updateArrows = () => {
@@ -187,10 +176,7 @@ const updateArrows = () => {
   if (!el) return;
 
   canGoLeft.value = el.scrollLeft > 10;
-
-  canGoRight.value =
-    el.scrollLeft + el.clientWidth <
-    el.scrollWidth - 10;
+  canGoRight.value = el.scrollLeft + el.clientWidth < el.scrollWidth - 10;
 };
 
 const handleScroll = () => {
@@ -199,14 +185,14 @@ const handleScroll = () => {
 
 const slideLeft = () => {
   sliderRef.value?.scrollBy({
-    left: -380,
+    left: -360,
     behavior: "smooth",
   });
 };
 
 const slideRight = () => {
   sliderRef.value?.scrollBy({
-    left: 380,
+    left: 360,
     behavior: "smooth",
   });
 };

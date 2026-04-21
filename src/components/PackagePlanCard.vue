@@ -26,15 +26,19 @@
     </ul>
 
     <div class="package-footer">
-      <button class="package-btn" @click="$emit('choose', plan)">
-        {{ plan.buttonText }}
-      </button>
+      <button
+  ref="chooseBtnRef"
+  class="package-btn"
+  @click="handleChoose"
+>
+  {{ plan.buttonText }}
+</button>
     </div>
   </article>
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, ref } from "vue";
 
 const props = defineProps({
   plan: {
@@ -47,7 +51,15 @@ const props = defineProps({
   },
 });
 
-defineEmits(["choose"]);
+const emit = defineEmits(["choose"]);
+const chooseBtnRef = ref(null);
+
+const handleChoose = () => {
+  emit("choose", {
+    plan: props.plan,
+    sourceEl: chooseBtnRef.value,
+  });
+};
 
 const formatNumber = (num) => {
   return new Intl.NumberFormat("es-MX").format(Number(num || 0));

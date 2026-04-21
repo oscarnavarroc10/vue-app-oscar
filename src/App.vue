@@ -3,7 +3,6 @@
   <div class="background-fade"></div>
 
   <main class="page">
-    <!-- NAV -->
     <header class="top-nav">
       <a class="brand" href="#top" aria-label="Impulso Redes">
         <img
@@ -31,6 +30,7 @@
 
         <button
           v-if="cartItemsCount > 0"
+          ref="cartButtonRef"
           class="nav-cta nav-cta--cart"
           type="button"
           @click="goToCartView"
@@ -68,6 +68,7 @@
 
         <button
           v-if="cartItemsCount > 0"
+          ref="cartButtonRef"
           class="nav-cta nav-cta--cart"
           type="button"
           @click="goToCartView"
@@ -97,7 +98,6 @@
 
     <section id="top" class="top-spacer"></section>
 
-    <!-- LANDING -->
     <section v-if="viewMode === 'landing'" class="landing-section">
       <section id="planes">
         <SocialTabsBuilder
@@ -114,13 +114,12 @@
       <ContactLeadSection />
     </section>
 
-    <!-- CUSTOM BUILDER -->
     <section v-else-if="viewMode === 'customize'" class="builder-layout">
       <div class="details-main">
         <div class="section-header details-header">
           <div>
             <button class="back-btn" type="button" @click="goToLanding">
-              ← Atrás
+              ← Volver a home
             </button>
 
             <h2>Crea tu paquete personalizado</h2>
@@ -229,7 +228,6 @@
       </div>
     </section>
 
-    <!-- CART FULL VIEW -->
     <section v-else class="cart-view-layout">
       <div class="cart-view-main">
         <div class="section-header cart-view-header">
@@ -257,7 +255,6 @@
             :key="item.cartId || `${item.id}-${item.profile || 'noprof'}`"
             class="cart-view-card"
           >
-            <!-- PLAN -->
             <template v-if="item.cartType === 'plan'">
               <div class="cart-view-card-top">
                 <div class="cart-view-card-copy">
@@ -319,7 +316,6 @@
               </ul>
             </template>
 
-            <!-- SERVICE -->
             <template v-else>
               <div class="cart-view-card-top">
                 <div class="cart-view-card-copy">
@@ -443,6 +439,7 @@ import servicesData from "./data/services.json";
 import packagePlansData from "./data/package-plans.json";
 import serviceOptionsData from "./data/service-options.json";
 import { useCart } from "./composables/useCart";
+import { uiFeatures } from "./config/uiFeatures";
 import FloatingSocials from "./components/FloatingSocials.vue";
 import SocialTabsBuilder from "./components/SocialTabsBuilder.vue";
 import CartPanel from "./components/CartPanel.vue";
@@ -468,10 +465,12 @@ const {
   updateQuantity,
 } = useCart();
 
+const cartButtonRef = ref(null);
+
 const availableServices = ref(servicesData);
 const packagePlans = ref(packagePlansData);
 const serviceOptions = ref(serviceOptionsData);
-const viewMode = ref("landing"); // landing | customize | cart
+const viewMode = ref("landing");
 const selectedService = ref(null);
 
 const enabledServices = computed(() => {
@@ -493,7 +492,6 @@ const filteredSubServices = computed(() => {
 const goToLanding = () => {
   viewMode.value = "landing";
   selectedService.value = null;
-
   window.scrollTo({ top: 0, behavior: "smooth" });
 };
 
@@ -505,30 +503,19 @@ const goToCartView = () => {
 const goToCustomBuilder = () => {
   viewMode.value = "customize";
   selectedService.value = null;
-
   window.scrollTo({ top: 0, behavior: "smooth" });
 };
 
 const handleOpenMainService = async (service) => {
   selectedService.value = service;
-
   await nextTick();
-
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth",
-  });
+  window.scrollTo({ top: 0, behavior: "smooth" });
 };
 
 const handleBackToMainServices = async () => {
   selectedService.value = null;
-
   await nextTick();
-
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth",
-  });
+  window.scrollTo({ top: 0, behavior: "smooth" });
 };
 
 const getPlanItems = (plan) => {
@@ -546,29 +533,6 @@ const getPlanItems = (plan) => {
       category: option?.category || plan.category || "",
       price: Number(option?.price || 0),
     };
-  });
-};
-
-const choosePlan = (plan) => {
-  addToCart({
-    ...plan,
-    id: `plan-${plan.id}`,
-    price: Number(plan.price || 0),
-    oldPrice: Number(plan.oldPrice || 0),
-    quantity: 1,
-    profile: "",
-    cartType: "plan",
-    planItems: getPlanItems(plan),
-  });
-};
-
-const handleAddSubService = (service) => {
-  addToCart({
-    ...service,
-    id: service.id,
-    price: Number(service.price || 0),
-    quantity: Number(service.quantity || 100),
-    cartType: "service",
   });
 };
 
@@ -603,6 +567,84 @@ const formatPrice = (value) => {
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
   }).format(value);
+};
+
+const runFlyToCartAnimation = async (sourceEl) => {
+  if (!uiFeatures.enableFlyToCartAnimation) return;
+  if (!sourceEl || !cartButtonRef.value) return;
+
+  const from = sourceEl.getBoundingClientRect();
+  const to = cartButtonRef.value.getBoundingClientRect();
+
+  const ghost = sourceEl.cloneNode(true);
+  ghost.style.position = "fixed";
+  ghost.style.left = `${from.left}px`;
+  ghost.style.top = `${from.top}px`;
+  ghost.style.width = `${from.width}px`;
+  ghost.style.height = `${from.height}px`;
+  ghost.style.margin = "0";
+  ghost.style.zIndex = "9999";
+  ghost.style.pointerEvents = "none";
+  ghost.style.transformOrigin = "center center";
+  ghost.style.transition =
+    "transform 650ms cubic-bezier(0.22, 1, 0.36, 1), opacity 650ms ease, filter 650ms ease";
+  ghost.style.boxShadow = "0 24px 60px rgba(2, 6, 23, 0.28)";
+  ghost.style.opacity = "0.95";
+
+  document.body.appendChild(ghost);
+
+  await new Promise((resolve) => requestAnimationFrame(resolve));
+
+  const deltaX = to.left + to.width / 2 - (from.left + from.width / 2);
+  const deltaY = to.top + to.height / 2 - (from.top + from.height / 2);
+
+  ghost.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(0.18)`;
+  ghost.style.opacity = "0";
+  ghost.style.filter = "blur(6px)";
+
+  await new Promise((resolve) => setTimeout(resolve, 680));
+
+  ghost.remove();
+
+  cartButtonRef.value.animate(
+    [
+      { transform: "scale(1)" },
+      { transform: "scale(1.12)" },
+      { transform: "scale(0.98)" },
+      { transform: "scale(1)" },
+    ],
+    {
+      duration: 320,
+      easing: "ease",
+    }
+  );
+};
+
+const choosePlan = async ({ plan, sourceEl }) => {
+  await runFlyToCartAnimation(sourceEl);
+
+  addToCart({
+    ...plan,
+    id: `plan-${plan.id}`,
+    price: Number(plan.price || 0),
+    oldPrice: Number(plan.oldPrice || 0),
+    quantity: 1,
+    profile: "",
+    cartType: "plan",
+    planItems: getPlanItems(plan),
+  });
+};
+
+const handleAddSubService = async ({ service, sourceEl }) => {
+  await runFlyToCartAnimation(sourceEl);
+
+  addToCart({
+    ...service,
+    id: service.id,
+    price: Number(service.price || 0),
+    quantity: Number(service.quantity || 100),
+    cartType: "service",
+  });
 };
 </script>
 
@@ -1025,7 +1067,6 @@ const formatPrice = (value) => {
   color: #94a3b8;
 }
 
-/* CART FULL VIEW */
 .cart-view-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.7fr) 380px;
