@@ -22,10 +22,18 @@
 
       <div v-if="viewMode === 'landing'" class="nav-actions">
         <button
+          class="nav-cta nav-cta--secondary"
+          type="button"
+          @click="goToCustomBuilder"
+        >
+          Personalizar
+        </button>
+
+        <button
           v-if="cartItemsCount > 0"
           class="nav-cta nav-cta--cart"
           type="button"
-          @click="openCartFromNav"
+          @click="goToCartView"
         >
           <span class="nav-cart-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none">
@@ -49,14 +57,42 @@
         </button>
       </div>
 
-      <button
-        v-else
-        class="nav-cta"
-        type="button"
-        @click="goToLanding"
-      >
-        Volver a home
-      </button>
+      <div v-else class="nav-actions">
+        <button
+          class="nav-cta nav-cta--secondary"
+          type="button"
+          @click="goToLanding"
+        >
+          Volver a home
+        </button>
+
+        <button
+          v-if="cartItemsCount > 0"
+          class="nav-cta nav-cta--cart"
+          type="button"
+          @click="goToCartView"
+        >
+          <span class="nav-cart-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path
+                d="M3 4h2l2.2 10.2a1 1 0 0 0 .98.8H17a1 1 0 0 0 .97-.76L20 7H7"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <circle cx="10" cy="19" r="1.6" fill="currentColor" />
+              <circle cx="17" cy="19" r="1.6" fill="currentColor" />
+            </svg>
+          </span>
+
+          <span>Carrito</span>
+
+          <span class="nav-cart-badge">
+            {{ cartItemsCount }}
+          </span>
+        </button>
+      </div>
     </header>
 
     <section id="top" class="top-spacer"></section>
@@ -78,156 +114,310 @@
       <ContactLeadSection />
     </section>
 
-    <!-- CUSTOMIZE / CARRITO -->
-    <section
-      v-else
-      class="details-layout"
-      :class="{ 'details-layout--full': !shouldShowCart }"
-    >
+    <!-- CUSTOM BUILDER -->
+    <section v-else-if="viewMode === 'customize'" class="builder-layout">
       <div class="details-main">
-        <!-- MODO PAQUETES -->
-        <template v-if="customizeMode === 'packages'">
-          <div class="section-header details-header">
-            <div>
-              <h2>Paquetes por red social</h2>
+        <div class="section-header details-header">
+          <div>
+            <button class="back-btn" type="button" @click="goToLanding">
+              ← Atrás
+            </button>
 
-              <p class="selected-description">
-                Selecciona una pestaña, revisa los planes disponibles y agrégalos
-                al carrito.
-              </p>
-            </div>
+            <h2>Crea tu paquete personalizado</h2>
 
-            <div class="selected-chip">
-              {{ enabledServices.length }} categorías
-            </div>
+            <p class="selected-description">
+              Elige una red social, explora sus servicios y agrega únicamente lo
+              que sí necesitas para tu negocio o tu página.
+            </p>
           </div>
 
-          <SocialTabsBuilder
-            :services="enabledServices"
-            :package-plans="packagePlans"
-            :get-plan-items="getPlanItems"
-            @choose="choosePlan"
-          />
-        </template>
-
-        <!-- MODO BUILDER -->
-        <template v-else>
-          <div class="section-header details-header">
-            <div>
-              <button class="back-btn" type="button" @click="goToLanding">
-                ← Volver a home
-              </button>
-
-              <h2>Crea tu paquete personalizado</h2>
-
-              <p class="selected-description">
-                Elige una red social, explora sus servicios y agrega únicamente lo
-                que sí necesitas para tu negocio o tu página.
-              </p>
-            </div>
-
-            <div class="selected-chip">
-              {{ enabledServices.length }} categorías
-            </div>
+          <div class="selected-chip">
+            {{ enabledServices.length }} categorías
           </div>
+        </div>
 
-          <Transition name="builder-switch" mode="out-in">
-            <section
-              v-if="!selectedService"
-              key="platforms"
-              class="builder-stage"
-            >
-              <section class="custom-builder-hero">
-                <div class="custom-builder-copy">
-                  <span class="custom-builder-kicker">
-                    Constructor personalizado
-                  </span>
+        <Transition name="builder-switch" mode="out-in">
+          <section
+            v-if="!selectedService"
+            key="platforms"
+            class="builder-stage"
+          >
+            <section class="custom-builder-hero">
+              <div class="custom-builder-copy">
+                <span class="custom-builder-kicker">
+                  Constructor personalizado
+                </span>
 
-                  <h3>Selecciona una plataforma para empezar</h3>
-
-                  <p>
-                    Aquí puedes construir tu paquete a la medida. Primero elige la
-                    red social que quieres impulsar y después selecciona los
-                    servicios que deseas agregar.
-                  </p>
-                </div>
-
-                <div class="custom-builder-badge">
-                  Tú eliges qué incluir
-                </div>
-              </section>
-
-              <section class="main-services-grid">
-                <MainServiceCard
-                  v-for="service in enabledServices"
-                  :key="service.id"
-                  :service="service"
-                  @open="handleOpenMainService"
-                />
-              </section>
-            </section>
-
-            <section
-              v-else
-              key="subservices"
-              class="builder-stage"
-            >
-              <section class="subservices-stage-head">
-                <button
-                  class="subservices-back-btn"
-                  type="button"
-                  @click="handleBackToMainServices"
-                >
-                  ← Cambiar plataforma
-                </button>
-
-                <div class="subservices-stage-copy">
-                  <span class="subservices-kicker">
-                    {{ selectedService.category }}
-                  </span>
-
-                  <h3>{{ selectedService.name }}</h3>
-
-                  <p>
-                    {{ selectedService.description }}
-                  </p>
-                </div>
-
-                <div class="subservices-counter">
-                  {{ filteredSubServices.length }} servicios
-                </div>
-              </section>
-
-              <section v-if="filteredSubServices.length" class="subservices-grid">
-                <SubServiceCard
-                  v-for="subService in filteredSubServices"
-                  :key="subService.id"
-                  :service="subService"
-                  :cart="cart"
-                  :format-price="formatPrice"
-                  @add="handleAddSubService"
-                />
-              </section>
-
-              <div v-else class="subservices-empty">
-                <div class="subservices-empty-icon">✨</div>
-
-                <h4>Próximamente más servicios</h4>
+                <h3>Selecciona una plataforma para empezar</h3>
 
                 <p>
-                  Estamos preparando más opciones para
-                  {{ selectedService.category }}.
+                  Aquí puedes construir tu paquete a la medida. Primero elige la
+                  red social que quieres impulsar y después selecciona los
+                  servicios que deseas agregar.
                 </p>
               </div>
+
+              <div class="custom-builder-badge">
+                Tú eliges qué incluir
+              </div>
             </section>
-          </Transition>
-        </template>
+
+            <section class="main-services-grid">
+              <MainServiceCard
+                v-for="service in enabledServices"
+                :key="service.id"
+                :service="service"
+                @open="handleOpenMainService"
+              />
+            </section>
+          </section>
+
+          <section
+            v-else
+            key="subservices"
+            class="builder-stage"
+          >
+            <section class="subservices-stage-head">
+              <button
+                class="subservices-back-btn"
+                type="button"
+                @click="handleBackToMainServices"
+              >
+                ← Cambiar plataforma
+              </button>
+
+              <div class="subservices-stage-copy">
+                <span class="subservices-kicker">
+                  {{ selectedService.category }}
+                </span>
+
+                <h3>{{ selectedService.name }}</h3>
+
+                <p>
+                  {{ selectedService.description }}
+                </p>
+              </div>
+
+              <div class="subservices-counter">
+                {{ filteredSubServices.length }} servicios
+              </div>
+            </section>
+
+            <section v-if="filteredSubServices.length" class="subservices-grid">
+              <SubServiceCard
+                v-for="subService in filteredSubServices"
+                :key="subService.id"
+                :service="subService"
+                :cart="cart"
+                :format-price="formatPrice"
+                @add="handleAddSubService"
+              />
+            </section>
+
+            <div v-else class="subservices-empty">
+              <div class="subservices-empty-icon">✨</div>
+
+              <h4>Próximamente más servicios</h4>
+
+              <p>
+                Estamos preparando más opciones para
+                {{ selectedService.category }}.
+              </p>
+            </div>
+          </section>
+        </Transition>
+      </div>
+    </section>
+
+    <!-- CART FULL VIEW -->
+    <section v-else class="cart-view-layout">
+      <div class="cart-view-main">
+        <div class="section-header cart-view-header">
+          <div>
+            <button class="back-btn" type="button" @click="goToLanding">
+              ← Volver a home
+            </button>
+
+            <h2>Tu carrito</h2>
+
+            <p class="selected-description">
+              Revisa tus paquetes y servicios agregados antes de enviar tu
+              solicitud.
+            </p>
+          </div>
+
+          <div class="selected-chip">
+            {{ cartItemsCount }} elementos
+          </div>
+        </div>
+
+        <div v-if="cartItemsCount > 0" class="cart-items-list">
+          <article
+            v-for="item in cart"
+            :key="item.cartId || `${item.id}-${item.profile || 'noprof'}`"
+            class="cart-view-card"
+          >
+            <!-- PLAN -->
+            <template v-if="item.cartType === 'plan'">
+              <div class="cart-view-card-top">
+                <div class="cart-view-card-copy">
+                  <div class="cart-view-card-chips">
+                    <span class="cart-view-chip cart-view-chip--plan">
+                      Paquete
+                    </span>
+
+                    <span class="cart-view-chip cart-view-chip--muted">
+                      {{ item.planItems?.length || 0 }} servicios
+                    </span>
+                  </div>
+
+                  <h3>{{ item.name }}</h3>
+
+                  <p class="cart-view-muted">
+                    Plan listo para pedir con todos sus servicios incluidos.
+                  </p>
+                </div>
+
+                <div class="cart-view-card-side">
+                  <strong class="cart-view-price">
+                    ${{ formatPrice(getItemTotal(item)) }}
+                  </strong>
+
+                  <button
+                    class="cart-view-remove"
+                    type="button"
+                    @click="removeFromCart(item.cartId)"
+                  >
+                    Quitar
+                  </button>
+                </div>
+              </div>
+
+              <ul class="cart-view-plan-list">
+                <li
+                  v-for="planItem in item.planItems || []"
+                  :key="`${item.cartId}-${planItem.id}`"
+                  class="cart-view-plan-item"
+                >
+                  <div class="cart-view-plan-item-left">
+                    <span
+                      class="cart-view-category-pill"
+                      :class="getCategoryPillClass(planItem.category)"
+                    >
+                      {{ planItem.category }}
+                    </span>
+
+                    <span class="cart-view-plan-item-name">
+                      {{ planItem.name }}
+                    </span>
+                  </div>
+
+                  <span class="cart-view-plan-item-qty">
+                    {{ planItem.quantity }}
+                  </span>
+                </li>
+              </ul>
+            </template>
+
+            <!-- SERVICE -->
+            <template v-else>
+              <div class="cart-view-card-top">
+                <div class="cart-view-card-copy">
+                  <div class="cart-view-card-chips">
+                    <span
+                      class="cart-view-category-pill"
+                      :class="getCategoryPillClass(item.category)"
+                    >
+                      {{ item.category }}
+                    </span>
+
+                    <span class="cart-view-chip cart-view-chip--muted">
+                      Servicio
+                    </span>
+                  </div>
+
+                  <h3>{{ item.name }}</h3>
+
+                  <p v-if="item.profile" class="cart-view-profile">
+                    {{ item.profile }}
+                  </p>
+
+                  <p class="cart-view-muted">
+                    ${{ formatPrice(item.price) }} / 100 · {{ item.quantity }} unidades
+                  </p>
+                </div>
+
+                <div class="cart-view-card-side">
+                  <strong class="cart-view-price">
+                    ${{ formatPrice(getItemTotal(item)) }}
+                  </strong>
+
+                  <button
+                    class="cart-view-remove"
+                    type="button"
+                    @click="removeFromCart(item.cartId)"
+                  >
+                    Quitar
+                  </button>
+                </div>
+              </div>
+
+              <div class="cart-view-controls">
+                <button
+                  class="cart-view-qty-btn"
+                  type="button"
+                  @click="decreaseQuantity(item.cartId)"
+                >
+                  −
+                </button>
+
+                <input
+                  class="cart-view-qty-input"
+                  :value="item.quantity"
+                  type="number"
+                  min="100"
+                  step="100"
+                  @change="updateQuantity(item.cartId, $event.target.value)"
+                />
+
+                <button
+                  class="cart-view-qty-btn"
+                  type="button"
+                  @click="increaseQuantity(item.cartId)"
+                >
+                  +
+                </button>
+              </div>
+            </template>
+          </article>
+        </div>
+
+        <div v-else class="cart-empty-state">
+          <div class="cart-empty-icon">🛒</div>
+
+          <h3>Tu carrito está vacío</h3>
+
+          <p>
+            Agrega un paquete o arma uno personalizado para empezar.
+          </p>
+
+          <div class="cart-empty-actions">
+            <button class="nav-cta" type="button" @click="goToLanding">
+              Ver planes
+            </button>
+
+            <button
+              class="nav-cta nav-cta--secondary"
+              type="button"
+              @click="goToCustomBuilder"
+            >
+              Personalizar
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div
-        class="cart-panel-wrap"
-        :class="{ 'cart-panel-wrap--hidden': !shouldShowCart }"
-      >
+      <div class="cart-summary-panel">
         <CartPanel
           :cart="cart"
           :subtotal="subtotal"
@@ -235,13 +425,8 @@
           :discount-amount="discountAmount"
           :total="total"
           :format-price="formatPrice"
-          @update:cart="handleCartUpdate"
-          @remove="removeFromCart"
           @clear-cart="clearCart"
-          @increase="increaseQuantity"
-          @decrease="decreaseQuantity"
-          @update-quantity="updateQuantity"
-          @close-cart="closeCartPanel"
+          @close-cart="goToLanding"
         />
       </div>
     </section>
@@ -286,20 +471,14 @@ const {
 const availableServices = ref(servicesData);
 const packagePlans = ref(packagePlansData);
 const serviceOptions = ref(serviceOptionsData);
-const viewMode = ref("landing");
-const customizeMode = ref("packages"); // packages | builder
+const viewMode = ref("landing"); // landing | customize | cart
 const selectedService = ref(null);
-const isCartOpen = ref(false);
 
 const enabledServices = computed(() => {
   return availableServices.value.filter((service) => service.isEnabled);
 });
 
 const cartItemsCount = computed(() => cart.value.length);
-
-const shouldShowCart = computed(() => {
-  return cart.value.length > 0 && isCartOpen.value;
-});
 
 const filteredSubServices = computed(() => {
   if (!selectedService.value) return [];
@@ -313,38 +492,21 @@ const filteredSubServices = computed(() => {
 
 const goToLanding = () => {
   viewMode.value = "landing";
-  customizeMode.value = "packages";
   selectedService.value = null;
-  isCartOpen.value = false;
 
   window.scrollTo({ top: 0, behavior: "smooth" });
 };
 
-const goToPackagesView = ({ openCart = false } = {}) => {
-  viewMode.value = "customize";
-  customizeMode.value = "packages";
-  selectedService.value = null;
-  isCartOpen.value = openCart;
-
+const goToCartView = () => {
+  viewMode.value = "cart";
   window.scrollTo({ top: 0, behavior: "smooth" });
 };
 
 const goToCustomBuilder = () => {
   viewMode.value = "customize";
-  customizeMode.value = "builder";
   selectedService.value = null;
-  isCartOpen.value = false;
 
   window.scrollTo({ top: 0, behavior: "smooth" });
-};
-
-const openCartFromNav = () => {
-  if (!cart.value.length) return;
-  goToPackagesView({ openCart: true });
-};
-
-const closeCartPanel = () => {
-  isCartOpen.value = false;
 };
 
 const handleOpenMainService = async (service) => {
@@ -398,8 +560,6 @@ const choosePlan = (plan) => {
     cartType: "plan",
     planItems: getPlanItems(plan),
   });
-
-  // Ya NO abrimos el carrito automáticamente
 };
 
 const handleAddSubService = (service) => {
@@ -412,40 +572,30 @@ const handleAddSubService = (service) => {
   });
 };
 
-const getCartItemKey = (item) => {
-  return `${item.id}::${item.profile || ""}`;
+const getItemTotal = (item) => {
+  if (item.cartType === "plan") {
+    return Number(item.price || 0) * Number(item.quantity || 1);
+  }
+
+  return (Number(item.price || 0) / 100) * (Number(item.quantity) || 0);
 };
 
-const handleCartUpdate = (value) => {
-  const mergedMap = new Map();
+const getCategoryPillClass = (category) => {
+  const classMap = {
+    Instagram: "pill-instagram",
+    Facebook: "pill-facebook",
+    TikTok: "pill-tiktok",
+    YouTube: "pill-youtube",
+    Snapchat: "pill-snapchat",
+    X: "pill-x",
+    Discord: "pill-discord",
+    Twitch: "pill-twitch",
+    Spotify: "pill-spotify",
+    Telegram: "pill-telegram",
+    WhatsApp: "pill-whatsapp",
+  };
 
-  value.forEach((item) => {
-    if (item.cartType === "plan") {
-      mergedMap.set(item.cartId, {
-        ...item,
-        cartId: item.cartId,
-        quantity: Number(item.quantity || 1),
-      });
-      return;
-    }
-
-    const key = getCartItemKey(item);
-    const existing = mergedMap.get(key);
-
-    if (existing) {
-      existing.quantity += Number(item.quantity || 100);
-    } else {
-      mergedMap.set(key, {
-        ...item,
-        cartId: item.cartId || key,
-        quantity: Number(item.quantity || 100),
-        profile: item.profile || "",
-        cartType: "service",
-      });
-    }
-  });
-
-  cart.value = Array.from(mergedMap.values());
+  return classMap[category] || "pill-default";
 };
 
 const formatPrice = (value) => {
@@ -635,7 +785,8 @@ const formatPrice = (value) => {
 }
 
 .landing-section,
-.details-layout {
+.builder-layout,
+.cart-view-layout {
   max-width: 1400px;
   margin: 0 auto;
 }
@@ -667,22 +818,12 @@ const formatPrice = (value) => {
   color: #94a3b8;
 }
 
-.details-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1.7fr) 380px;
-  gap: 20px;
-  align-items: start;
-  transition:
-    grid-template-columns 0.45s ease,
-    gap 0.45s ease;
+.builder-layout {
+  max-width: 1180px;
 }
 
-.details-layout--full {
-  grid-template-columns: minmax(0, 1fr) 0;
-  gap: 0;
-}
-
-.details-main {
+.details-main,
+.cart-view-main {
   background: rgba(15, 23, 42, 0.7);
   border-radius: 26px;
   padding: 24px;
@@ -696,7 +837,8 @@ const formatPrice = (value) => {
   -webkit-backdrop-filter: blur(12px);
 }
 
-.details-header {
+.details-header,
+.cart-view-header {
   margin-bottom: 20px;
 }
 
@@ -883,24 +1025,339 @@ const formatPrice = (value) => {
   color: #94a3b8;
 }
 
-.cart-panel-wrap {
-  width: 380px;
-  min-width: 0;
-  overflow: hidden;
-  opacity: 1;
-  transform: translateX(0);
-  transition:
-    width 0.45s ease,
-    opacity 0.35s ease,
-    transform 0.45s ease;
-  will-change: width, opacity, transform;
+/* CART FULL VIEW */
+.cart-view-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) 380px;
+  gap: 20px;
+  align-items: start;
 }
 
-.cart-panel-wrap--hidden {
-  width: 0;
-  opacity: 0;
-  transform: translateX(28px);
-  pointer-events: none;
+.cart-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cart-view-card {
+  border-radius: 24px;
+  padding: 20px;
+  background: linear-gradient(
+    180deg,
+    rgba(10, 18, 34, 0.86) 0%,
+    rgba(8, 14, 26, 0.92) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow:
+    0 16px 32px rgba(2, 6, 23, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.cart-view-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.cart-view-card-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.cart-view-card-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.cart-view-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 14px;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.cart-view-chip--plan {
+  background: linear-gradient(
+    135deg,
+    rgba(124, 58, 237, 0.18),
+    rgba(37, 99, 235, 0.16)
+  );
+  color: #c4b5fd;
+}
+
+.cart-view-chip--muted {
+  background: rgba(255, 255, 255, 0.06);
+  color: #cbd5e1;
+}
+
+.cart-view-category-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 14px;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  border: 1px solid transparent;
+}
+
+.pill-instagram {
+  background: linear-gradient(
+    135deg,
+    rgba(245, 133, 41, 0.14),
+    rgba(221, 42, 123, 0.18),
+    rgba(129, 52, 175, 0.14)
+  );
+  color: #f9a8d4;
+}
+
+.pill-facebook {
+  background: linear-gradient(
+    135deg,
+    rgba(24, 119, 242, 0.14),
+    rgba(96, 165, 250, 0.18)
+  );
+  color: #93c5fd;
+}
+
+.pill-tiktok {
+  background: linear-gradient(
+    135deg,
+    rgba(37, 244, 238, 0.12),
+    rgba(17, 24, 39, 0.12),
+    rgba(254, 44, 85, 0.14)
+  );
+  color: #d1d5db;
+}
+
+.pill-youtube {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 0, 0, 0.12),
+    rgba(239, 68, 68, 0.16)
+  );
+  color: #fca5a5;
+}
+
+.pill-snapchat {
+  background: linear-gradient(
+    135deg,
+    rgba(250, 204, 21, 0.14),
+    rgba(245, 158, 11, 0.14)
+  );
+  color: #fde68a;
+}
+
+.pill-x {
+  background: linear-gradient(
+    135deg,
+    rgba(30, 41, 59, 0.16),
+    rgba(71, 85, 105, 0.18)
+  );
+  color: #cbd5e1;
+}
+
+.pill-discord {
+  background: linear-gradient(
+    135deg,
+    rgba(88, 101, 242, 0.14),
+    rgba(129, 140, 248, 0.18)
+  );
+  color: #c4b5fd;
+}
+
+.pill-twitch {
+  background: linear-gradient(
+    135deg,
+    rgba(145, 70, 255, 0.14),
+    rgba(168, 85, 247, 0.18)
+  );
+  color: #d8b4fe;
+}
+
+.pill-spotify {
+  background: linear-gradient(
+    135deg,
+    rgba(29, 185, 84, 0.14),
+    rgba(34, 197, 94, 0.18)
+  );
+  color: #86efac;
+}
+
+.pill-telegram {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 136, 204, 0.14),
+    rgba(56, 189, 248, 0.18)
+  );
+  color: #7dd3fc;
+}
+
+.pill-whatsapp {
+  background: linear-gradient(
+    135deg,
+    rgba(37, 211, 102, 0.14),
+    rgba(74, 222, 128, 0.18)
+  );
+  color: #86efac;
+}
+
+.pill-default {
+  background: rgba(148, 163, 184, 0.14);
+  color: #cbd5e1;
+}
+
+.cart-view-card h3 {
+  margin: 0 0 8px;
+  color: #ffffff;
+  font-size: 1.22rem;
+  line-height: 1.15;
+}
+
+.cart-view-muted {
+  margin: 0;
+  color: #94a3b8;
+  line-height: 1.6;
+}
+
+.cart-view-profile {
+  margin: 0 0 8px;
+  color: #60a5fa;
+  line-height: 1.5;
+  word-break: break-all;
+}
+
+.cart-view-card-side {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.cart-view-price {
+  color: #ffffff;
+  font-size: 1.18rem;
+  line-height: 1;
+}
+
+.cart-view-remove {
+  border: none;
+  background: transparent;
+  color: #f87171;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+}
+
+.cart-view-plan-list {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cart-view-plan-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.cart-view-plan-item-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.cart-view-plan-item-name {
+  color: #e5e7eb;
+  font-weight: 700;
+}
+
+.cart-view-plan-item-qty {
+  color: #60a5fa;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.cart-view-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.cart-view-qty-btn {
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  font-size: 1.15rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.cart-view-qty-input {
+  width: 120px;
+  height: 40px;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 12px;
+  padding: 0 12px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.cart-summary-panel {
+  width: 380px;
+}
+
+.cart-empty-state {
+  padding: 48px 24px;
+  border-radius: 24px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.cart-empty-icon {
+  font-size: 2.4rem;
+  margin-bottom: 12px;
+}
+
+.cart-empty-state h3 {
+  margin: 0 0 10px;
+  color: #ffffff;
+}
+
+.cart-empty-state p {
+  margin: 0;
+  color: #94a3b8;
+}
+
+.cart-empty-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 18px;
 }
 
 .floating-socials-wrap {
@@ -941,15 +1398,6 @@ const formatPrice = (value) => {
     gap: 20px;
   }
 
-  .details-layout {
-    grid-template-columns: minmax(0, 1fr) 360px;
-    gap: 18px;
-  }
-
-  .cart-panel-wrap {
-    width: 360px;
-  }
-
   .main-services-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -957,24 +1405,23 @@ const formatPrice = (value) => {
   .subservices-grid {
     grid-template-columns: 1fr;
   }
+
+  .cart-view-layout {
+    grid-template-columns: 1fr 360px;
+  }
+
+  .cart-summary-panel {
+    width: 360px;
+  }
 }
 
 @media (max-width: 1100px) {
-  .details-layout {
+  .cart-view-layout {
     grid-template-columns: 1fr;
   }
 
-  .details-layout--full {
-    grid-template-columns: 1fr;
-    gap: 22px;
-  }
-
-  .cart-panel-wrap,
-  .cart-panel-wrap--hidden {
+  .cart-summary-panel {
     width: 100%;
-    opacity: 1;
-    transform: none;
-    pointer-events: auto;
   }
 }
 
@@ -1019,12 +1466,15 @@ const formatPrice = (value) => {
 
   .section-header,
   .custom-builder-hero,
-  .subservices-stage-head {
+  .subservices-stage-head,
+  .cart-view-header,
+  .cart-view-card-top {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .details-main {
+  .details-main,
+  .cart-view-main {
     padding: 18px;
     border-radius: 22px;
   }
@@ -1032,6 +1482,10 @@ const formatPrice = (value) => {
   .main-services-grid,
   .subservices-grid {
     grid-template-columns: 1fr;
+  }
+
+  .cart-view-card-side {
+    align-items: flex-start;
   }
 
   #planes,
@@ -1051,7 +1505,8 @@ const formatPrice = (value) => {
     height: 52px;
   }
 
-  .details-main {
+  .details-main,
+  .cart-view-main {
     padding: 16px;
   }
 
@@ -1059,6 +1514,10 @@ const formatPrice = (value) => {
   .subservices-back-btn {
     width: 100%;
     justify-content: center;
+  }
+
+  .cart-empty-actions {
+    flex-direction: column;
   }
 }
 </style>
