@@ -41,7 +41,7 @@
         <input
           type="hidden"
           name="_next"
-          value="https://tudominio.com/gracias"
+          value="https://impulsoredes.com.mx/gracias"
         />
 
         <div class="form-grid">

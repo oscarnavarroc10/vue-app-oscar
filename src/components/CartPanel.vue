@@ -119,7 +119,7 @@ Perfil: ${item.profile || "No especificado"}`;
     })
     .join("\n\n");
 
-  const finalMessage = `Hola Porkba👋
+  const finalMessage = `Hola Emmanuel
 
 Quiero solicitar lo(s) siguiente(s):
 

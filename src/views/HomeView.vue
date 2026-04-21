@@ -10,9 +10,18 @@
     </section>
 
     <CustomPackageBanner @customize="goToCustomBuilder" />
-    <TestimonialsSection />
-    <FaqSection />
-    <ContactLeadSection />
+
+    <section id="comentarios">
+      <TestimonialsSection />
+    </section>
+
+    <section id="faq">
+      <FaqSection />
+    </section>
+
+    <section id="contacto">
+      <ContactLeadSection />
+    </section>
   </section>
 </template>
 
@@ -33,7 +42,6 @@ import FaqSection from "@/components/FaqSection.vue";
 import ContactLeadSection from "@/components/ContactLeadSection.vue";
 
 const router = useRouter();
-
 const { addToCart } = useCart();
 
 const availableServices = ref(servicesData);

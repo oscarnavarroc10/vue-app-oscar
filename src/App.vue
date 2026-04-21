@@ -3,7 +3,6 @@
   <div class="background-fade"></div>
 
   <main class="page">
-    <!-- NAV -->
     <header class="top-nav">
       <RouterLink class="brand" to="/" aria-label="Impulso Redes">
         <img
@@ -15,8 +14,9 @@
 
       <nav class="nav-links">
         <RouterLink to="/plans">Planes</RouterLink>
+        <RouterLink to="/#comentarios">Comentarios</RouterLink>
         <RouterLink to="/faq">Preguntas</RouterLink>
-        <RouterLink to="/cart">Carrito</RouterLink>
+        <RouterLink to="/#contacto">Contacto</RouterLink>
       </nav>
 
       <div class="nav-actions">
@@ -49,14 +49,18 @@
 
     <section id="top" class="top-spacer"></section>
 
-    <!-- Aquí Vue Router renderiza cada pantalla -->
     <RouterView />
+
+    <div class="floating-socials-wrap">
+      <FloatingSocials />
+    </div>
   </main>
 </template>
 
 <script setup>
 import { RouterLink, RouterView } from "vue-router";
 import logoImpulso from "@/assets/impulso_redes_logo.png";
+import FloatingSocials from "@/components/FloatingSocials.vue";
 </script>
 
 <style scoped>
@@ -114,25 +118,20 @@ import logoImpulso from "@/assets/impulso_redes_logo.png";
   max-width: 1400px;
   margin: 0 auto 18px;
   padding: 12px 22px;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 18px;
-
   border-radius: 24px;
   border: 1px solid rgba(255, 255, 255, 0.08);
-
   background: linear-gradient(
     180deg,
     rgba(7, 12, 24, 0.82) 0%,
     rgba(7, 12, 24, 0.72) 100%
   );
-
   box-shadow:
     0 18px 36px rgba(2, 6, 23, 0.22),
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
-
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
 }
@@ -166,11 +165,7 @@ import logoImpulso from "@/assets/impulso_redes_logo.png";
     opacity 0.18s ease;
 }
 
-.nav-links a:hover {
-  color: #ffffff;
-  opacity: 1;
-}
-
+.nav-links a:hover,
 .nav-links a.router-link-active {
   color: #ffffff;
 }
@@ -188,20 +183,15 @@ import logoImpulso from "@/assets/impulso_redes_logo.png";
   padding: 0 20px;
   border-radius: 14px;
   cursor: pointer;
-
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
   color: white;
   font-weight: 800;
   font-size: 0.95rem;
-
   border: none;
-
   background: linear-gradient(135deg, #7c3aed, #2563eb);
   box-shadow: 0 12px 24px rgba(99, 102, 241, 0.22);
-
   transition:
     transform 0.18s ease,
     box-shadow 0.18s ease,
@@ -244,6 +234,11 @@ import logoImpulso from "@/assets/impulso_redes_logo.png";
 
 .top-spacer {
   height: 4px;
+}
+
+.floating-socials-wrap {
+  position: relative;
+  z-index: 12;
 }
 
 @media (max-width: 900px) {
