@@ -19,7 +19,8 @@
       <div class="sub-card-price-wrap">
         <span class="sub-card-price-label">Precio</span>
         <strong class="sub-card-price">
-          ${{ formatPrice(service.price) }} por cada 1000
+          ${{ formatPrice(service.price) }} por cada
+          {{ formatNumber(service.unitBase || 100) }}
         </strong>
       </div>
     </div>
@@ -48,7 +49,7 @@
           </label>
 
           <span class="field-help-text">
-            Mínimo 100
+            Mínimo {{ formatNumber(service.minQuantity || 100) }}
           </span>
         </div>
 
@@ -58,17 +59,17 @@
           class="field-input"
           :class="{ 'field-input-error': showQuantityError }"
           type="number"
-          min="100"
-          step="100"
-          placeholder="Ejemplo: 100"
+          :min="service.minQuantity || 100"
+          :step="service.step || 100"
+          :placeholder="`Ejemplo: ${service.minQuantity || 100}`"
         />
 
         <small class="field-note">
-          Ingresa 100 o más unidades.
+          Ingresa {{ formatNumber(service.minQuantity || 100) }} o más unidades.
         </small>
 
         <small v-if="showQuantityError" class="field-error-label">
-          La cantidad mínima es 100.
+          La cantidad mínima es {{ formatNumber(service.minQuantity || 100) }}.
         </small>
       </div>
 
@@ -165,7 +166,7 @@ const emit = defineEmits(["add"]);
 const addBtnRef = ref(null);
 const showHelp = ref(false);
 const profileLink = ref("");
-const quantityInput = ref(100);
+const quantityInput = ref(Number(props.service.minQuantity || 100));
 const showProfileError = ref(false);
 const showQuantityError = ref(false);
 
@@ -202,7 +203,8 @@ const isValidProfileUrl = (value) => {
 
 const isValidQuantity = (value) => {
   const parsed = Number(value);
-  return Number.isFinite(parsed) && parsed >= 100;
+  const min = Number(props.service.minQuantity || 100);
+  return Number.isFinite(parsed) && parsed >= min;
 };
 
 watch(profileLink, (newValue) => {
@@ -249,6 +251,9 @@ const handleAddToCart = () => {
       ...props.service,
       profile: normalizedProfile,
       quantity: Number(quantityInput.value),
+      unitBase: Number(props.service.unitBase || 100),
+      minQuantity: Number(props.service.minQuantity || 100),
+      step: Number(props.service.step || 100),
     },
     sourceEl: addBtnRef.value,
   });

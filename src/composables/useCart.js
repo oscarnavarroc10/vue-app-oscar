@@ -17,9 +17,12 @@ export function useCart() {
     return {
       ...service,
       cartId: crypto.randomUUID(),
-      quantity: Number(service.quantity ?? 100),
+      quantity: Number(service.quantity ?? service.minQuantity ?? 100),
       profile: normalizedProfile,
       cartType: service.cartType || "service",
+      unitBase: Number(service.unitBase ?? 100),
+      minQuantity: Number(service.minQuantity ?? 100),
+      step: Number(service.step ?? 100),
     };
   };
 
@@ -36,7 +39,9 @@ export function useCart() {
     }
 
     const normalizedProfile = normalizeProfile(service.profile);
-    const incomingQuantity = Number(service.quantity ?? 100);
+    const incomingQuantity = Number(
+      service.quantity ?? service.minQuantity ?? 100,
+    );
 
     const existing = cart.value.find(
       (item) =>
@@ -55,6 +60,9 @@ export function useCart() {
       quantity: incomingQuantity,
       profile: normalizedProfile,
       cartType: "service",
+      unitBase: Number(service.unitBase ?? 100),
+      minQuantity: Number(service.minQuantity ?? 100),
+      step: Number(service.step ?? 100),
     });
   };
 
@@ -70,7 +78,7 @@ export function useCart() {
     const parsedQuantity = Number(quantity);
 
     if (Number.isNaN(parsedQuantity)) {
-      item.quantity = item.cartType === "plan" ? 1 : 100;
+      item.quantity = item.cartType === "plan" ? 1 : Number(item.minQuantity || 100);
       return;
     }
 
@@ -79,8 +87,10 @@ export function useCart() {
       return;
     }
 
-    if (parsedQuantity < 100) {
-      item.quantity = 100;
+    const minQuantity = Number(item.minQuantity || 100);
+
+    if (parsedQuantity < minQuantity) {
+      item.quantity = minQuantity;
       return;
     }
 
@@ -97,7 +107,7 @@ export function useCart() {
       return;
     }
 
-    item.quantity += 100;
+    item.quantity += Number(item.step || 100);
   };
 
   const decreaseQuantity = (cartId) => {
@@ -110,11 +120,18 @@ export function useCart() {
       return;
     }
 
-    item.quantity = Math.max(100, item.quantity - 100);
+    const minQuantity = Number(item.minQuantity || 100);
+    const step = Number(item.step || 100);
+
+    item.quantity = Math.max(minQuantity, item.quantity - step);
   };
 
   const getItemUnitPrice = (item) => {
     return Number(item.price || 0);
+  };
+
+  const getItemUnitBase = (item) => {
+    return Number(item.unitBase || 100);
   };
 
   const getItemTotal = (item) => {
@@ -122,7 +139,11 @@ export function useCart() {
       return Number(item.price || 0) * Number(item.quantity || 1);
     }
 
-    return (getItemUnitPrice(item) / 100) * Number(item.quantity || 0);
+    const quantity = Number(item.quantity || 0);
+    const unitPrice = getItemUnitPrice(item);
+    const unitBase = getItemUnitBase(item);
+
+    return (quantity / unitBase) * unitPrice;
   };
 
   const subtotal = computed(() => {
@@ -156,15 +177,14 @@ export function useCart() {
   const discountAmount = computed(() => {
     return subtotal.value * (discountPercentage.value / 100);
   });
-  
 
   const total = computed(() => {
     return subtotal.value - discountAmount.value;
   });
-  
+
   const clearCart = () => {
-  cart.value = [];
-};
+    cart.value = [];
+  };
 
   return {
     cart,
@@ -179,6 +199,7 @@ export function useCart() {
     increaseQuantity,
     decreaseQuantity,
     getItemUnitPrice,
+    getItemUnitBase,
     getItemTotal,
     cloneService,
     buildCartItemKey,

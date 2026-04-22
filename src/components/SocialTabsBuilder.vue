@@ -1,6 +1,5 @@
 <template>
   <section class="social-tabs-builder">
-    <!-- Header -->
     <div class="builder-header">
       <span class="builder-kicker">Planes por red social</span>
 
@@ -12,9 +11,7 @@
       </p>
     </div>
 
-    <!-- Shell -->
     <div class="tabs-shell">
-      <!-- Tabs -->
       <div class="tabs-bar">
         <button
           v-for="service in enabledServices"
@@ -27,15 +24,22 @@
           ]"
           @click="activeTab = service.category"
         >
-          <span class="tab-icon">{{ getIcon(service.category) }}</span>
-          <span>{{ service.name }}</span>
+          <span class="tab-icon-wrap">
+            <img
+              v-if="getIcon(service.category)"
+              :src="getIcon(service.category)"
+              :alt="service.name"
+              class="tab-icon-img"
+            />
+          </span>
+
+          <span class="tab-label">{{ service.name }}</span>
         </button>
       </div>
 
-      <!-- Content -->
       <div class="tabs-content">
         <div class="content-head">
-          <div>
+          <div class="content-copy">
             <h3>{{ currentService?.name }}</h3>
 
             <p>
@@ -48,7 +52,6 @@
           </div>
         </div>
 
-        <!-- Slider -->
         <div v-if="filteredPlans.length" class="plans-wrapper">
           <button
             v-if="canGoLeft"
@@ -83,7 +86,6 @@
           </button>
         </div>
 
-        <!-- Empty -->
         <div v-else class="empty-state">
           <div class="empty-icon">✨</div>
 
@@ -101,6 +103,15 @@
 <script setup>
 import { computed, ref, watch, nextTick } from "vue";
 import PackagePlanCard from "./PackagePlanCard.vue";
+
+import instagramIcon from "@/assets/instagram_neon.svg";
+import facebookIcon from "@/assets/facebook_neon.svg";
+import tiktokIcon from "@/assets/tiktok_neon.svg";
+import youtubeIcon from "@/assets/youtube_neon.svg";
+import twitterIcon from "@/assets/twitter_neon.svg";
+import spotifyIcon from "@/assets/spotify_neon.svg";
+import telegramIcon from "@/assets/telegram_neon.svg";
+import whatsappIcon from "@/assets/whatsapp_neon.svg";
 
 const props = defineProps({
   services: {
@@ -120,7 +131,6 @@ const props = defineProps({
 const emit = defineEmits(["choose"]);
 
 const sliderRef = ref(null);
-
 const canGoLeft = ref(false);
 const canGoRight = ref(false);
 
@@ -172,7 +182,6 @@ const emitChoose = (payload) => {
 
 const updateArrows = () => {
   const el = sliderRef.value;
-
   if (!el) return;
 
   canGoLeft.value = el.scrollLeft > 10;
@@ -199,17 +208,17 @@ const slideRight = () => {
 
 const getIcon = (category) => {
   const icons = {
-    Instagram: "📸",
-    Facebook: "📘",
-    TikTok: "🎵",
-    X: "✖️",
-    YouTube: "▶️",
-    Spotify: "🎧",
-    Telegram: "✈️",
-    WhatsApp: "💬",
+    Instagram: instagramIcon,
+    Facebook: facebookIcon,
+    TikTok: tiktokIcon,
+    X: twitterIcon,
+    YouTube: youtubeIcon,
+    Spotify: spotifyIcon,
+    Telegram: telegramIcon,
+    WhatsApp: whatsappIcon,
   };
 
-  return icons[category] || "✨";
+  return icons[category] || null;
 };
 
 const getThemeClass = (category) => {
@@ -229,6 +238,12 @@ const getThemeClass = (category) => {
 </script>
 
 <style scoped>
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 .social-tabs-builder {
   margin-top: 18px;
 }
@@ -253,6 +268,7 @@ const getThemeClass = (category) => {
   margin: 0 0 10px;
   font-size: clamp(1.9rem, 4vw, 2.7rem);
   color: #fff;
+  line-height: 1.08;
 }
 
 .builder-header p {
@@ -265,58 +281,86 @@ const getThemeClass = (category) => {
 .tabs-shell {
   border-radius: 28px;
   overflow: hidden;
-
   background: linear-gradient(
     180deg,
-    rgba(15, 23, 42, 0.92),
+    rgba(15, 23, 42, 0.9),
     rgba(10, 16, 28, 0.94)
   );
-
-  border: 1px solid rgba(255,255,255,0.08);
-
-  box-shadow: 0 22px 50px rgba(2,6,23,0.35);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 22px 50px rgba(2, 6, 23, 0.35);
 }
 
-/* Tabs */
 .tabs-bar {
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
+  grid-template-columns: repeat(8, minmax(0, 1fr));
   gap: 12px;
   padding: 16px;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .tab-btn {
+  position: relative;
   width: 100%;
-  min-height: 56px;
-
-  border: none;
+  min-height: 62px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: 18px;
-
   color: #fff;
-  font-size: 1rem;
+  font-size: 0.96rem;
   font-weight: 800;
-
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-
+  gap: 10px;
   cursor: pointer;
-  opacity: 0.78;
-
-  transition: all 0.22s ease;
+  opacity: 0.82;
+  transition:
+    transform 0.22s ease,
+    opacity 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.22s ease,
+    filter 0.22s ease;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 10px 22px rgba(2, 6, 23, 0.14);
 }
 
 .tab-btn:hover {
   opacity: 1;
   transform: translateY(-1px);
+  filter: brightness(1.03);
 }
 
 .tab-btn.active {
   opacity: 1;
   transform: translateY(-2px);
-  box-shadow: 0 14px 28px rgba(0,0,0,.25);
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow:
+    0 16px 30px rgba(2, 6, 23, 0.24),
+    0 0 18px rgba(59, 130, 246, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.tab-icon-wrap {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab-icon-img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.08));
+}
+
+.tab-label {
+  min-width: 0;
+  text-align: center;
+  line-height: 1.15;
 }
 
 .tabs-content {
@@ -326,14 +370,20 @@ const getThemeClass = (category) => {
 .content-head {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
   gap: 18px;
   margin-bottom: 22px;
+}
+
+.content-copy {
+  min-width: 0;
 }
 
 .content-head h3 {
   margin: 0 0 8px;
   color: #fff;
   font-size: 1.55rem;
+  line-height: 1.08;
 }
 
 .content-head p {
@@ -348,13 +398,13 @@ const getThemeClass = (category) => {
   padding: 14px;
   height: fit-content;
   border-radius: 18px;
-  background: rgba(255,255,255,0.05);
+  background: rgba(255, 255, 255, 0.05);
   color: #cbd5e1;
   font-weight: 800;
   text-align: center;
+  flex-shrink: 0;
 }
 
-/* Slider */
 .plans-wrapper {
   position: relative;
 }
@@ -366,6 +416,7 @@ const getThemeClass = (category) => {
   scroll-behavior: smooth;
   padding: 6px 42px 12px;
   scrollbar-width: none;
+  scroll-snap-type: x proximity;
 }
 
 .plans-slider::-webkit-scrollbar {
@@ -374,6 +425,7 @@ const getThemeClass = (category) => {
 
 .plans-slider > * {
   flex: 0 0 auto;
+  scroll-snap-align: start;
 }
 
 .slider-arrow {
@@ -381,24 +433,17 @@ const getThemeClass = (category) => {
   top: 50%;
   transform: translateY(-50%);
   z-index: 5;
-
   width: 44px;
   height: 44px;
-
   border: none;
   border-radius: 999px;
-
   cursor: pointer;
-
   font-size: 2rem;
   font-weight: 700;
   line-height: 1;
-
   color: white;
-
-  background: rgba(15,23,42,.88);
-  border: 1px solid rgba(255,255,255,.08);
-
+  background: rgba(15, 23, 42, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(12px);
 }
 
@@ -411,10 +456,9 @@ const getThemeClass = (category) => {
 }
 
 .slider-arrow:hover {
-  background: rgba(30,41,59,.95);
+  background: rgba(30, 41, 59, 0.95);
 }
 
-/* Empty */
 .empty-state {
   padding: 50px 20px;
   text-align: center;
@@ -435,67 +479,200 @@ const getThemeClass = (category) => {
   color: #94a3b8;
 }
 
-/* Themes */
 .theme-instagram {
-  background: linear-gradient(135deg,#f58529,#dd2a7b,#8134af);
+  background: linear-gradient(
+    135deg,
+    rgba(245, 133, 41, 0.24),
+    rgba(221, 42, 123, 0.26),
+    rgba(129, 52, 175, 0.22)
+  );
 }
 
 .theme-facebook {
-  background: linear-gradient(135deg,#1877f2,#60a5fa);
+  background: linear-gradient(
+    135deg,
+    rgba(24, 119, 242, 0.24),
+    rgba(96, 165, 250, 0.24)
+  );
 }
 
 .theme-tiktok {
-  background: linear-gradient(135deg,#111827,#25f4ee,#fe2c55);
+  background: linear-gradient(
+    135deg,
+    rgba(17, 24, 39, 0.26),
+    rgba(37, 244, 238, 0.2),
+    rgba(254, 44, 85, 0.2)
+  );
 }
 
 .theme-x {
-  background: linear-gradient(135deg,#111827,#334155);
+  background: linear-gradient(
+    135deg,
+    rgba(15, 23, 42, 0.26),
+    rgba(51, 65, 85, 0.26)
+  );
 }
 
 .theme-youtube {
-  background: linear-gradient(135deg,#dc2626,#ef4444);
+  background: linear-gradient(
+    135deg,
+    rgba(220, 38, 38, 0.24),
+    rgba(239, 68, 68, 0.24)
+  );
 }
 
 .theme-spotify {
-  background: linear-gradient(135deg,#1db954,#22c55e);
+  background: linear-gradient(
+    135deg,
+    rgba(29, 185, 84, 0.24),
+    rgba(34, 197, 94, 0.24)
+  );
 }
 
 .theme-telegram {
-  background: linear-gradient(135deg,#0088cc,#38bdf8);
+  background: linear-gradient(
+    135deg,
+    rgba(0, 136, 204, 0.24),
+    rgba(56, 189, 248, 0.24)
+  );
 }
 
 .theme-whatsapp {
-  background: linear-gradient(135deg,#25d366,#4ade80);
+  background: linear-gradient(
+    135deg,
+    rgba(37, 211, 102, 0.24),
+    rgba(74, 222, 128, 0.24)
+  );
 }
 
 .theme-default {
-  background: linear-gradient(135deg,#475569,#64748b);
+  background: linear-gradient(
+    135deg,
+    rgba(71, 85, 105, 0.24),
+    rgba(100, 116, 139, 0.24)
+  );
 }
 
-/* Responsive */
 @media (max-width: 1100px) {
   .tabs-bar {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 900px) {
+  .tabs-content {
+    padding: 18px;
+  }
+
   .content-head {
     flex-direction: column;
+    align-items: stretch;
+  }
+
+  .plans-counter {
+    width: 100%;
+    min-width: 0;
   }
 }
 
 @media (max-width: 700px) {
+  .builder-header h2 {
+    font-size: 1.55rem;
+  }
+
+  .builder-header p {
+    font-size: 0.95rem;
+  }
+
+  .tabs-shell {
+    border-radius: 24px;
+  }
+
   .tabs-bar {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .tab-btn {
+    min-height: 54px;
+    padding: 0 10px;
+    font-size: 0.9rem;
+    border-radius: 16px;
+  }
+
+  .tab-icon-wrap {
+    width: 22px;
+    height: 22px;
+  }
+
+  .tab-icon-img {
+    width: 18px;
+    height: 18px;
+  }
+
+  .tabs-content {
+    padding: 16px;
+  }
+
+  .content-head h3 {
+    font-size: 1.22rem;
+  }
+
+  .content-head p {
+    font-size: 0.93rem;
   }
 
   .plans-slider {
-    padding-inline: 12px;
+    gap: 14px;
+    padding: 4px 4px 10px;
+    scroll-snap-type: x mandatory;
   }
 
   .slider-arrow {
     display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .social-tabs-builder {
+    margin-top: 10px;
+  }
+
+  .builder-kicker {
+    font-size: 0.76rem;
+    padding: 7px 12px;
+  }
+
+  .builder-header h2 {
+    font-size: 1.35rem;
+  }
+
+  .tabs-bar {
+    grid-template-columns: 1fr 1fr;
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .tab-btn {
+    min-height: 48px;
+    border-radius: 14px;
+    font-size: 0.84rem;
+    gap: 6px;
+  }
+
+  .tab-label {
+    font-size: 0.82rem;
+  }
+
+  .plans-counter {
+    padding: 12px;
+    border-radius: 14px;
+    font-size: 0.9rem;
+  }
+
+  .tabs-content {
+    padding: 14px;
   }
 }
 </style>

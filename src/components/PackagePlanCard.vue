@@ -3,7 +3,15 @@
     <div class="card-glow"></div>
 
     <div class="package-card-header">
-      <div class="mini-badge">Promoción</div>
+      <div class="package-card-topbar">
+        <div class="mini-badge">Promoción</div>
+
+        <div v-if="plan.price" class="price-badge">
+          <span class="price-currency">$</span>
+          <span class="price-value">{{ formatNumber(plan.price) }}</span>
+          <span class="price-label">MXN</span>
+        </div>
+      </div>
 
       <h3>{{ plan.name }}</h3>
 
@@ -27,12 +35,12 @@
 
     <div class="package-footer">
       <button
-  ref="chooseBtnRef"
-  class="package-btn"
-  @click="handleChoose"
->
-  {{ plan.buttonText }}
-</button>
+        ref="chooseBtnRef"
+        class="package-btn"
+        @click="handleChoose"
+      >
+        {{ plan.buttonText }}
+      </button>
     </div>
   </article>
 </template>
@@ -71,36 +79,34 @@ const formattedDescription = computed(() => {
 </script>
 
 <style scoped>
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 .package-card {
   position: relative;
   width: 100%;
   max-width: 300px;
-
   overflow: hidden;
-
   display: flex;
   flex-direction: column;
   gap: 14px;
-
-  padding: 18px 18px 18px;
-
+  padding: 18px;
   border-radius: 26px;
   border: 1px solid rgba(96, 165, 250, 0.22);
-
   background:
     linear-gradient(
       180deg,
       rgba(15, 23, 42, 0.94) 0%,
       rgba(17, 24, 39, 0.92) 100%
     );
-
   box-shadow:
     0 18px 36px rgba(2, 6, 23, 0.28),
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
-
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-
   transition:
     transform 0.22s ease,
     box-shadow 0.22s ease,
@@ -109,9 +115,7 @@ const formattedDescription = computed(() => {
 
 .package-card:hover {
   transform: translateY(-6px);
-
   border-color: rgba(96, 165, 250, 0.4);
-
   box-shadow:
     0 24px 48px rgba(2, 6, 23, 0.36),
     0 0 18px rgba(59, 130, 246, 0.16);
@@ -139,36 +143,76 @@ const formattedDescription = computed(() => {
   gap: 10px;
 }
 
+.package-card-topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .mini-badge {
   width: fit-content;
-
   padding: 6px 12px;
-
   border-radius: 999px;
-
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.02em;
-
   color: #93c5fd;
   background: rgba(59, 130, 246, 0.14);
   border: 1px solid rgba(59, 130, 246, 0.18);
 }
 
+.price-badge {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  padding: 10px 14px;
+  border-radius: 16px;
+  background: linear-gradient(
+    135deg,
+    rgba(37, 99, 235, 0.2),
+    rgba(59, 130, 246, 0.28)
+  );
+  border: 1px solid rgba(96, 165, 250, 0.24);
+  box-shadow:
+    0 10px 24px rgba(37, 99, 235, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.price-currency {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #93c5fd;
+}
+
+.price-value {
+  font-size: 1.35rem;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: #ffffff;
+}
+
+.price-label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #cbd5e1;
+  text-transform: uppercase;
+}
+
 .package-card-header h3 {
   margin: 0;
-
   font-size: 1.35rem;
   line-height: 1.08;
   letter-spacing: -0.02em;
-
   color: #ffffff;
   font-weight: 900;
 }
 
 .package-card-header p {
   margin: 0;
-
   color: #94a3b8;
   font-size: 0.9rem;
   line-height: 1.55;
@@ -179,11 +223,9 @@ const formattedDescription = computed(() => {
   list-style: none;
   padding: 0;
   margin: 0;
-
   display: flex;
   flex-direction: column;
   gap: 10px;
-
   flex: 1;
 }
 
@@ -191,11 +233,8 @@ const formattedDescription = computed(() => {
   display: flex;
   align-items: center;
   gap: 10px;
-
   padding: 10px 12px;
-
   border-radius: 14px;
-
   background: rgba(255, 255, 255, 0.035);
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
@@ -226,22 +265,15 @@ const formattedDescription = computed(() => {
 .package-btn {
   width: 100%;
   min-height: 50px;
-
   border: none;
   border-radius: 15px;
-
   padding: 14px 16px;
-
   background: linear-gradient(135deg, #2563eb, #3b82f6);
-
   color: #ffffff;
   font-size: 0.95rem;
   font-weight: 900;
-
   cursor: pointer;
-
   box-shadow: 0 12px 24px rgba(37, 99, 235, 0.22);
-
   transition:
     transform 0.15s ease,
     box-shadow 0.15s ease,
@@ -254,6 +286,7 @@ const formattedDescription = computed(() => {
   box-shadow: 0 16px 28px rgba(37, 99, 235, 0.28);
 }
 
+/* TABLET */
 @media (max-width: 900px) {
   .package-card {
     max-width: 100%;
@@ -275,6 +308,105 @@ const formattedDescription = computed(() => {
   .package-btn {
     min-height: 48px;
     font-size: 0.92rem;
+  }
+}
+
+/* MOBILE */
+@media (max-width: 700px) {
+  .package-card {
+    width: 86vw;
+    min-width: 86vw;
+    max-width: 86vw;
+    padding: 15px;
+    border-radius: 22px;
+  }
+
+  .package-card-topbar {
+    gap: 10px;
+  }
+
+  .price-badge {
+    padding: 8px 12px;
+    border-radius: 14px;
+  }
+
+  .price-value {
+    font-size: 1.08rem;
+  }
+
+  .price-label {
+    font-size: 0.62rem;
+  }
+
+  .package-card-header h3 {
+    font-size: 1.08rem;
+  }
+
+  .package-card-header p {
+    font-size: 0.84rem;
+    line-height: 1.45;
+  }
+
+  .package-item {
+    padding: 9px 10px;
+    border-radius: 12px;
+  }
+
+  .item-text {
+    font-size: 0.86rem;
+  }
+
+  .package-btn {
+    min-height: 46px;
+    border-radius: 13px;
+    font-size: 0.9rem;
+  }
+}
+
+/* SMALL IPHONE */
+@media (max-width: 480px) {
+  .package-card {
+    width: 88vw;
+    min-width: 88vw;
+    max-width: 88vw;
+    padding: 14px;
+  }
+
+  .mini-badge {
+    font-size: 0.68rem;
+  }
+
+  .price-badge {
+    padding: 7px 10px;
+    border-radius: 12px;
+  }
+
+  .price-currency {
+    font-size: 0.72rem;
+  }
+
+  .price-value {
+    font-size: 0.96rem;
+  }
+
+  .price-label {
+    font-size: 0.56rem;
+  }
+
+  .package-card-header h3 {
+    font-size: 1rem;
+  }
+
+  .package-card-header p {
+    font-size: 0.8rem;
+  }
+
+  .item-text {
+    font-size: 0.82rem;
+  }
+
+  .package-btn {
+    font-size: 0.88rem;
   }
 }
 </style>

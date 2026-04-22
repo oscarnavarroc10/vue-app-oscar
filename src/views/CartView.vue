@@ -2,7 +2,7 @@
   <section class="cart-view-layout">
     <div class="cart-view-main">
       <div class="section-header cart-view-header">
-        <div>
+        <div class="cart-view-heading">
           <button class="back-btn" type="button" @click="goHome">
             ← Volver a home
           </button>
@@ -110,7 +110,7 @@
                 </p>
 
                 <p class="cart-view-muted">
-                  ${{ formatPrice(item.price) }} / 100 · {{ item.quantity }} unidades
+                  ${{ formatPrice(item.price) }} / {{ item.unitBase || 100 }} · {{ item.quantity }} unidades
                 </p>
               </div>
 
@@ -235,7 +235,10 @@ const getItemTotal = (item) => {
     return Number(item.price || 0) * Number(item.quantity || 1);
   }
 
-  return (Number(item.price || 0) / 100) * (Number(item.quantity) || 0);
+  return (
+    (Number(item.price || 0) / Number(item.unitBase || 100)) *
+    (Number(item.quantity) || 0)
+  );
 };
 
 const getCategoryPillClass = (category) => {
@@ -265,6 +268,12 @@ const formatPrice = (value) => {
 </script>
 
 <style scoped>
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 .cart-view-layout {
   max-width: 1400px;
   margin: 0 auto;
@@ -300,6 +309,10 @@ const formatPrice = (value) => {
   margin-bottom: 20px;
 }
 
+.cart-view-heading {
+  min-width: 0;
+}
+
 .section-header h2 {
   margin: 0;
   color: white;
@@ -308,6 +321,7 @@ const formatPrice = (value) => {
 
 .selected-description {
   color: #94a3b8;
+  line-height: 1.6;
 }
 
 .back-btn {
@@ -328,6 +342,7 @@ const formatPrice = (value) => {
   color: #93c5fd;
   font-weight: 800;
   border: 1px solid rgba(59, 130, 246, 0.12);
+  flex-shrink: 0;
 }
 
 .cart-items-list {
@@ -510,6 +525,7 @@ const formatPrice = (value) => {
   margin: 0 0 8px;
   color: #ffffff;
   font-size: 1.22rem;
+  line-height: 1.15;
 }
 
 .cart-view-muted {
@@ -537,6 +553,7 @@ const formatPrice = (value) => {
   color: #ffffff;
   font-size: 1.18rem;
   line-height: 1;
+  white-space: nowrap;
 }
 
 .cart-view-remove {
@@ -591,11 +608,12 @@ const formatPrice = (value) => {
   align-items: center;
   gap: 10px;
   margin-top: 16px;
+  flex-wrap: wrap;
 }
 
 .cart-view-qty-btn {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   border: 1px solid rgba(148, 163, 184, 0.16);
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.05);
@@ -603,11 +621,13 @@ const formatPrice = (value) => {
   font-size: 1.15rem;
   font-weight: 800;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .cart-view-qty-input {
   width: 120px;
-  height: 40px;
+  max-width: 100%;
+  height: 42px;
   border: 1px solid rgba(148, 163, 184, 0.16);
   border-radius: 12px;
   padding: 0 12px;
@@ -618,6 +638,7 @@ const formatPrice = (value) => {
 
 .cart-summary-panel {
   width: 380px;
+  min-width: 0;
 }
 
 .cart-empty-state {
@@ -703,8 +724,27 @@ const formatPrice = (value) => {
     border-radius: 22px;
   }
 
+  .cart-view-card {
+    padding: 18px;
+    border-radius: 22px;
+  }
+
   .cart-view-card-side {
     align-items: flex-start;
+    width: 100%;
+  }
+
+  .cart-view-price {
+    font-size: 1.08rem;
+  }
+
+  .cart-view-plan-item {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .selected-chip {
+    align-self: flex-start;
   }
 }
 
@@ -717,8 +757,86 @@ const formatPrice = (value) => {
     width: 100%;
   }
 
+  .cart-view-header {
+    margin-bottom: 18px;
+  }
+
+  .cart-view-card {
+    padding: 16px;
+  }
+
+  .cart-view-card h3 {
+    font-size: 1.08rem;
+  }
+
+  .cart-view-muted,
+  .cart-view-profile {
+    font-size: 0.9rem;
+  }
+
+  .cart-view-chip,
+  .cart-view-category-pill {
+    min-height: 28px;
+    padding: 0 12px;
+    font-size: 0.72rem;
+  }
+
+  .cart-view-controls {
+    gap: 8px;
+  }
+
+  .cart-view-qty-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .cart-view-qty-input {
+    flex: 1;
+    width: auto;
+    min-width: 0;
+  }
+
   .cart-empty-actions {
     flex-direction: column;
+  }
+
+  .nav-cta {
+    width: 100%;
+  }
+}
+
+@media (max-width: 420px) {
+  .cart-view-main {
+    padding: 14px;
+  }
+
+  .cart-view-card {
+    padding: 14px;
+    border-radius: 20px;
+  }
+
+  .section-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .selected-description {
+    font-size: 0.92rem;
+  }
+
+  .cart-view-card-chips {
+    gap: 6px;
+  }
+
+  .cart-view-plan-item-left {
+    gap: 8px;
+  }
+
+  .cart-view-plan-item-name {
+    font-size: 0.9rem;
+  }
+
+  .cart-view-plan-item-qty {
+    font-size: 0.92rem;
   }
 }
 </style>

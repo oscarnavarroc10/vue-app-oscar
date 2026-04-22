@@ -115,6 +115,12 @@
 </template>
 
 <style scoped>
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 .contact-lead-section {
   margin-top: 40px;
 }
@@ -140,7 +146,13 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
 
   backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+}
+
+.contact-lead-copy,
+.contact-form,
+.form-grid,
+.field {
+  min-width: 0;
 }
 
 .contact-lead-copy {
@@ -155,29 +167,23 @@
   margin-bottom: 14px;
   padding: 8px 14px;
   border-radius: 999px;
-
   background: rgba(124, 58, 237, 0.16);
   color: #ddd6fe;
-
   font-size: 0.8rem;
   font-weight: 800;
-  letter-spacing: 0.02em;
 }
 
 .contact-lead-copy h2 {
   margin: 0 0 12px;
-  color: #ffffff;
+  color: white;
   font-size: clamp(2rem, 4vw, 3rem);
   line-height: 1.05;
-  letter-spacing: -0.03em;
 }
 
 .contact-description {
   margin: 0;
   color: #94a3b8;
-  font-size: 1rem;
   line-height: 1.7;
-  max-width: 560px;
 }
 
 .contact-highlights {
@@ -190,12 +196,8 @@
 .highlight-chip {
   padding: 10px 14px;
   border-radius: 999px;
-
   background: rgba(255, 255, 255, 0.05);
   color: #e2e8f0;
-
-  border: 1px solid rgba(255, 255, 255, 0.06);
-
   font-size: 0.88rem;
   font-weight: 700;
 }
@@ -203,13 +205,8 @@
 .contact-form {
   padding: 22px;
   border-radius: 24px;
-
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.06);
-
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.04),
-    0 12px 28px rgba(2, 6, 23, 0.18);
 }
 
 .form-grid {
@@ -238,20 +235,22 @@
 .field select,
 .field textarea {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
   border: 1px solid rgba(148, 163, 184, 0.16);
   border-radius: 16px;
   padding: 14px 16px;
 
   background: rgba(15, 23, 42, 0.78);
-  color: #ffffff;
-
+  color: white;
   font: inherit;
   outline: none;
+}
 
-  transition:
-    border-color 0.18s ease,
-    box-shadow 0.18s ease,
-    background 0.18s ease;
+.field textarea {
+  resize: vertical;
+  min-height: 150px;
 }
 
 .field input::placeholder,
@@ -264,73 +263,89 @@
 .field textarea:focus {
   border-color: rgba(96, 165, 250, 0.45);
   box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
-  background: rgba(15, 23, 42, 0.9);
-}
-
-.field textarea {
-  resize: vertical;
-  min-height: 150px;
 }
 
 .submit-btn {
   width: 100%;
   margin-top: 18px;
   min-height: 54px;
-
   border: none;
   border-radius: 16px;
-
   background: linear-gradient(135deg, #2563eb, #3b82f6);
-  color: #ffffff;
-
-  font-size: 1rem;
+  color: white;
   font-weight: 900;
   cursor: pointer;
-
-  box-shadow: 0 14px 26px rgba(37, 99, 235, 0.24);
-
-  transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease,
-    filter 0.18s ease;
-}
-
-.submit-btn:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.03);
-  box-shadow: 0 16px 30px rgba(37, 99, 235, 0.28);
 }
 
 .form-note {
-  margin: 12px 0 0;
+  margin-top: 12px;
   color: #94a3b8;
   font-size: 0.85rem;
-  line-height: 1.5;
 }
 
+/* TABLET */
 @media (max-width: 980px) {
   .contact-lead-shell {
     grid-template-columns: 1fr;
   }
 }
 
-@media (max-width: 700px) {
+/* MOBILE */
+@media (max-width: 768px) {
   .contact-lead-shell {
-    padding: 20px;
+    padding: 18px;
     border-radius: 22px;
+    gap: 18px;
   }
 
   .contact-form {
-    padding: 18px;
+    padding: 16px;
     border-radius: 20px;
   }
 
   .form-grid {
     grid-template-columns: 1fr;
+    gap: 14px;
   }
 
   .contact-lead-copy h2 {
-    font-size: 2rem;
+    font-size: 1.7rem;
+    line-height: 1.15;
+  }
+
+  .contact-description {
+    font-size: 0.95rem;
+  }
+
+  .highlight-chip {
+    font-size: 0.82rem;
+    padding: 8px 12px;
+  }
+
+  .field input,
+  .field select,
+  .field textarea {
+    padding: 13px 14px;
+    border-radius: 14px;
+  }
+
+  .submit-btn {
+    min-height: 50px;
+  }
+}
+
+/* SMALL IPHONE */
+@media (max-width: 480px) {
+  .contact-lead-shell {
+    padding: 14px;
+  }
+
+  .contact-form {
+    padding: 14px;
+  }
+
+  .contact-lead-copy h2 {
+    font-size: 1.45rem;
   }
 }
 </style>

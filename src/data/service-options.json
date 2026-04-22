@@ -4,7 +4,8 @@
     "serviceId": 1,
     "name": "Seguidores",
     "description": "Seguidores para tu cuenta de Instagram",
-    "price": 140,
+    "price": 189,
+    "unitBase": 1000,
     "category": "Instagram",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -13,7 +14,8 @@
     "serviceId": 1,
     "name": "Likes",
     "description": "Likes para tus Reels/Posts de Instagram",
-    "price": 50,
+    "price": 60,
+    "unitBase": 1000,
     "category": "Instagram",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -22,7 +24,8 @@
     "serviceId": 1,
     "name": "Views Reels",
     "description": "Añade Views para tus Reels",
-    "price": 30,
+    "price": 50,
+    "unitBase": 1000,
     "category": "Instagram",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -32,6 +35,7 @@
     "name": "Shares",
     "description": "Shares para tus posts",
     "price": 70,
+    "unitBase": 1000,
     "category": "Instagram",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -41,6 +45,7 @@
     "name": "Repost",
     "description": "Repost para tus publicaciones",
     "price": 60,
+    "unitBase": 1000,
     "category": "Instagram",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -49,7 +54,8 @@
     "serviceId": 2,
     "name": "Seguidores",
     "description": "Seguidores para tu página de Facebook",
-    "price": 120,
+    "price": 150,
+    "unitBase": 1000,
     "category": "Facebook",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -58,7 +64,8 @@
     "serviceId": 2,
     "name": "Miembros Grupo",
     "description": "Miembros para tu grupo de Facebook",
-    "price": 110,
+    "price": 130,
+    "unitBase": 1000,
     "category": "Facebook",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -67,7 +74,8 @@
     "serviceId": 2,
     "name": "Likes Publicaciones",
     "description": "Likes para publicaciones de Facebook",
-    "price": 50,
+    "price": 60,
+    "unitBase": 1000,
     "category": "Facebook",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -76,7 +84,8 @@
     "serviceId": 2,
     "name": "Reacciones",
     "description": "Reacciones (Love, Wow, etc.) para publicaciones",
-    "price": 60,
+    "price": 70,
+    "unitBase": 1000,
     "category": "Facebook",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -85,7 +94,8 @@
     "serviceId": 2,
     "name": "Comentarios",
     "description": "Comentarios para publicaciones",
-    "price": 70,
+    "price": 85,
+    "unitBase": 100,
     "category": "Facebook",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -95,6 +105,7 @@
     "name": "Compartidos",
     "description": "Compartidos para publicaciones",
     "price": 80,
+    "unitBase": 1000,
     "category": "Facebook",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -103,7 +114,8 @@
     "serviceId": 2,
     "name": "Views",
     "description": "Views para videos o reels",
-    "price": 40,
+    "price": 60,
+    "unitBase": 1000,
     "category": "Facebook",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -112,7 +124,8 @@
     "serviceId": 3,
     "name": "Seguidores",
     "description": "Seguidores para tu cuenta de Tiktok",
-    "price": 140,
+    "price": 220,
+    "unitBase": 1000,
     "category": "TikTok",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -121,7 +134,8 @@
     "serviceId": 3,
     "name": "Me Gusta",
     "description": "Me Gusta para tus videos de Tiktok",
-    "price": 50,
+    "price": 60,
+    "unitBase": 1000,
     "category": "TikTok",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -130,7 +144,8 @@
     "serviceId": 3,
     "name": "Views",
     "description": "Añade Views para tus videos",
-    "price": 30,
+    "price": 50,
+    "unitBase": 1000,
     "category": "TikTok",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -139,7 +154,8 @@
     "serviceId": 3,
     "name": "Shares",
     "description": "Shares para tus posts",
-    "price": 70,
+    "price": 80,
+    "unitBase": 1000,
     "category": "TikTok",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -148,7 +164,8 @@
     "serviceId": 3,
     "name": "Guardados",
     "description": "Guardados para tus publicaciones",
-    "price": 60,
+    "price": 75,
+    "unitBase": 1000,
     "category": "TikTok",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -157,7 +174,8 @@
     "serviceId": 4,
     "name": "Seguidores X",
     "description": "Seguidores para tu cuenta de X",
-    "price": 320,
+    "price": 350,
+    "unitBase": 1000,
     "category": "X",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -167,6 +185,7 @@
     "name": "Likes Tweets",
     "description": "Likes para tus tweets",
     "price": 90,
+    "unitBase": 1000,
     "category": "X",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -176,6 +195,7 @@
     "name": "Retweets",
     "description": "Retweets para tus publicaciones",
     "price": 180,
+    "unitBase": 1000,
     "category": "X",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -185,6 +205,7 @@
     "name": "Views Video",
     "description": "Views para videos",
     "price": 60,
+    "unitBase": 1000,
     "category": "X",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -194,6 +215,7 @@
     "name": "Impresiones",
     "description": "Impresiones para tweets",
     "price": 50,
+    "unitBase": 1000, 
     "category": "X",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -202,7 +224,8 @@
     "serviceId": 6,
     "name": "Suscriptores",
     "description": "Suscriptores para tu canal de YouTube",
-    "price": 650,
+    "price": 685,
+    "unitBase": 1000,
     "category": "YouTube",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -211,7 +234,8 @@
     "serviceId": 6,
     "name": "Views",
     "description": "Views para videos o shorts",
-    "price": 120,
+    "price": 140,
+    "unitBase": 1000,
     "category": "YouTube",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -220,7 +244,8 @@
     "serviceId": 6,
     "name": "Views Alta Interacción",
     "description": "Views con alta interacción",
-    "price": 150,
+    "price": 170,
+    "unitBase": 1000,
     "category": "YouTube",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -230,6 +255,7 @@
     "name": "Likes",
     "description": "Likes para videos",
     "price": 80,
+    "unitBase": 1000,
     "category": "YouTube",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -239,6 +265,7 @@
     "name": "Likes Comentarios",
     "description": "Likes en comentarios",
     "price": 50,
+    "unitBase": 1000,
     "category": "YouTube",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -248,6 +275,7 @@
     "name": "Views En Vivo 30min",
     "description": "Views para en vivo de 30 minutos",
     "price": 70,
+    "unitBase": 1000,
     "category": "YouTube",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -257,6 +285,7 @@
     "name": "Views En Vivo 60min",
     "description": "Views para en vivo de 60 minutos",
     "price": 90,
+    "unitBase": 1000,
     "category": "YouTube",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -266,6 +295,7 @@
     "name": "Views En Vivo 90min",
     "description": "Views para en vivo de 90 minutos",
     "price": 120,
+    "unitBase": 1000,
     "category": "YouTube",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -275,6 +305,7 @@
     "name": "Reacciones En Vivo",
     "description": "Reacciones para en vivos",
     "price": 60,
+    "unitBase": 1000,
     "category": "YouTube",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -283,7 +314,8 @@
     "serviceId": 8,
     "name": "Seguidores",
     "description": "Seguidores para Spotify",
-    "price": 220,
+    "price": 240,
+    "unitBase": 1000,
     "category": "Spotify",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -293,6 +325,7 @@
     "name": "Oyentes Mensuales",
     "description": "Oyentes mensuales para Spotify",
     "price": 140,
+    "unitBase": 1000,
     "category": "Spotify",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -302,6 +335,7 @@
     "name": "Reproducciones Premium",
     "description": "Reproducciones premium",
     "price": 80,
+    "unitBase": 1000,
     "category": "Spotify",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -311,6 +345,7 @@
     "name": "Reproducciones Ads",
     "description": "Reproducciones con anuncios",
     "price": 90,
+    "unitBase": 1000,
     "category": "Spotify",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -320,6 +355,7 @@
     "name": "Saves",
     "description": "Guardados de canciones",
     "price": 70,
+    "unitBase": 1000,
     "category": "Spotify",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -329,6 +365,7 @@
     "name": "Miembros",
     "description": "Miembros para canal o grupo de Telegram",
     "price": 120,
+    "unitBase": 1000,
     "category": "Telegram",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -338,6 +375,7 @@
     "name": "Reacciones Positivas",
     "description": "Reacciones positivas (🔥😍👏)",
     "price": 60,
+    "unitBase": 1000,
     "category": "Telegram",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -347,6 +385,7 @@
     "name": "Reacciones Negativas",
     "description": "Reacciones negativas (😡💔👎)",
     "price": 60,
+    "unitBase": 1000,
     "category": "Telegram",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -356,6 +395,7 @@
     "name": "Comentarios",
     "description": "Comentarios para publicaciones",
     "price": 250,
+    "unitBase": 1000,
     "category": "Telegram",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -365,6 +405,7 @@
     "name": "Miembros Canal",
     "description": "Miembros para canal de WhatsApp",
     "price": 350,
+    "unitBase": 1000,
     "category": "WhatsApp",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -374,6 +415,7 @@
     "name": "Seguidores Canal",
     "description": "Seguidores para canal de WhatsApp",
     "price": 320,
+    "unitBase": 1000,
     "category": "WhatsApp",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -383,6 +425,7 @@
     "name": "Reacciones",
     "description": "Reacciones a publicaciones",
     "price": 120,
+    "unitBase": 1000,
     "category": "WhatsApp",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   },
@@ -392,6 +435,7 @@
     "name": "Votos Encuestas",
     "description": "Votos para encuestas (A/B/C/D)",
     "price": 250,
+    "unitBase": 1000,
     "category": "WhatsApp",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
   }

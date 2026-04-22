@@ -44,7 +44,7 @@
 
       <div
         v-if="discountPercentage > 0"
-        class="summary-mini-card"
+        class="summary-mini-card summary-mini-card--discount"
       >
         <span>Descuento</span>
         <strong>- ${{ formatPrice(discountAmount) }}</strong>
@@ -73,12 +73,11 @@
         type="button"
         @click="sendWhatsApp"
       >
-        Solicitar servicios
+        Solicitar servicios por WhatsApp
       </button>
 
       <p class="summary-note">
-        Revisa los servicios del lado izquierdo y, cuando estés listo, envía tu
-        solicitud por WhatsApp.
+        Revisa tus servicios y cuando estés listo, envíanos tu solicitud para darte seguimiento inmediato.
       </p>
     </div>
   </aside>
@@ -121,7 +120,7 @@ Perfil: ${item.profile || "No especificado"}`;
 
   const finalMessage = `Hola Emmanuel
 
-Quiero solicitar lo(s) siguiente(s):
+Quiero solicitar lo siguiente:
 
 ${servicesText}
 
@@ -130,11 +129,18 @@ Resumen:
 - Total: $${props.formatPrice(props.total)} MXN`;
 
   const url = `https://wa.me/${phone}?text=${encodeURIComponent(finalMessage)}`;
+
   window.open(url, "_blank", "noopener,noreferrer");
 };
 </script>
 
 <style scoped>
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 .cart-panel {
   background:
     linear-gradient(
@@ -142,6 +148,7 @@ Resumen:
       rgba(10, 18, 34, 0.88) 0%,
       rgba(8, 14, 26, 0.92) 100%
     );
+
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 
@@ -190,19 +197,24 @@ Resumen:
   gap: 8px;
 }
 
+.close-cart-btn,
+.clear-cart-btn {
+  transition: all 0.2s ease;
+}
+
 .close-cart-btn {
   width: 40px;
   height: 40px;
+
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
+
   background: rgba(255, 255, 255, 0.05);
   color: #ffffff;
+
   font-size: 1rem;
   font-weight: 900;
   cursor: pointer;
-  transition:
-    transform 0.2s ease,
-    background 0.2s ease;
 }
 
 .close-cart-btn:hover {
@@ -213,36 +225,24 @@ Resumen:
 .clear-cart-btn {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
   gap: 8px;
 
-  height: 42px;
+  min-height: 42px;
+  padding: 0 14px;
+
+  border-radius: 12px;
   border: 1px solid rgba(248, 113, 113, 0.16);
+
   background: rgba(127, 29, 29, 0.14);
   color: #fca5a5;
 
-  border-radius: 12px;
-  padding: 0 14px;
-
-  font-size: 0.9rem;
   font-weight: 800;
   cursor: pointer;
-
-  transition:
-    transform 0.2s ease,
-    background 0.2s ease,
-    box-shadow 0.2s ease;
 }
 
 .clear-cart-btn:hover {
-  background: rgba(127, 29, 29, 0.22);
   transform: translateY(-1px);
-  box-shadow: 0 8px 18px rgba(127, 29, 29, 0.14);
-}
-
-.trash-icon {
-  font-size: 1rem;
-  line-height: 1;
+  background: rgba(127, 29, 29, 0.22);
 }
 
 .summary-cards {
@@ -253,11 +253,12 @@ Resumen:
 
 .summary-mini-card {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  align-items: center;
 
+  gap: 12px;
   padding: 14px 16px;
+
   border-radius: 16px;
 
   background: rgba(255, 255, 255, 0.04);
@@ -271,6 +272,10 @@ Resumen:
 
 .summary-mini-card strong {
   color: #ffffff;
+}
+
+.summary-mini-card--discount strong {
+  color: #86efac;
 }
 
 .summary {
@@ -294,9 +299,9 @@ Resumen:
 }
 
 .total-row {
-  margin-top: 2px;
-  padding-top: 6px;
-  font-size: 1.18rem;
+  margin-top: 4px;
+  padding-top: 8px;
+  font-size: 1.2rem;
 }
 
 .total-row span,
@@ -307,29 +312,28 @@ Resumen:
 
 .quote-btn {
   margin-top: 8px;
+
   border: none;
   border-radius: 16px;
-  padding: 16px 18px;
+
+  min-height: 54px;
+  padding: 0 18px;
 
   font-size: 1rem;
-  font-weight: 800;
+  font-weight: 900;
   cursor: pointer;
 
-  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  background: linear-gradient(135deg, #22c55e, #16a34a);
   color: #ffffff;
 
-  box-shadow: 0 14px 26px rgba(37, 99, 235, 0.24);
+  box-shadow: 0 14px 26px rgba(34, 197, 94, 0.22);
 
-  transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease,
-    filter 0.18s ease;
+  transition: all 0.18s ease;
 }
 
 .quote-btn:hover:not(:disabled) {
   transform: translateY(-1px);
   filter: brightness(1.03);
-  box-shadow: 0 16px 30px rgba(37, 99, 235, 0.28);
 }
 
 .quote-btn:disabled {
@@ -344,14 +348,69 @@ Resumen:
   font-size: 0.9rem;
 }
 
+/* TABLET */
 @media (max-width: 900px) {
   .section-header {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
   }
 
   .cart-header-actions {
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+  .cart-panel {
+    padding: 16px;
+    border-radius: 22px;
+  }
+
+  .section-header h2 {
+    font-size: 1.55rem;
+  }
+
+  .summary-mini-card {
+    padding: 12px 14px;
+  }
+
+  .quote-btn {
+    min-height: 50px;
+    font-size: 0.95rem;
+  }
+
+  .clear-cart-btn {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+/* SMALL PHONE */
+@media (max-width: 420px) {
+  .cart-panel {
+    padding: 14px;
+  }
+
+  .cart-header-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .close-cart-btn,
+  .clear-cart-btn {
+    width: 100%;
+  }
+
+  .summary-row,
+  .summary-mini-card {
+    font-size: 0.92rem;
+  }
+
+  .summary-note {
+    font-size: 0.84rem;
   }
 }
 </style>
