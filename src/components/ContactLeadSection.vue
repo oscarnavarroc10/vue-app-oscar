@@ -20,7 +20,7 @@
 
       <form
         class="contact-form"
-        action="https://formsubmit.co/oscarnavarroc10@gmail.com"
+        action="https://formsubmit.co/impulsoredes@hotmail.com"
         method="POST"
       >
         <input

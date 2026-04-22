@@ -118,7 +118,7 @@ Perfil: ${item.profile || "No especificado"}`;
     })
     .join("\n\n");
 
-  const finalMessage = `Hola Emmanuel
+  const finalMessage = `Hola ImpulsoRedes
 
 Quiero solicitar lo siguiente:
 

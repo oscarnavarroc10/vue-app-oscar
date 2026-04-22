@@ -227,7 +227,7 @@
     "buttonText": "Comprar ahora por WhatsApp 📲",
     "tag": "🔥 Recomendado",
     "style": "default",
-    "price": 550,
+    "price": 2100,
     "oldPrice": 2100,
     "category":"Facebook"
   },
@@ -349,5 +349,330 @@
     "price": 6500,
     "oldPrice": 1400,
     "category":"Spotify"
+  },
+  {
+    "id": 21,
+    "name": "🥉 Impulso Inicial",
+    "description": "💥 Ideal para empezar a crecer en X\n💥 100% seguro 🔒\n💥Rápido 🚀\n💥 Sin contraseña 🔑",
+    "includedOptions": [
+      { "optionId": 401, "quantity": 500 },
+      { "optionId": 402, "quantity": 1000 },
+      { "optionId": 404, "quantity": 5000 }   
+      
+    ],
+    "buttonText": "Comprar ahora por WhatsApp 📲",
+    "tag": "🔥 Recomendado",
+    "style": "default",
+    "price": 349,
+    "oldPrice": 360,
+    "category":"X"
+  },
+  {
+    "id": 22,
+    "name": "🚀 Crecimiento Activo",
+    "description": "💥 Mayor alcance y visibilidad\n💥 100% seguro 🔒\n💥Entrega rápida ⚡\n💥 Sin contraseña 🔑",
+    "includedOptions": [
+      { "optionId": 401, "quantity": 1200 },
+      { "optionId": 402, "quantity": 2500 },
+      { "optionId": 404, "quantity": 10000 }   
+      
+    ],
+    "buttonText": "Comprar ahora por WhatsApp 📲",
+    "tag": "🔥 Recomendado",
+    "style": "default",
+    "price": 699,
+    "oldPrice": 720,
+    "category":"X"
+  },
+  {
+    "id": 23,
+    "name": "🔥 Alcance Viral",
+    "description": "💥 Contenido más visible y viral\n💥 100% seguro 🔒\n💥Rápido ⚡\n💥 Sin contraseña 🔑",
+    "includedOptions": [
+      { "optionId": 401, "quantity": 2500 },
+      { "optionId": 402, "quantity": 5000 },
+      { "optionId": 404, "quantity": 20000 },
+      { "optionId": 403, "quantity": 500 }   
+      
+    ],
+    "buttonText": "Comprar ahora por WhatsApp 📲",
+    "tag": "🔥 Recomendado",
+    "style": "default",
+    "price": 1199,
+    "oldPrice": 1250,
+    "category":"X"
+  },
+  {
+    "id": 24,
+    "name": "💎 Autoridad X",
+    "description": "💥 Posiciona tu cuenta como autoridad\n💥 100% seguro 🔒\n💥Resultados rápidos 🚀\n💥 Sin contraseña 🔑",
+    "includedOptions": [
+      { "optionId": 401, "quantity": 5000 },
+      { "optionId": 402, "quantity": 10000 },
+      { "optionId": 404, "quantity": 40000 },
+      { "optionId": 403, "quantity": 1500 }   
+      
+    ],
+    "buttonText": "Comprar ahora por WhatsApp 📲",
+    "tag": "🔥 Recomendado",
+    "style": "default",
+    "price": 2199,
+    "oldPrice": 2250,
+    "category":"X"
+  },
+  {
+    "id": 25,
+    "name": "👑 Dominio Total",
+    "description": "💥 Domina X y aumenta tu impacto\n💥 Premium 🔥\n💥Resultados rápidos 🚀\n💥 Seguro 🔒",
+    "includedOptions": [
+      { "optionId": 401, "quantity": 10000 },
+      { "optionId": 402, "quantity": 20000 },
+      { "optionId": 404, "quantity": 80000 },
+      { "optionId": 403, "quantity": 3000 }   
+      
+    ],
+    "buttonText": "Comprar ahora por WhatsApp 📲",
+    "tag": "🔥 Recomendado",
+    "style": "default",
+    "price": 3999,
+    "oldPrice": 4500,
+    "category":"X"
+  },
+  {
+    "id": 26,
+    "name": "🥉 Inicio Viral",
+    "description": "💥 Ideal para comenzar tu canal\n 💥 Seguro 🔒",
+    "includedOptions": [
+      { "optionId": 604, "quantity": 1000 },
+      { "optionId": 602, "quantity": 100 } 
+      
+    ],
+    "buttonText": "Comprar ahora por WhatsApp 📲",
+    "tag": "🔥 Recomendado",
+    "style": "default",
+    "price": 399,
+    "oldPrice": 450,
+    "category":"YouTube"
+  },
+  {
+    "id": 27,
+    "name": "🚀 Crecimiento Canal",
+    "description": "💥 Más visibilidad en tus videos\n 💥 Seguro 🔒\n 💥 Rápido ⚡",
+    "includedOptions": [
+      { "optionId": 604, "quantity": 3000 },
+      { "optionId": 602, "quantity": 300 },
+      { "optionId": 601, "quantity": 100 } 
+    ],
+    "buttonText": "Comprar ahora por WhatsApp 📲",
+    "tag": "🚀 Crecimiento Canal",
+    "style": "default",
+    "price": 899,
+    "oldPrice": 950,
+    "category":"YouTube"
+  },
+  {
+    "id": 28,
+    "name": "🔥 Impulso Pro",
+    "description": "💥 Mejora tu alcance y crecimiento\n 💥 Seguro 🔒\n 💥 Resultados rápidos 🚀",
+    "includedOptions": [
+      { "optionId": 604, "quantity": 8000 },
+      { "optionId": 602, "quantity": 800 },
+      { "optionId": 601, "quantity": 300 } 
+    ],
+    "buttonText": "Comprar ahora por WhatsApp 📲",
+    "tag": "🚀 Crecimiento Canal",
+    "style": "default",
+    "price": 1699,
+    "oldPrice": 1900,
+    "category":"YouTube"
+  },
+  {
+    "id": 29,
+    "name": "💎 Autoridad YouTube",
+    "description": "💥 Posiciona tu canal\n 💥 Seguro 🔒\n 💥 Escalable 📈  ",
+    "includedOptions": [
+      { "optionId": 604, "quantity": 15000 },
+      { "optionId": 602, "quantity": 1500 },
+      { "optionId": 601, "quantity": 700 } 
+    ],
+    "buttonText": "Comprar ahora por WhatsApp 📲",
+    "tag": "🚀 Crecimiento Canal",
+    "style": "default",
+    "price": 2999,
+    "oldPrice": 3500,
+    "category":"YouTube"
+  },
+  {
+    "id": 30,
+    "name": "👑 Viral Master",
+    "description": "💥 Premium 🔥\n 💥 Resultados rápidos 🚀\n 💥 Escalable 📈  ",
+    "includedOptions": [
+      { "optionId": 604, "quantity": 30000 },
+      { "optionId": 602, "quantity": 3000 },
+      { "optionId": 601, "quantity": 1500 } 
+    ],
+    "buttonText": "Comprar ahora por WhatsApp 📲",
+    "tag": "🚀 Crecimiento Canal",
+    "style": "default",
+    "price": 2999,
+    "oldPrice": 3500,
+    "category":"YouTube"
+  },
+  {
+    "id": 31,
+    "name": "🥉 Inicio Canal",
+    "description": "💥 Perfecto para empezar tu canal\n 💥 Margen: ~94% 💸",
+    "includedOptions": [
+      { "optionId": 1001, "quantity": 500 },
+      { "optionId": 1002, "quantity": 1000 }
+    ],
+    "buttonText": "Comprar ahora por WhatsApp 📲",
+    "tag": "🚀 Crecimiento Canal",
+    "style": "default",
+    "price": 199,
+    "oldPrice": 199,
+    "category":"Telegram"
+  },
+  {
+    "id": 32,
+    "name": "🚀 Crecimiento Grupo",
+    "description": "💥 Más actividad y visibilidad\n 💥 Crecimiento constante 📈",
+    "includedOptions": [
+      { "optionId": 1001, "quantity": 1200 },
+      { "optionId": 1002, "quantity": 2500 }
+    ],
+    "buttonText": "Comprar ahora por WhatsApp 📲",
+    "tag": "🚀 Crecimiento Canal",
+    "style": "default",
+    "price": 399,
+    "oldPrice": 399,
+    "category":"Telegram"
+  },
+  {
+    "id": 33,
+    "name": "🔥 Comunidad Activa",
+    "description": "💥 Mayor interacción\n 💥 Rápido 📈",
+    "includedOptions": [
+      { "optionId": 1001, "quantity": 2500 },
+      { "optionId": 1002, "quantity": 5000 },
+      { "optionId": 1004, "quantity": 50 }
+    ],
+    "buttonText": "Comprar ahora por WhatsApp 📲",
+    "tag": "🚀 Crecimiento Canal",
+    "style": "default",
+    "price": 799,
+    "oldPrice": 799,
+    "category":"Telegram"
+  },
+  {
+    "id": 34,
+    "name": "💎 Autoridad Telegram",
+    "description": "💥 Canal más fuerte\n 💥 Alto impacto 🔥",
+    "includedOptions": [
+      { "optionId": 1001, "quantity": 5000 },
+      { "optionId": 1002, "quantity": 10000 },
+      { "optionId": 1004, "quantity": 100 }
+    ],
+    "buttonText": "Comprar ahora por WhatsApp 📲",
+    "tag": "🚀 Crecimiento Canal",
+    "style": "default",
+    "price": 1499,
+    "oldPrice": 1599,
+    "category":"Telegram"
+  },
+  {
+    "id": 35,
+    "name": "👑 Dominio Total",
+    "description": "💥 Comunidad sólida y activa\n 💥 Premium 🚀",
+    "includedOptions": [
+      { "optionId": 1001, "quantity": 10000 },
+      { "optionId": 1002, "quantity": 20000 },
+      { "optionId": 1004, "quantity": 200 }
+    ],
+    "buttonText": "Comprar ahora por WhatsApp 📲",
+    "tag": "🚀 Crecimiento Canal",
+    "style": "default",
+    "price": 2499,
+    "oldPrice": 2599,
+    "category":"Telegram"
+  },
+  {
+    "id": 36,
+    "name": "🥉 Inicio WhatsApp",
+    "description": "💥 Empieza a crecer tu canal\n 💥 Rápido 🚀",
+    "includedOptions": [
+      { "optionId": 1102, "quantity": 500 },
+      { "optionId": 1103, "quantity": 1000 }
+    ],
+    "buttonText": "Comprar ahora por WhatsApp 📲",
+    "tag": "🚀 Crecimiento Canal",
+    "style": "default",
+    "price": 299,
+    "oldPrice": 299,
+    "category":"WhatsApp"
+  },
+  {
+    "id": 37,
+    "name": "🚀 Crecimiento Canal",
+    "description": "💥 Más interacción en tu canal\n 💥 Rápido 🚀\n 💥 Crecimiento constante 📈",
+    "includedOptions": [
+      { "optionId": 1102, "quantity": 1200 },
+      { "optionId": 1103, "quantity": 2500 },
+      { "optionId": 1104, "quantity": 500 }
+    ],
+    "buttonText": "Comprar ahora por WhatsApp 📲",
+    "tag": "🚀 Crecimiento Canal",
+    "style": "default",
+    "price": 599,
+    "oldPrice": 599,
+    "category":"WhatsApp"
+  },
+  {
+    "id": 38,
+    "name": "🔥 Interacción Activa",
+    "description": "💥 Mejora tu alcance\n 💥 Rápido ⚡\n 💥 Seguro 🔒",
+    "includedOptions": [
+      { "optionId": 1102, "quantity": 2500 },
+      { "optionId": 1103, "quantity": 5000 },
+      { "optionId": 1104, "quantity": 1000 }
+    ],
+    "buttonText": "Comprar ahora por WhatsApp 📲",
+    "tag": "🚀 Crecimiento Canal",
+    "style": "default",
+    "price": 999,
+    "oldPrice": 999,
+    "category":"WhatsApp"
+  },
+  {
+    "id": 39,
+    "name": "💎 Autoridad WhatsApp",
+    "description": "💥 Canal fuerte y activo\n 💥 Resultados reales 🔥\n 💥 Seguro 🔒",
+    "includedOptions": [
+      { "optionId": 1102, "quantity": 5000 },
+      { "optionId": 1103, "quantity": 10000 },
+      { "optionId": 1104, "quantity": 2000 }
+    ],
+    "buttonText": "Comprar ahora por WhatsApp 📲",
+    "tag": "🚀 Crecimiento Canal",
+    "style": "default",
+    "price": 1799,
+    "oldPrice": 1799,
+    "category":"WhatsApp"
+  },
+  {
+    "id": 40,
+    "name": "👑 Dominio Total",
+    "description": "💥 Domina WhatsApp\n 💥 Premium 🚀\n 💥 Seguro 🔒",
+    "includedOptions": [
+      { "optionId": 1102, "quantity": 1000 },
+      { "optionId": 1103, "quantity": 20000 },
+      { "optionId": 1104, "quantity": 4000 }
+    ],
+    "buttonText": "Comprar ahora por WhatsApp 📲",
+    "tag": "🚀 Crecimiento Canal",
+    "style": "default",
+    "price": 2999,
+    "oldPrice": 2999,
+    "category":"WhatsApp"
   }
 ]
