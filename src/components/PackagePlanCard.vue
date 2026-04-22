@@ -1,10 +1,13 @@
 <template>
   <article class="package-card">
     <div class="card-glow"></div>
+    <div class="card-grid"></div>
 
     <div class="package-card-header">
       <div class="package-card-topbar">
-        <div class="mini-badge">Promoción</div>
+        <div class="mini-badge">
+          {{ displayBadge }}
+        </div>
 
         <div v-if="plan.price" class="price-badge">
           <span class="price-currency">$</span>
@@ -37,9 +40,13 @@
       <button
         ref="chooseBtnRef"
         class="package-btn"
-        @click="handleChoose"
+        type="button"
+        @click="handlePrimaryAction"
       >
-        {{ plan.buttonText }}
+        <span class="package-btn-icon" aria-hidden="true">
+          {{ isWhatsAppAction ? "💬" : "🛒" }}
+        </span>
+        <span>{{ normalizedButtonText }}</span>
       </button>
     </div>
   </article>
@@ -62,12 +69,7 @@ const props = defineProps({
 const emit = defineEmits(["choose"]);
 const chooseBtnRef = ref(null);
 
-const handleChoose = () => {
-  emit("choose", {
-    plan: props.plan,
-    sourceEl: chooseBtnRef.value,
-  });
-};
+const WHATSAPP_NUMBER = "529991519771";
 
 const formatNumber = (num) => {
   return new Intl.NumberFormat("es-MX").format(Number(num || 0));
@@ -76,6 +78,76 @@ const formatNumber = (num) => {
 const formattedDescription = computed(() => {
   return props.plan.description?.replace(/\n/g, "<br>") || "";
 });
+
+const normalizedButtonText = computed(() => {
+  return props.plan.buttonText?.trim() || "Comprar por WhatsApp";
+});
+
+const isWhatsAppAction = computed(() => {
+  const text = normalizedButtonText.value.toLowerCase();
+  return text.includes("whatsapp") || text.includes("whats");
+});
+
+const displayBadge = computed(() => {
+  if (props.plan.tag) return props.plan.tag;
+  if (props.plan.style) return props.plan.style;
+  return "Promoción";
+});
+
+const buildWhatsAppMessage = () => {
+  const includedItems = (props.resolvedItems || [])
+    .map((item) => `• ${formatNumber(item.quantity)} ${item.name}`)
+    .join("\n");
+
+  const lines = [
+    "Hola 👋",
+    "",
+    "Quiero comprar este paquete de Impulso Redes:",
+    "",
+    `📦 Paquete: ${props.plan.name}`,
+    props.plan.price ? `💸 Precio: $${formatNumber(props.plan.price)} MXN` : "",
+    includedItems ? "" : "",
+    includedItems ? "✅ Incluye:" : "",
+    includedItems || "",
+    "",
+    "¿Me compartes el siguiente paso para contratarlo? 🚀",
+  ].filter(Boolean);
+
+  return lines.join("\n");
+};
+
+const openWhatsAppCheckout = () => {
+  const message = buildWhatsAppMessage();
+  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+
+  const isMobile =
+    /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(
+      navigator.userAgent
+    );
+
+  if (isMobile) {
+    window.location.href = url;
+    return;
+  }
+
+  window.open(url, "_blank", "noopener,noreferrer");
+};
+
+const handlePrimaryAction = () => {
+  if (isWhatsAppAction.value) {
+    openWhatsAppCheckout();
+    return;
+  }
+
+  emit("choose", {
+    plan: {
+      ...props.plan,
+      cartType: "plan",
+      quantity: 1,
+    },
+    sourceEl: chooseBtnRef.value,
+  });
+};
 </script>
 
 <style scoped>
@@ -95,12 +167,12 @@ const formattedDescription = computed(() => {
   gap: 14px;
   padding: 18px;
   border-radius: 26px;
-  border: 1px solid rgba(96, 165, 250, 0.22);
+  border: 1px solid rgba(96, 165, 250, 0.2);
   background:
     linear-gradient(
       180deg,
-      rgba(15, 23, 42, 0.94) 0%,
-      rgba(17, 24, 39, 0.92) 100%
+      rgba(15, 23, 42, 0.96) 0%,
+      rgba(17, 24, 39, 0.93) 100%
     );
   box-shadow:
     0 18px 36px rgba(2, 6, 23, 0.28),
@@ -115,19 +187,32 @@ const formattedDescription = computed(() => {
 
 .package-card:hover {
   transform: translateY(-6px);
-  border-color: rgba(96, 165, 250, 0.4);
+  border-color: rgba(96, 165, 250, 0.38);
   box-shadow:
     0 24px 48px rgba(2, 6, 23, 0.36),
     0 0 18px rgba(59, 130, 246, 0.16);
 }
 
-.card-glow {
+.card-glow,
+.card-grid {
   position: absolute;
   inset: 0;
   pointer-events: none;
+}
+
+.card-glow {
   background:
     radial-gradient(circle at 85% 8%, rgba(59, 130, 246, 0.16), transparent 18%),
     radial-gradient(circle at 12% 0%, rgba(168, 85, 247, 0.12), transparent 18%);
+}
+
+.card-grid {
+  opacity: 0.04;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), transparent 88%);
 }
 
 .package-card-header,
@@ -268,22 +353,32 @@ const formattedDescription = computed(() => {
   border: none;
   border-radius: 15px;
   padding: 14px 16px;
-  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  background: linear-gradient(135deg, #22c55e, #16a34a);
   color: #ffffff;
   font-size: 0.95rem;
   font-weight: 900;
   cursor: pointer;
-  box-shadow: 0 12px 24px rgba(37, 99, 235, 0.22);
+  box-shadow: 0 12px 24px rgba(22, 163, 74, 0.22);
   transition:
     transform 0.15s ease,
     box-shadow 0.15s ease,
     filter 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .package-btn:hover {
   transform: translateY(-2px);
   filter: brightness(1.03);
-  box-shadow: 0 16px 28px rgba(37, 99, 235, 0.28);
+  box-shadow: 0 16px 28px rgba(22, 163, 74, 0.28);
+}
+
+.package-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* TABLET */
