@@ -28,18 +28,16 @@
 <script setup>
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
-
 import servicesData from "@/data/services.json";
 import packagePlansData from "@/data/package-plans.json";
 import serviceOptionsData from "@/data/service-options.json";
-
 import { useCart } from "@/composables/useCart";
-
 import SocialTabsBuilder from "@/components/SocialTabsBuilder.vue";
 import CustomPackageBanner from "@/components/CustomPackageBanner.vue";
 import TestimonialsSection from "@/components/TestimonialsSection.vue";
 import FaqSection from "@/components/FaqSection.vue";
 import ContactLeadSection from "@/components/ContactLeadSection.vue";
+import { flyToCart } from "@/utils/flyToCart";
 
 const router = useRouter();
 const { addToCart } = useCart();
@@ -70,7 +68,11 @@ const getPlanItems = (plan) => {
   });
 };
 
-const choosePlan = ({ plan }) => {
+const choosePlan = async ({ plan, sourceEl }) => {
+  const cartTarget = document.querySelector("[data-cart-target='true']");
+
+  await flyToCart(sourceEl, cartTarget);
+
   addToCart({
     ...plan,
     id: `plan-${plan.id}`,

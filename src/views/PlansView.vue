@@ -33,6 +33,7 @@
 <script setup>
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
+import { flyToCart } from "@/utils/flyToCart";
 
 import servicesData from "@/data/services.json";
 import packagePlansData from "@/data/package-plans.json";
@@ -70,7 +71,11 @@ const getPlanItems = (plan) => {
   });
 };
 
-const choosePlan = ({ plan }) => {
+const choosePlan = async ({ plan, sourceEl }) => {
+  const cartTarget = document.querySelector("[data-cart-target='true']");
+
+  await flyToCart(sourceEl, cartTarget);
+
   addToCart({
     ...plan,
     id: `plan-${plan.id}`,

@@ -55,7 +55,7 @@
 <script setup>
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-
+import { flyToCart } from "@/utils/flyToCart";
 import serviceOptionsData from "@/data/service-options.json";
 import { useCart } from "@/composables/useCart";
 import SubServiceCard from "@/components/SubServiceCard.vue";
@@ -95,7 +95,11 @@ const filteredSubServices = computed(() => {
   );
 });
 
-const handleAddSubService = ({ service }) => {
+const handleAddSubService = async ({ service, sourceEl }) => {
+  const cartTarget = document.querySelector("[data-cart-target='true']");
+
+  await flyToCart(sourceEl, cartTarget);
+
   addToCart({
     ...service,
     id: service.id,

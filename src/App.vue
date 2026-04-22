@@ -27,7 +27,13 @@
           Personalizar
         </RouterLink>
 
-        <RouterLink class="nav-cta nav-cta--cart" to="/cart">
+        <RouterLink
+          ref="cartButtonRef"
+          class="nav-cta nav-cta--cart"
+          to="/cart"
+          :class="{ 'nav-cta--cart-bump': isCartBumping }"
+          data-cart-target="true"
+        >
           <span class="nav-cart-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none">
               <path
@@ -43,6 +49,10 @@
           </span>
 
           <span>Carrito</span>
+
+          <span v-if="cartItemsCount > 0" class="nav-cart-badge">
+            {{ cartItemsCount }}
+          </span>
         </RouterLink>
       </div>
     </header>
@@ -58,9 +68,50 @@
 </template>
 
 <script setup>
+import { computed, nextTick, ref, watch } from "vue";
 import { RouterLink, RouterView } from "vue-router";
 import logoImpulso from "@/assets/impulso_redes_logo.png";
 import FloatingSocials from "@/components/FloatingSocials.vue";
+import { useCart } from "@/composables/useCart";
+
+const { cart } = useCart();
+
+const cartItemsCount = computed(() => cart.value.length);
+
+const cartButtonRef = ref(null);
+const isCartBumping = ref(false);
+
+watch(
+  () => cartItemsCount.value,
+  async (newValue, oldValue) => {
+    if (oldValue === undefined) return;
+    if (newValue === oldValue) return;
+
+    isCartBumping.value = false;
+    await nextTick();
+    isCartBumping.value = true;
+
+    setTimeout(() => {
+      isCartBumping.value = false;
+    }, 380);
+
+    const el = cartButtonRef.value?.$el || cartButtonRef.value;
+    if (el?.animate) {
+      el.animate(
+        [
+          { transform: "scale(1)" },
+          { transform: "scale(1.08)" },
+          { transform: "scale(0.98)" },
+          { transform: "scale(1)" },
+        ],
+        {
+          duration: 320,
+          easing: "ease",
+        },
+      );
+    }
+  },
+);
 </script>
 
 <style scoped>
@@ -216,6 +267,26 @@ import FloatingSocials from "@/components/FloatingSocials.vue";
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  position: relative;
+}
+
+.nav-cta--cart-bump {
+  animation: cart-bump 0.35s ease;
+}
+
+@keyframes cart-bump {
+  0% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.08);
+  }
+  70% {
+    transform: scale(0.98);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .nav-cart-icon {
@@ -230,6 +301,21 @@ import FloatingSocials from "@/components/FloatingSocials.vue";
   width: 18px;
   height: 18px;
   display: block;
+}
+
+.nav-cart-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 900;
+  line-height: 1;
 }
 
 .top-spacer {

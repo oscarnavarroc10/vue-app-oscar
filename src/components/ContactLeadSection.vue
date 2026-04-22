@@ -20,7 +20,7 @@
 
       <form
         class="contact-form"
-        action="https://formsubmit.co/TU_CORREO_AQUI"
+        action="https://formsubmit.co/oscarnavarroc10@gmail.com"
         method="POST"
       >
         <input
@@ -41,7 +41,7 @@
         <input
           type="hidden"
           name="_next"
-          value="https://impulsoredes.com.mx/gracias"
+          value="https://impulsoredes.com.mx/"
         />
 
         <div class="form-grid">
