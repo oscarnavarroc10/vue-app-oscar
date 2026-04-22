@@ -53,11 +53,21 @@
         </div>
 
         <div v-if="filteredPlans.length" class="plans-wrapper">
+          <div
+            v-if="filteredPlans.length > 1"
+            class="mobile-swipe-hint"
+          >
+            <span class="swipe-hint-arrow">←</span>
+            <span>Desliza para ver más paquetes</span>
+            <span class="swipe-hint-arrow">→</span>
+          </div>
+
           <button
             v-if="canGoLeft"
             class="slider-arrow left"
             type="button"
             @click="slideLeft"
+            aria-label="Ver paquetes anteriores"
           >
             ‹
           </button>
@@ -81,9 +91,19 @@
             class="slider-arrow right"
             type="button"
             @click="slideRight"
+            aria-label="Ver más paquetes"
           >
             ›
           </button>
+
+          <div
+            v-if="filteredPlans.length > 1"
+            class="mobile-carousel-indicator"
+          >
+            <span class="carousel-dot active"></span>
+            <span class="carousel-line"></span>
+            <span class="carousel-dot"></span>
+          </div>
         </div>
 
         <div v-else class="empty-state">
@@ -302,9 +322,9 @@ const getThemeClass = (category) => {
   position: relative;
   width: 100%;
   min-height: 62px;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 18px;
-  color: #fff;
+  color: rgba(255, 255, 255, 0.94);
   font-size: 0.96rem;
   font-weight: 800;
   display: flex;
@@ -312,32 +332,56 @@ const getThemeClass = (category) => {
   justify-content: center;
   gap: 10px;
   cursor: pointer;
-  opacity: 0.82;
+  opacity: 1;
   transition:
     transform 0.22s ease,
-    opacity 0.22s ease,
     box-shadow 0.22s ease,
     border-color 0.22s ease,
-    filter 0.22s ease;
+    filter 0.22s ease,
+    background 0.22s ease,
+    color 0.22s ease;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
     0 10px 22px rgba(2, 6, 23, 0.14);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  overflow: hidden;
+}
+
+.tab-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.01) 45%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  opacity: 0.9;
 }
 
 .tab-btn:hover {
-  opacity: 1;
   transform: translateY(-1px);
-  filter: brightness(1.03);
+  filter: brightness(1.1) saturate(1.1);
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow:
+    0 14px 26px rgba(2, 6, 23, 0.18),
+    0 0 16px rgba(255, 255, 255, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .tab-btn.active {
-  opacity: 1;
-  transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  transform: translateY(-2px) scale(1.03);
+  border-color: rgba(255, 255, 255, 0.26);
+  filter: brightness(1.22) saturate(1.32);
   box-shadow:
-    0 16px 30px rgba(2, 6, 23, 0.24),
-    0 0 18px rgba(59, 130, 246, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    0 16px 30px rgba(2, 6, 23, 0.28),
+    0 0 18px rgba(255, 255, 255, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
 }
 
 .tab-icon-wrap {
@@ -354,13 +398,42 @@ const getThemeClass = (category) => {
   height: 22px;
   object-fit: contain;
   display: block;
-  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.08));
+  opacity: 0.96;
+  filter:
+    brightness(1.12)
+    saturate(1.15)
+    drop-shadow(0 0 7px rgba(255, 255, 255, 0.08));
+  transition:
+    opacity 0.22s ease,
+    transform 0.22s ease,
+    filter 0.22s ease;
+}
+
+.tab-btn:hover .tab-icon-img {
+  opacity: 1;
+  transform: scale(1.06);
+  filter:
+    brightness(1.18)
+    saturate(1.22)
+    drop-shadow(0 0 10px rgba(255, 255, 255, 0.12));
+}
+
+.tab-btn.active .tab-icon-img {
+  opacity: 1;
+  transform: scale(1.12);
+  filter:
+    brightness(1.26)
+    saturate(1.35)
+    drop-shadow(0 0 10px rgba(255, 255, 255, 0.12))
+    drop-shadow(0 0 16px rgba(59, 130, 246, 0.16));
 }
 
 .tab-label {
   min-width: 0;
   text-align: center;
   line-height: 1.15;
+  color: inherit;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.04);
 }
 
 .tabs-content {
@@ -398,15 +471,24 @@ const getThemeClass = (category) => {
   padding: 14px;
   height: fit-content;
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.05);
-  color: #cbd5e1;
+  background: rgba(255, 255, 255, 0.06);
+  color: #e2e8f0;
   font-weight: 800;
   text-align: center;
   flex-shrink: 0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .plans-wrapper {
   position: relative;
+}
+
+.mobile-swipe-hint {
+  display: none;
+}
+
+.mobile-carousel-indicator {
+  display: none;
 }
 
 .plans-slider {
@@ -414,7 +496,7 @@ const getThemeClass = (category) => {
   gap: 22px;
   overflow-x: auto;
   scroll-behavior: smooth;
-  padding: 6px 42px 12px;
+  padding: 12px 42px 14px;
   scrollbar-width: none;
   scroll-snap-type: x proximity;
 }
@@ -433,8 +515,8 @@ const getThemeClass = (category) => {
   top: 50%;
   transform: translateY(-50%);
   z-index: 5;
-  width: 44px;
-  height: 44px;
+  width: 46px;
+  height: 46px;
   border: none;
   border-radius: 999px;
   cursor: pointer;
@@ -442,21 +524,32 @@ const getThemeClass = (category) => {
   font-weight: 700;
   line-height: 1;
   color: white;
-  background: rgba(15, 23, 42, 0.88);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(12px);
+  box-shadow:
+    0 10px 24px rgba(2, 6, 23, 0.24),
+    0 0 14px rgba(59, 130, 246, 0.08);
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease;
 }
 
 .slider-arrow.left {
-  left: 0;
+  left: 2px;
 }
 
 .slider-arrow.right {
-  right: 0;
+  right: 2px;
 }
 
 .slider-arrow:hover {
   background: rgba(30, 41, 59, 0.95);
+  transform: translateY(-50%) scale(1.04);
+  box-shadow:
+    0 12px 28px rgba(2, 6, 23, 0.28),
+    0 0 18px rgba(59, 130, 246, 0.14);
 }
 
 .empty-state {
@@ -488,6 +581,19 @@ const getThemeClass = (category) => {
   );
 }
 
+.theme-instagram.active {
+  background: linear-gradient(
+    135deg,
+    rgba(245, 133, 41, 0.4),
+    rgba(221, 42, 123, 0.42),
+    rgba(129, 52, 175, 0.36)
+  );
+  box-shadow:
+    0 16px 30px rgba(2, 6, 23, 0.26),
+    0 0 28px rgba(221, 42, 123, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
 .theme-facebook {
   background: linear-gradient(
     135deg,
@@ -496,21 +602,58 @@ const getThemeClass = (category) => {
   );
 }
 
+.theme-facebook.active {
+  background: linear-gradient(
+    135deg,
+    rgba(24, 119, 242, 0.38),
+    rgba(96, 165, 250, 0.36)
+  );
+  box-shadow:
+    0 16px 30px rgba(2, 6, 23, 0.26),
+    0 0 28px rgba(59, 130, 246, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
 .theme-tiktok {
   background: linear-gradient(
     135deg,
-    rgba(17, 24, 39, 0.26),
+    rgba(17, 24, 39, 0.28),
     rgba(37, 244, 238, 0.2),
     rgba(254, 44, 85, 0.2)
   );
 }
 
+.theme-tiktok.active {
+  background: linear-gradient(
+    135deg,
+    rgba(17, 24, 39, 0.34),
+    rgba(37, 244, 238, 0.28),
+    rgba(254, 44, 85, 0.28)
+  );
+  box-shadow:
+    0 16px 30px rgba(2, 6, 23, 0.26),
+    0 0 28px rgba(254, 44, 85, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
 .theme-x {
   background: linear-gradient(
     135deg,
-    rgba(15, 23, 42, 0.26),
-    rgba(51, 65, 85, 0.26)
+    rgba(15, 23, 42, 0.24),
+    rgba(51, 65, 85, 0.24)
   );
+}
+
+.theme-x.active {
+  background: linear-gradient(
+    135deg,
+    rgba(30, 41, 59, 0.36),
+    rgba(71, 85, 105, 0.34)
+  );
+  box-shadow:
+    0 16px 30px rgba(2, 6, 23, 0.26),
+    0 0 24px rgba(148, 163, 184, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
 }
 
 .theme-youtube {
@@ -521,12 +664,36 @@ const getThemeClass = (category) => {
   );
 }
 
+.theme-youtube.active {
+  background: linear-gradient(
+    135deg,
+    rgba(220, 38, 38, 0.38),
+    rgba(239, 68, 68, 0.38)
+  );
+  box-shadow:
+    0 16px 30px rgba(2, 6, 23, 0.26),
+    0 0 28px rgba(239, 68, 68, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
 .theme-spotify {
   background: linear-gradient(
     135deg,
     rgba(29, 185, 84, 0.24),
     rgba(34, 197, 94, 0.24)
   );
+}
+
+.theme-spotify.active {
+  background: linear-gradient(
+    135deg,
+    rgba(29, 185, 84, 0.36),
+    rgba(34, 197, 94, 0.38)
+  );
+  box-shadow:
+    0 16px 30px rgba(2, 6, 23, 0.26),
+    0 0 28px rgba(34, 197, 94, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
 }
 
 .theme-telegram {
@@ -537,6 +704,18 @@ const getThemeClass = (category) => {
   );
 }
 
+.theme-telegram.active {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 136, 204, 0.36),
+    rgba(56, 189, 248, 0.36)
+  );
+  box-shadow:
+    0 16px 30px rgba(2, 6, 23, 0.26),
+    0 0 28px rgba(56, 189, 248, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
 .theme-whatsapp {
   background: linear-gradient(
     135deg,
@@ -545,12 +724,36 @@ const getThemeClass = (category) => {
   );
 }
 
+.theme-whatsapp.active {
+  background: linear-gradient(
+    135deg,
+    rgba(37, 211, 102, 0.36),
+    rgba(74, 222, 128, 0.38)
+  );
+  box-shadow:
+    0 16px 30px rgba(2, 6, 23, 0.26),
+    0 0 28px rgba(74, 222, 128, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
 .theme-default {
   background: linear-gradient(
     135deg,
     rgba(71, 85, 105, 0.24),
     rgba(100, 116, 139, 0.24)
   );
+}
+
+.theme-default.active {
+  background: linear-gradient(
+    135deg,
+    rgba(71, 85, 105, 0.34),
+    rgba(100, 116, 139, 0.34)
+  );
+  box-shadow:
+    0 16px 30px rgba(2, 6, 23, 0.26),
+    0 0 24px rgba(148, 163, 184, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
 }
 
 @media (max-width: 1100px) {
@@ -599,6 +802,7 @@ const getThemeClass = (category) => {
     padding: 0 10px;
     font-size: 0.9rem;
     border-radius: 16px;
+    gap: 8px;
   }
 
   .tab-icon-wrap {
@@ -615,6 +819,10 @@ const getThemeClass = (category) => {
     padding: 16px;
   }
 
+  .content-head {
+    margin-bottom: 16px;
+  }
+
   .content-head h3 {
     font-size: 1.22rem;
   }
@@ -623,14 +831,81 @@ const getThemeClass = (category) => {
     font-size: 0.93rem;
   }
 
+  .plans-counter {
+    padding: 12px 14px;
+    border-radius: 16px;
+    font-size: 0.92rem;
+    background: rgba(255, 255, 255, 0.06);
+    color: #e2e8f0;
+  }
+
+  .mobile-swipe-hint {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 0 0 10px;
+    text-align: center;
+    color: #94a3b8;
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+
+  .swipe-hint-arrow {
+    color: #cbd5e1;
+    font-size: 0.9rem;
+    line-height: 1;
+  }
+
   .plans-slider {
     gap: 14px;
-    padding: 4px 4px 10px;
+    padding: 16px 22px 12px;
     scroll-snap-type: x mandatory;
   }
 
   .slider-arrow {
-    display: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    font-size: 1.7rem;
+    top: 50%;
+  }
+
+  .slider-arrow.left {
+    left: -2px;
+  }
+
+  .slider-arrow.right {
+    right: -2px;
+  }
+
+  .mobile-carousel-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    margin-top: 10px;
+  }
+
+  .carousel-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: rgba(148, 163, 184, 0.38);
+  }
+
+  .carousel-dot.active {
+    background: #60a5fa;
+    box-shadow: 0 0 10px rgba(96, 165, 250, 0.4);
+  }
+
+  .carousel-line {
+    width: 22px;
+    height: 2px;
+    border-radius: 999px;
+    background: rgba(148, 163, 184, 0.3);
   }
 }
 
@@ -665,14 +940,18 @@ const getThemeClass = (category) => {
     font-size: 0.82rem;
   }
 
-  .plans-counter {
-    padding: 12px;
-    border-radius: 14px;
-    font-size: 0.9rem;
-  }
-
   .tabs-content {
     padding: 14px;
+  }
+
+  .plans-slider {
+    padding: 14px 18px 12px;
+  }
+
+  .slider-arrow {
+    width: 36px;
+    height: 36px;
+    font-size: 1.55rem;
   }
 }
 </style>
