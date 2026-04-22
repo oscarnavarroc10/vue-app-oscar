@@ -81,8 +81,6 @@ const choosePlan = ({ plan }) => {
     cartType: "plan",
     planItems: getPlanItems(plan),
   });
-
-  router.push("/cart");
 };
 
 const goHome = () => {

@@ -103,8 +103,6 @@ const handleAddSubService = ({ service }) => {
     quantity: Number(service.quantity || 100),
     cartType: "service",
   });
-
-  router.push("/cart");
 };
 
 const goBack = () => {
