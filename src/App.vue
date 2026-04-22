@@ -17,6 +17,14 @@
         <RouterLink to="/#comentarios">Comentarios</RouterLink>
         <RouterLink to="/faq">Preguntas</RouterLink>
         <RouterLink to="/#contacto">Contacto</RouterLink>
+          <a
+    class="nav-free-trial"
+    :href="freeTrialWhatsAppUrl"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    🎁 Prueba gratis
+  </a>
       </nav>
 
       <div class="nav-actions">
@@ -112,6 +120,15 @@ watch(
     }
   },
 );
+
+const freeTrialPhone = "529992649728";
+
+const freeTrialMessage =
+  "Hola, vi su página y me interesa solicitar una prueba gratis para conocer el servicio.";
+
+const freeTrialWhatsAppUrl = `https://wa.me/${freeTrialPhone}?text=${encodeURIComponent(
+  freeTrialMessage
+)}`;
 </script>
 
 <style scoped>
@@ -129,6 +146,64 @@ watch(
 
 :global(a) {
   text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.nav-links a {
+  text-decoration: none;
+}
+
+.nav-free-trial {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: #ffffff;
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 10px 24px rgba(34, 197, 94, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    filter 0.18s ease;
+  white-space: nowrap;
+}
+
+.nav-free-trial:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.04);
+  box-shadow:
+    0 14px 28px rgba(34, 197, 94, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+.nav-free-trial:active {
+  transform: translateY(0);
+}
+
+.nav-links a:not(.nav-free-trial) {
+  color: rgba(255, 255, 255, 0.88);
+  font-weight: 700;
+  transition:
+    color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.nav-links a:not(.nav-free-trial):hover {
+  color: #ffffff;
+  transform: translateY(-1px);
 }
 
 .background-layer {
@@ -325,6 +400,18 @@ watch(
 .floating-socials-wrap {
   position: relative;
   z-index: 12;
+}
+
+@media (max-width: 900px) {
+  .nav-links {
+    gap: 12px;
+  }
+
+  .nav-free-trial {
+    min-height: 38px;
+    padding: 0 14px;
+    font-size: 0.88rem;
+  }
 }
 
 @media (max-width: 900px) {
