@@ -17,14 +17,14 @@
         <RouterLink to="/#comentarios">Comentarios</RouterLink>
         <RouterLink to="/faq">Preguntas</RouterLink>
         <RouterLink to="/#contacto">Contacto</RouterLink>
-          <a
-    class="nav-free-trial"
-    :href="freeTrialWhatsAppUrl"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    🎁 Prueba gratis
-  </a>
+        <a
+          class="nav-free-trial"
+          :href="freeTrialWhatsAppUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          🎁 Prueba gratis
+        </a>
       </nav>
 
       <div class="nav-actions">
@@ -265,13 +265,19 @@ const freeTrialWhatsAppUrl = `https://wa.me/${freeTrialPhone}?text=${encodeURICo
 .brand {
   display: inline-flex;
   align-items: center;
+  justify-content: flex-start;
   flex-shrink: 0;
+  height: 42px;
+  overflow: visible;
 }
 
 .brand-logo {
-  height: 84px;
+  height: 42px;
+  width: auto;
   display: block;
   object-fit: contain;
+  transform: scale(2.15);
+  transform-origin: left center;
 }
 
 .nav-links {
@@ -425,9 +431,14 @@ const freeTrialWhatsAppUrl = `https://wa.me/${freeTrialPhone}?text=${encodeURICo
     gap: 14px;
   }
 
-  .brand-logo {
-    height: 58px;
-  }
+.brand {
+  height: 38px;
+}
+
+.brand-logo {
+  height: 38px;
+  transform: scale(2.2);
+}
 
   .nav-links {
     gap: 14px;
@@ -448,14 +459,17 @@ const freeTrialWhatsAppUrl = `https://wa.me/${freeTrialPhone}?text=${encodeURICo
     margin-bottom: 14px;
   }
 
-  .brand {
-    width: 100%;
-    justify-content: center;
-  }
+.brand {
+  width: 100%;
+  justify-content: center;
+  height: 34px;
+}
 
-  .brand-logo {
-    height: 48px;
-  }
+.brand-logo {
+  height: 34px;
+  transform: scale(2.35);
+  transform-origin: center center;
+}
 
   .nav-links {
     width: 100%;
@@ -499,9 +513,14 @@ const freeTrialWhatsAppUrl = `https://wa.me/${freeTrialPhone}?text=${encodeURICo
     padding: 14px 12px;
   }
 
-  .brand-logo {
-    height: 42px;
-  }
+.brand {
+  height: 30px;
+}
+
+.brand-logo {
+  height: 30px;
+  transform: scale(2.45);
+}
 
   .nav-links a {
     font-size: 0.9rem;
