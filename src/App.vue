@@ -127,7 +127,7 @@ const freeTrialMessage =
   "Hola, vi su página y me interesa solicitar una prueba gratis para conocer el servicio.";
 
 const freeTrialWhatsAppUrl = `https://wa.me/${freeTrialPhone}?text=${encodeURIComponent(
-  freeTrialMessage
+  freeTrialMessage,
 )}`;
 </script>
 
@@ -146,64 +146,6 @@ const freeTrialWhatsAppUrl = `https://wa.me/${freeTrialPhone}?text=${encodeURICo
 
 :global(a) {
   text-decoration: none;
-}
-
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  flex-wrap: wrap;
-}
-
-.nav-links a {
-  text-decoration: none;
-}
-
-.nav-free-trial {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 42px;
-  padding: 0 16px;
-  border-radius: 999px;
-  font-weight: 800;
-  font-size: 0.95rem;
-  color: #ffffff;
-  background: linear-gradient(135deg, #16a34a, #22c55e);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow:
-    0 10px 24px rgba(34, 197, 94, 0.24),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12);
-  transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease,
-    filter 0.18s ease;
-  white-space: nowrap;
-}
-
-.nav-free-trial:hover {
-  transform: translateY(-2px);
-  filter: brightness(1.04);
-  box-shadow:
-    0 14px 28px rgba(34, 197, 94, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.14);
-}
-
-.nav-free-trial:active {
-  transform: translateY(0);
-}
-
-.nav-links a:not(.nav-free-trial) {
-  color: rgba(255, 255, 255, 0.88);
-  font-weight: 700;
-  transition:
-    color 0.18s ease,
-    transform 0.18s ease;
-}
-
-.nav-links a:not(.nav-free-trial):hover {
-  color: #ffffff;
-  transform: translateY(-1px);
 }
 
 .background-layer {
@@ -267,16 +209,17 @@ const freeTrialWhatsAppUrl = `https://wa.me/${freeTrialPhone}?text=${encodeURICo
   align-items: center;
   justify-content: flex-start;
   flex-shrink: 0;
-  height: 42px;
+  height: 44px;
+  min-width: 180px;
   overflow: visible;
 }
 
 .brand-logo {
-  height: 42px;
+  height: 44px;
   width: auto;
   display: block;
   object-fit: contain;
-  transform: scale(2.15);
+  transform: translateY(6px) scale(3.5);
   transform-origin: left center;
 }
 
@@ -286,6 +229,7 @@ const freeTrialWhatsAppUrl = `https://wa.me/${freeTrialPhone}?text=${encodeURICo
   justify-content: center;
   gap: 26px;
   flex: 1;
+  flex-wrap: wrap;
 }
 
 .nav-links a {
@@ -294,12 +238,51 @@ const freeTrialWhatsAppUrl = `https://wa.me/${freeTrialPhone}?text=${encodeURICo
   font-size: 1rem;
   transition:
     color 0.18s ease,
-    opacity 0.18s ease;
+    opacity 0.18s ease,
+    transform 0.18s ease;
 }
 
 .nav-links a:hover,
 .nav-links a.router-link-active {
   color: #ffffff;
+}
+
+.nav-links a:not(.nav-free-trial):hover {
+  transform: translateY(-1px);
+}
+
+.nav-free-trial {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: #ffffff;
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 10px 24px rgba(34, 197, 94, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    filter 0.18s ease;
+  white-space: nowrap;
+}
+
+.nav-free-trial:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.04);
+  box-shadow:
+    0 14px 28px rgba(34, 197, 94, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+.nav-free-trial:active {
+  transform: translateY(0);
 }
 
 .nav-actions {
@@ -408,15 +391,23 @@ const freeTrialWhatsAppUrl = `https://wa.me/${freeTrialPhone}?text=${encodeURICo
   z-index: 12;
 }
 
-@media (max-width: 900px) {
-  .nav-links {
-    gap: 12px;
+@media (max-width: 1100px) {
+  .brand {
+    min-width: 160px;
+    height: 40px;
   }
 
-  .nav-free-trial {
-    min-height: 38px;
-    padding: 0 14px;
-    font-size: 0.88rem;
+  .brand-logo {
+    height: 40px;
+    transform: scale(3.75);
+  }
+
+  .nav-links {
+    gap: 18px;
+  }
+
+  .nav-links a {
+    font-size: 0.96rem;
   }
 }
 
@@ -431,17 +422,24 @@ const freeTrialWhatsAppUrl = `https://wa.me/${freeTrialPhone}?text=${encodeURICo
     gap: 14px;
   }
 
-.brand {
-  height: 38px;
-}
+  .brand {
+    min-width: 140px;
+    height: 36px;
+  }
 
-.brand-logo {
-  height: 38px;
-  transform: scale(2.2);
-}
+  .brand-logo {
+    height: 36px;
+    transform: scale(3.4);
+  }
 
   .nav-links {
-    gap: 14px;
+    gap: 12px;
+  }
+
+  .nav-free-trial {
+    min-height: 38px;
+    padding: 0 14px;
+    font-size: 0.88rem;
   }
 
   .nav-actions {
@@ -459,17 +457,18 @@ const freeTrialWhatsAppUrl = `https://wa.me/${freeTrialPhone}?text=${encodeURICo
     margin-bottom: 14px;
   }
 
-.brand {
-  width: 100%;
-  justify-content: center;
-  height: 34px;
-}
+  .brand {
+    width: 100%;
+    min-width: 0;
+    justify-content: center;
+    height: 34px;
+  }
 
-.brand-logo {
-  height: 34px;
-  transform: scale(2.35);
-  transform-origin: center center;
-}
+  .brand-logo {
+    height: 34px;
+    transform: scale(3.9);
+    transform-origin: center center;
+  }
 
   .nav-links {
     width: 100%;
@@ -513,14 +512,14 @@ const freeTrialWhatsAppUrl = `https://wa.me/${freeTrialPhone}?text=${encodeURICo
     padding: 14px 12px;
   }
 
-.brand {
-  height: 30px;
-}
+  .brand {
+    height: 30px;
+  }
 
-.brand-logo {
-  height: 30px;
-  transform: scale(2.45);
-}
+  .brand-logo {
+    height: 30px;
+    transform: translateY(4px) scale(5.1);
+  }
 
   .nav-links a {
     font-size: 0.9rem;
