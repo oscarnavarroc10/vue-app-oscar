@@ -3,440 +3,528 @@
     "id": 101,
     "serviceId": 1,
     "name": "Seguidores",
-    "description": "Seguidores para tu cuenta de Instagram",
+    "description": "Seguidores para tu perfil o página de Instagram. Haz crecer tu presencia rápidamente.",
     "price": 189,
     "unitBase": 1000,
     "category": "Instagram",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace de tu perfil, página o canal de Instagram"
   },
   {
     "id": 102,
     "serviceId": 1,
     "name": "Likes",
-    "description": "Likes para tus Reels/Posts de Instagram",
+    "description": "Likes para tu contenido de Instagram. Genera mayor interacción y confianza.",
     "price": 60,
     "unitBase": 1000,
     "category": "Instagram",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace de la publicación, reel, video o contenido de Instagram"
   },
   {
     "id": 103,
     "serviceId": 1,
     "name": "Views Reels",
-    "description": "Añade Views para tus Reels",
+    "description": "Views para tu contenido de Instagram. Impulsa alcance y visibilidad.",
     "price": 50,
     "unitBase": 1000,
     "category": "Instagram",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace de la publicación, reel, video o contenido de Instagram"
   },
   {
     "id": 104,
     "serviceId": 1,
     "name": "Shares",
-    "description": "Shares para tus posts",
+    "description": "Servicio de Shares para Instagram. Mejora tu presencia digital.",
     "price": 70,
     "unitBase": 1000,
     "category": "Instagram",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace relacionado de Instagram"
   },
   {
     "id": 105,
     "serviceId": 1,
     "name": "Repost",
-    "description": "Repost para tus publicaciones",
+    "description": "Servicio de Repost para Instagram. Mejora tu presencia digital.",
     "price": 60,
     "unitBase": 1000,
     "category": "Instagram",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace relacionado de Instagram"
   },
   {
     "id": 201,
     "serviceId": 2,
     "name": "Seguidores",
-    "description": "Seguidores para tu página de Facebook",
+    "description": "Seguidores para tu perfil o página de Facebook. Haz crecer tu presencia rápidamente.",
     "price": 150,
     "unitBase": 1000,
     "category": "Facebook",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace de tu perfil, página o canal de Facebook"
   },
   {
     "id": 202,
     "serviceId": 2,
     "name": "Miembros Grupo",
-    "description": "Miembros para tu grupo de Facebook",
+    "description": "Servicio de Miembros Grupo para Facebook. Mejora tu presencia digital.",
     "price": 130,
     "unitBase": 1000,
     "category": "Facebook",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace relacionado de Facebook"
   },
   {
     "id": 203,
     "serviceId": 2,
     "name": "Likes Publicaciones",
-    "description": "Likes para publicaciones de Facebook",
+    "description": "Likes para tu contenido de Facebook. Genera mayor interacción y confianza.",
     "price": 60,
     "unitBase": 1000,
     "category": "Facebook",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace de la publicación, reel, video o contenido de Facebook"
   },
   {
     "id": 204,
     "serviceId": 2,
     "name": "Reacciones",
-    "description": "Reacciones (Love, Wow, etc.) para publicaciones",
+    "description": "Servicio de Reacciones para Facebook. Mejora tu presencia digital.",
     "price": 70,
     "unitBase": 1000,
     "category": "Facebook",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace relacionado de Facebook"
   },
   {
     "id": 205,
     "serviceId": 2,
     "name": "Comentarios",
-    "description": "Comentarios para publicaciones",
+    "description": "Comentarios para publicaciones de Facebook. Dale más movimiento a tu contenido.",
     "price": 85,
-    "unitBase": 100,
+    "unitBase": 1000,
     "category": "Facebook",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace de la publicación, reel, video o contenido de Facebook"
   },
   {
     "id": 206,
     "serviceId": 2,
     "name": "Compartidos",
-    "description": "Compartidos para publicaciones",
+    "description": "Servicio de Compartidos para Facebook. Mejora tu presencia digital.",
     "price": 80,
     "unitBase": 1000,
     "category": "Facebook",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace relacionado de Facebook"
   },
   {
     "id": 207,
     "serviceId": 2,
     "name": "Views",
-    "description": "Views para videos o reels",
+    "description": "Views para tu contenido de Facebook. Impulsa alcance y visibilidad.",
     "price": 60,
     "unitBase": 1000,
     "category": "Facebook",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace de la publicación, reel, video o contenido de Facebook"
   },
   {
     "id": 301,
     "serviceId": 3,
     "name": "Seguidores",
-    "description": "Seguidores para tu cuenta de Tiktok",
+    "description": "Seguidores para tu perfil o página de TikTok. Haz crecer tu presencia rápidamente.",
     "price": 220,
     "unitBase": 1000,
     "category": "TikTok",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace de tu perfil, página o canal de TikTok"
   },
   {
     "id": 302,
     "serviceId": 3,
     "name": "Me Gusta",
-    "description": "Me Gusta para tus videos de Tiktok",
+    "description": "Servicio de Me Gusta para TikTok. Mejora tu presencia digital.",
     "price": 60,
     "unitBase": 1000,
     "category": "TikTok",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace relacionado de TikTok"
   },
   {
     "id": 303,
     "serviceId": 3,
     "name": "Views",
-    "description": "Añade Views para tus videos",
+    "description": "Views para tu contenido de TikTok. Impulsa alcance y visibilidad.",
     "price": 50,
     "unitBase": 1000,
     "category": "TikTok",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace de la publicación, reel, video o contenido de TikTok"
   },
   {
     "id": 304,
     "serviceId": 3,
     "name": "Shares",
-    "description": "Shares para tus posts",
+    "description": "Servicio de Shares para TikTok. Mejora tu presencia digital.",
     "price": 80,
     "unitBase": 1000,
     "category": "TikTok",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace relacionado de TikTok"
   },
   {
     "id": 305,
     "serviceId": 3,
     "name": "Guardados",
-    "description": "Guardados para tus publicaciones",
+    "description": "Servicio de Guardados para TikTok. Mejora tu presencia digital.",
     "price": 75,
     "unitBase": 1000,
     "category": "TikTok",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace relacionado de TikTok"
   },
   {
     "id": 401,
     "serviceId": 4,
     "name": "Seguidores X",
-    "description": "Seguidores para tu cuenta de X",
+    "description": "Seguidores para tu perfil o página de X. Haz crecer tu presencia rápidamente.",
     "price": 350,
     "unitBase": 1000,
     "category": "X",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace de tu perfil, página o canal de X"
   },
   {
     "id": 402,
     "serviceId": 4,
     "name": "Likes Tweets",
-    "description": "Likes para tus tweets",
+    "description": "Likes para tu contenido de X. Genera mayor interacción y confianza.",
     "price": 90,
     "unitBase": 1000,
     "category": "X",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace de la publicación, reel, video o contenido de X"
   },
   {
     "id": 403,
     "serviceId": 4,
     "name": "Retweets",
-    "description": "Retweets para tus publicaciones",
+    "description": "Servicio de Retweets para X. Mejora tu presencia digital.",
     "price": 180,
     "unitBase": 1000,
     "category": "X",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace relacionado de X"
   },
   {
     "id": 404,
     "serviceId": 4,
     "name": "Views Video",
-    "description": "Views para videos",
+    "description": "Views para tu contenido de X. Impulsa alcance y visibilidad.",
     "price": 60,
     "unitBase": 1000,
     "category": "X",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace de la publicación, reel, video o contenido de X"
   },
   {
     "id": 405,
     "serviceId": 4,
     "name": "Impresiones",
-    "description": "Impresiones para tweets",
+    "description": "Servicio de Impresiones para X. Mejora tu presencia digital.",
     "price": 50,
-    "unitBase": 1000, 
+    "unitBase": 1000,
     "category": "X",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace relacionado de X"
   },
   {
     "id": 601,
     "serviceId": 6,
     "name": "Suscriptores",
-    "description": "Suscriptores para tu canal de YouTube",
+    "description": "Suscriptores para tu canal de YouTube. Fortalece tu comunidad.",
     "price": 685,
     "unitBase": 1000,
     "category": "YouTube",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace de tu perfil, página o canal de YouTube"
   },
   {
     "id": 602,
     "serviceId": 6,
     "name": "Views",
-    "description": "Views para videos o shorts",
+    "description": "Views para tu contenido de YouTube. Impulsa alcance y visibilidad.",
     "price": 140,
     "unitBase": 1000,
     "category": "YouTube",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace de la publicación, reel, video o contenido de YouTube"
   },
   {
     "id": 603,
     "serviceId": 6,
     "name": "Views Alta Interacción",
-    "description": "Views con alta interacción",
+    "description": "Views para tu contenido de YouTube. Impulsa alcance y visibilidad.",
     "price": 170,
     "unitBase": 1000,
     "category": "YouTube",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace de la publicación, reel, video o contenido de YouTube"
   },
   {
     "id": 604,
     "serviceId": 6,
     "name": "Likes",
-    "description": "Likes para videos",
+    "description": "Likes para tu contenido de YouTube. Genera mayor interacción y confianza.",
     "price": 80,
     "unitBase": 1000,
     "category": "YouTube",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace de la publicación, reel, video o contenido de YouTube"
   },
   {
     "id": 605,
     "serviceId": 6,
     "name": "Likes Comentarios",
-    "description": "Likes en comentarios",
+    "description": "Likes para tu contenido de YouTube. Genera mayor interacción y confianza.",
     "price": 50,
     "unitBase": 1000,
     "category": "YouTube",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace de la publicación, reel, video o contenido de YouTube"
   },
   {
     "id": 606,
     "serviceId": 6,
     "name": "Views En Vivo 30min",
-    "description": "Views para en vivo de 30 minutos",
+    "description": "Views para tu contenido de YouTube. Impulsa alcance y visibilidad.",
     "price": 70,
     "unitBase": 1000,
     "category": "YouTube",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace de la publicación, reel, video o contenido de YouTube"
   },
   {
     "id": 607,
     "serviceId": 6,
     "name": "Views En Vivo 60min",
-    "description": "Views para en vivo de 60 minutos",
+    "description": "Views para tu contenido de YouTube. Impulsa alcance y visibilidad.",
     "price": 90,
     "unitBase": 1000,
     "category": "YouTube",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace de la publicación, reel, video o contenido de YouTube"
   },
   {
     "id": 608,
     "serviceId": 6,
     "name": "Views En Vivo 90min",
-    "description": "Views para en vivo de 90 minutos",
+    "description": "Views para tu contenido de YouTube. Impulsa alcance y visibilidad.",
     "price": 120,
     "unitBase": 1000,
     "category": "YouTube",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace de la publicación, reel, video o contenido de YouTube"
   },
   {
     "id": 609,
     "serviceId": 6,
     "name": "Reacciones En Vivo",
-    "description": "Reacciones para en vivos",
+    "description": "Servicio de Reacciones En Vivo para YouTube. Mejora tu presencia digital.",
     "price": 60,
     "unitBase": 1000,
     "category": "YouTube",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace relacionado de YouTube"
   },
   {
     "id": 801,
     "serviceId": 8,
     "name": "Seguidores",
-    "description": "Seguidores para Spotify",
+    "description": "Seguidores para tu perfil o página de Spotify. Haz crecer tu presencia rápidamente.",
     "price": 240,
     "unitBase": 1000,
     "category": "Spotify",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace de tu perfil, página o canal de Spotify"
   },
   {
     "id": 802,
     "serviceId": 8,
     "name": "Oyentes Mensuales",
-    "description": "Oyentes mensuales para Spotify",
+    "description": "Servicio de Oyentes Mensuales para Spotify. Mejora tu presencia digital.",
     "price": 140,
     "unitBase": 1000,
     "category": "Spotify",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace relacionado de Spotify"
   },
   {
     "id": 803,
     "serviceId": 8,
     "name": "Reproducciones Premium",
-    "description": "Reproducciones premium",
+    "description": "Servicio de Reproducciones Premium para Spotify. Mejora tu presencia digital.",
     "price": 80,
     "unitBase": 1000,
     "category": "Spotify",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace relacionado de Spotify"
   },
   {
     "id": 804,
     "serviceId": 8,
     "name": "Reproducciones Ads",
-    "description": "Reproducciones con anuncios",
+    "description": "Servicio de Reproducciones Ads para Spotify. Mejora tu presencia digital.",
     "price": 90,
     "unitBase": 1000,
     "category": "Spotify",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace relacionado de Spotify"
   },
   {
     "id": 805,
     "serviceId": 8,
     "name": "Saves",
-    "description": "Guardados de canciones",
+    "description": "Servicio de Saves para Spotify. Mejora tu presencia digital.",
     "price": 70,
     "unitBase": 1000,
     "category": "Spotify",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace relacionado de Spotify"
   },
   {
     "id": 1001,
     "serviceId": 10,
     "name": "Miembros",
-    "description": "Miembros para canal o grupo de Telegram",
+    "description": "Servicio de Miembros para Telegram. Mejora tu presencia digital.",
     "price": 120,
     "unitBase": 1000,
     "category": "Telegram",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace relacionado de Telegram"
   },
   {
     "id": 1002,
     "serviceId": 10,
     "name": "Reacciones Positivas",
-    "description": "Reacciones positivas (🔥😍👏)",
+    "description": "Servicio de Reacciones Positivas para Telegram. Mejora tu presencia digital.",
     "price": 60,
     "unitBase": 1000,
     "category": "Telegram",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace relacionado de Telegram"
   },
   {
     "id": 1003,
     "serviceId": 10,
     "name": "Reacciones Negativas",
-    "description": "Reacciones negativas (😡💔👎)",
+    "description": "Servicio de Reacciones Negativas para Telegram. Mejora tu presencia digital.",
     "price": 60,
     "unitBase": 1000,
     "category": "Telegram",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace relacionado de Telegram"
   },
   {
     "id": 1004,
     "serviceId": 10,
     "name": "Comentarios",
-    "description": "Comentarios para publicaciones",
+    "description": "Comentarios para publicaciones de Telegram. Dale más movimiento a tu contenido.",
     "price": 250,
     "unitBase": 1000,
     "category": "Telegram",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace relacionado de Telegram"
   },
   {
     "id": 1101,
     "serviceId": 11,
     "name": "Miembros Canal",
-    "description": "Miembros para canal de WhatsApp",
+    "description": "Servicio de Miembros Canal para WhatsApp. Mejora tu presencia digital.",
     "price": 350,
     "unitBase": 1000,
     "category": "WhatsApp",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace relacionado de WhatsApp"
   },
   {
     "id": 1102,
     "serviceId": 11,
     "name": "Seguidores Canal",
-    "description": "Seguidores para canal de WhatsApp",
+    "description": "Seguidores para tu perfil o página de WhatsApp. Haz crecer tu presencia rápidamente.",
     "price": 320,
     "unitBase": 1000,
     "category": "WhatsApp",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace de tu perfil, página o canal de WhatsApp"
   },
   {
     "id": 1103,
     "serviceId": 11,
     "name": "Reacciones",
-    "description": "Reacciones a publicaciones",
+    "description": "Servicio de Reacciones para WhatsApp. Mejora tu presencia digital.",
     "price": 120,
     "unitBase": 1000,
     "category": "WhatsApp",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace relacionado de WhatsApp"
   },
   {
     "id": 1104,
     "serviceId": 11,
     "name": "Votos Encuestas",
-    "description": "Votos para encuestas (A/B/C/D)",
+    "description": "Servicio de Votos Encuestas para WhatsApp. Mejora tu presencia digital.",
     "price": 250,
     "unitBase": 1000,
     "category": "WhatsApp",
-    "bannerUrl": "https://esto-no-existe.com/imagen.jpg"
+    "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
+    "minQuantity": 1000,
+    "linkDescription": "Agrega el enlace relacionado de WhatsApp"
   }
 ]

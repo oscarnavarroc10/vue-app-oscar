@@ -121,7 +121,7 @@ watch(
   },
 );
 
-const freeTrialPhone = "529992649728";
+const freeTrialPhone = "529991519771";
 
 const freeTrialMessage =
   "Hola, vi su página y me interesa solicitar una prueba gratis para conocer el servicio.";
@@ -173,6 +173,7 @@ const freeTrialWhatsAppUrl = `https://wa.me/${freeTrialPhone}?text=${encodeURICo
   z-index: 1;
   min-height: 100vh;
   padding: 18px 28px 56px;
+  zoom: 0.85;
   font-family:
     Inter,
     system-ui,

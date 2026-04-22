@@ -68,7 +68,7 @@ const socialLinks = [
   {
     name: "WhatsApp",
     label: "WhatsApp",
-    href: "https://wa.me/5219992649728",
+    href: "https://wa.me/529991519771",
     icon: whatsappNeon,
     variant: "whatsapp",
   },

@@ -96,7 +96,7 @@ const props = defineProps({
 defineEmits(["clear-cart", "close-cart"]);
 
 const sendWhatsApp = () => {
-  const phone = "529992649728";
+  const phone = "529991519771";
 
   const servicesText = props.cart
     .map((item, index) => {

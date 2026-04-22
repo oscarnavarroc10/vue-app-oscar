@@ -29,55 +29,38 @@
       <h3>{{ service.name }}</h3>
 
       <p class="sub-card-description">
-        Agrega la cantidad que necesitas y el enlace del perfil o página donde
-        quieres aplicar el servicio.
+        {{
+          service.description ||
+          "Agrega la cantidad que necesitas y el enlace del perfil o página donde quieres aplicar el servicio."
+        }}
       </p>
 
-      <div v-if="selectedQuantity > 0" class="selected-info">
+      <div
+        v-if="entriesReadyCount > 0 || existingCartRowsCount > 0"
+        class="selected-info"
+      >
         <span class="selected-badge">
-          {{ formatNumber(selectedQuantity) }}
+          {{ entriesReadyCount }}
         </span>
-        <small>ya agregados para este link</small>
+        <small>
+          {{ entriesReadyCount === 1 ? "fila lista" : "filas listas" }}
+          <template v-if="existingCartRowsCount > 0">
+            · {{ existingCartRowsCount }} en carrito
+          </template>
+        </small>
       </div>
     </div>
 
     <div class="sub-card-form">
-      <div class="field-block">
-        <div class="field-topline">
-          <label class="field-label" :for="`qty-${service.id}`">
-            Cantidad
-          </label>
+      <div class="field-topline">
+        <label class="field-label field-label--multi">
+          {{ service.linkDescription || "Link del perfil o página" }}
+        </label>
 
+        <div class="field-topline-actions">
           <span class="field-help-text">
-            Mínimo {{ formatNumber(service.minQuantity || 100) }}
+            Mínimo {{ formatNumber(service.minQuantity || 100) }} por fila
           </span>
-        </div>
-
-        <input
-          :id="`qty-${service.id}`"
-          v-model.number="quantityInput"
-          class="field-input"
-          :class="{ 'field-input-error': showQuantityError }"
-          type="number"
-          :min="service.minQuantity || 100"
-          :step="service.step || 100"
-          :placeholder="`Ejemplo: ${service.minQuantity || 100}`"
-        />
-
-        <small class="field-note">
-          Ingresa {{ formatNumber(service.minQuantity || 100) }} o más unidades.
-        </small>
-
-        <small v-if="showQuantityError" class="field-error-label">
-          La cantidad mínima es {{ formatNumber(service.minQuantity || 100) }}.
-        </small>
-      </div>
-
-      <div class="field-block">
-        <div class="field-topline">
-          <label class="field-label" :for="`profile-${service.id}`">
-            Link del perfil o página
-          </label>
 
           <div
             class="profile-help-wrap"
@@ -95,28 +78,101 @@
             </button>
 
             <div v-if="showHelp" class="profile-help-tooltip">
-              Este link es necesario para saber en qué perfil o página aplicar el servicio.
+              Puedes agregar hasta {{ maxRows }} filas. Cada fila permite un
+              link con su propia cantidad y se enviará como un servicio separado
+              al carrito.
             </div>
           </div>
         </div>
-
-        <input
-          :id="`profile-${service.id}`"
-          v-model.trim="profileLink"
-          class="field-input"
-          :class="{ 'field-input-error': showProfileError }"
-          type="url"
-          :placeholder="profilePlaceholder"
-        />
-
-        <small class="field-note">
-          Usa un enlace completo que empiece con https://
-        </small>
-
-        <small v-if="showProfileError" class="field-error-label">
-          Indica un link válido.
-        </small>
       </div>
+
+      <div class="rows-stack">
+        <div
+          v-for="(entry, index) in entries"
+          :key="`${service.id}-entry-${index}`"
+          class="service-row"
+        >
+          <div class="row-main">
+            <div class="row-link-col">
+              <label
+                class="sr-only"
+                :for="`profile-${service.id}-${index}`"
+              >
+                Link {{ index + 1 }}
+              </label>
+
+              <input
+                :id="`profile-${service.id}-${index}`"
+                v-model.trim="entry.profile"
+                class="field-input"
+                :class="{ 'field-input-error': entry.profileError }"
+                type="url"
+                :placeholder="buildProfilePlaceholder(index)"
+              />
+            </div>
+
+            <div class="row-qty-col">
+              <label class="sr-only" :for="`qty-${service.id}-${index}`">
+                Cantidad {{ index + 1 }}
+              </label>
+
+              <input
+                :id="`qty-${service.id}-${index}`"
+                v-model.number="entry.quantity"
+                class="field-input field-input--qty"
+                :class="{ 'field-input-error': entry.quantityError }"
+                type="number"
+                :min="service.minQuantity || 100"
+                :step="service.step || 100"
+                :placeholder="String(service.minQuantity || 100)"
+              />
+            </div>
+
+            <div class="row-actions">
+              <button
+                v-if="entries.length < maxRows && index === entries.length - 1"
+                type="button"
+                class="row-action-btn row-action-btn--add"
+                @click="addEntry"
+                aria-label="Agregar otra fila"
+                title="Agregar otra fila"
+              >
+                +
+              </button>
+
+              <button
+                v-if="entries.length > 1"
+                type="button"
+                class="row-action-btn row-action-btn--remove"
+                @click="removeEntry(index)"
+                aria-label="Quitar fila"
+                title="Quitar fila"
+              >
+                −
+              </button>
+            </div>
+          </div>
+
+          <div class="row-meta">
+            <small v-if="entry.profileError" class="field-error-label">
+              Indica un link válido.
+            </small>
+
+            <small v-else-if="entry.quantityError" class="field-error-label">
+              La cantidad mínima es
+              {{ formatNumber(service.minQuantity || 100) }}.
+            </small>
+
+            <small v-else class="field-note">
+              Link {{ index + 1 }} · cantidad independiente
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <small class="field-note field-note--muted">
+        Máximo {{ maxRows }} filas por servicio.
+      </small>
     </div>
 
     <div class="sub-card-footer">
@@ -126,14 +182,18 @@
         type="button"
         @click="handleAddToCart"
       >
-        {{ selectedQuantity > 0 ? "Agregar más al carrito" : "Agregar al carrito" }}
+        {{
+          entriesReadyCount > 1
+            ? `Agregar ${entriesReadyCount} servicios al carrito`
+            : "Agregar al carrito"
+        }}
       </button>
     </div>
   </article>
 </template>
 
 <script setup>
-import { computed, ref, watch, onMounted, onBeforeUnmount } from "vue";
+import { computed, ref, onMounted, onBeforeUnmount } from "vue";
 import instagramIcon from "@/assets/instagram_neon.svg";
 import facebookIcon from "@/assets/facebook_neon.svg";
 import tiktokIcon from "@/assets/tiktok_neon.svg";
@@ -165,10 +225,16 @@ const emit = defineEmits(["add"]);
 
 const addBtnRef = ref(null);
 const showHelp = ref(false);
-const profileLink = ref("");
-const quantityInput = ref(Number(props.service.minQuantity || 100));
-const showProfileError = ref(false);
-const showQuantityError = ref(false);
+const maxRows = 10;
+
+const createEntry = () => ({
+  profile: "",
+  quantity: Number(props.service.minQuantity || 100),
+  profileError: false,
+  quantityError: false,
+});
+
+const entries = ref([createEntry()]);
 
 const normalizeProfile = (value) => {
   return (value || "").trim().replace(/\/+$/, "");
@@ -207,56 +273,111 @@ const isValidQuantity = (value) => {
   return Number.isFinite(parsed) && parsed >= min;
 };
 
-watch(profileLink, (newValue) => {
-  if (isValidProfileUrl(newValue)) {
-    showProfileError.value = false;
-  }
-});
+const addEntry = () => {
+  if (entries.value.length >= maxRows) return;
+  entries.value.push(createEntry());
+};
 
-watch(quantityInput, (newValue) => {
-  if (isValidQuantity(newValue)) {
-    showQuantityError.value = false;
-  }
-});
-
-const selectedQuantity = computed(() => {
-  const normalizedProfile = normalizeProfile(profileLink.value);
-
-  if (!normalizedProfile) return 0;
-
-  return props.cart
-    .filter(
-      (item) =>
-        item.id === props.service.id &&
-        normalizeProfile(item.profile) === normalizedProfile
-    )
-    .reduce((sum, item) => sum + (Number(item.quantity) || 0), 0);
-});
-
-const handleAddToCart = () => {
-  const validUrl = isValidProfileUrl(profileLink.value);
-  const validQuantity = isValidQuantity(quantityInput.value);
-
-  showProfileError.value = !validUrl;
-  showQuantityError.value = !validQuantity;
-
-  if (!validUrl || !validQuantity) {
+const removeEntry = (index) => {
+  if (entries.value.length === 1) {
+    entries.value[0] = createEntry();
     return;
   }
 
-  const normalizedProfile = normalizeProfile(profileLink.value);
+  entries.value.splice(index, 1);
+};
 
-  emit("add", {
-    service: {
-      ...props.service,
-      profile: normalizedProfile,
-      quantity: Number(quantityInput.value),
-      unitBase: Number(props.service.unitBase || 100),
-      minQuantity: Number(props.service.minQuantity || 100),
-      step: Number(props.service.step || 100),
-    },
-    sourceEl: addBtnRef.value,
+const existingCartRowsCount = computed(() => {
+  return props.cart.filter((item) => item.id === props.service.id).length;
+});
+
+const entriesReadyCount = computed(() => {
+  return entries.value.filter((entry) => {
+    const normalizedProfile = normalizeProfile(entry.profile);
+    return normalizedProfile && isValidProfileUrl(normalizedProfile);
+  }).length;
+});
+
+const buildProfilePlaceholder = (index) => {
+  const base = profilePlaceholder.value;
+  return index === 0 ? base : `${base} (${index + 1})`;
+};
+
+const validateEntry = (entry) => {
+  const normalizedProfile = normalizeProfile(entry.profile);
+  const profileFilled = Boolean(normalizedProfile);
+  const quantityFilled =
+    entry.quantity !== null &&
+    entry.quantity !== undefined &&
+    String(entry.quantity).trim() !== "";
+
+  const isCompletelyEmpty = !profileFilled && !quantityFilled;
+  if (isCompletelyEmpty) {
+    entry.profileError = false;
+    entry.quantityError = false;
+    return { valid: false, empty: true, normalizedProfile: "" };
+  }
+
+  entry.profileError = !isValidProfileUrl(normalizedProfile);
+  entry.quantityError = !isValidQuantity(entry.quantity);
+
+  return {
+    valid: !entry.profileError && !entry.quantityError,
+    empty: false,
+    normalizedProfile,
+  };
+};
+
+const handleAddToCart = () => {
+  let hasAnyFilledRow = false;
+  let hasInvalidRows = false;
+  const rowsToAdd = [];
+
+  entries.value.forEach((entry) => {
+    const result = validateEntry(entry);
+
+    if (!result.empty) {
+      hasAnyFilledRow = true;
+    }
+
+    if (!result.empty && !result.valid) {
+      hasInvalidRows = true;
+      return;
+    }
+
+    if (result.valid) {
+      rowsToAdd.push({
+        profile: result.normalizedProfile,
+        quantity: Number(entry.quantity),
+      });
+    }
   });
+
+  if (!hasAnyFilledRow) {
+    entries.value[0].profileError = true;
+    entries.value[0].quantityError = true;
+    return;
+  }
+
+  if (hasInvalidRows || !rowsToAdd.length) {
+    return;
+  }
+
+  rowsToAdd.forEach((row) => {
+    emit("add", {
+      service: {
+        ...props.service,
+        profile: row.profile,
+        quantity: row.quantity,
+        unitBase: Number(props.service.unitBase || 100),
+        minQuantity: Number(props.service.minQuantity || 100),
+        step: Number(props.service.step || 100),
+      },
+      sourceEl: addBtnRef.value,
+    });
+  });
+
+  entries.value = [createEntry()];
 };
 
 const SOCIAL_THEME_MAP = {
@@ -445,20 +566,20 @@ const cardStyle = computed(() => ({
 <style scoped>
 .sub-service-card {
   position: relative;
-  min-height: 430px;
+  min-height: 278px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border-radius: 28px;
-  padding: 22px;
+  border-radius: 18px;
+  padding: 14px;
   background: linear-gradient(
     180deg,
     rgba(10, 18, 34, 0.9) 0%,
-    rgba(8, 14, 26, 0.94) 100%
+    rgba(8, 14, 26, 0.95) 100%
   );
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow:
-    0 20px 40px rgba(2, 6, 23, 0.24),
+    0 16px 28px rgba(2, 6, 23, 0.22),
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
@@ -469,11 +590,11 @@ const cardStyle = computed(() => ({
 }
 
 .sub-service-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-3px);
   border-color: rgba(255, 255, 255, 0.12);
   box-shadow:
-    0 26px 46px rgba(2, 6, 23, 0.28),
-    0 0 18px rgba(59, 130, 246, 0.06),
+    0 20px 34px rgba(2, 6, 23, 0.24),
+    0 0 14px rgba(59, 130, 246, 0.05),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
@@ -485,37 +606,37 @@ const cardStyle = computed(() => ({
 
 .sub-card-glow {
   border-radius: 999px;
-  filter: blur(26px);
+  filter: blur(24px);
   z-index: 0;
 }
 
 .glow-1 {
-  width: 140px;
-  height: 140px;
-  top: -28px;
-  right: -20px;
-  opacity: 0.78;
+  width: 112px;
+  height: 112px;
+  top: -22px;
+  right: -18px;
+  opacity: 0.68;
   background: var(--glow-1);
 }
 
 .glow-2 {
-  width: 100px;
-  height: 100px;
-  bottom: -20px;
-  left: -16px;
-  opacity: 0.5;
+  width: 82px;
+  height: 82px;
+  bottom: -18px;
+  left: -10px;
+  opacity: 0.42;
   background: var(--glow-2);
 }
 
 .sub-card-grid {
   inset: 0;
   z-index: 0;
-  opacity: 0.05;
+  opacity: 0.04;
   background-image:
     linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
   background-size: 22px 22px;
-  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), transparent 85%);
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.85), transparent 88%);
 }
 
 .sub-card-top,
@@ -530,16 +651,16 @@ const cardStyle = computed(() => ({
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 16px;
+  gap: 10px;
 }
 
 .sub-card-badge {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 14px;
+  gap: 6px;
+  padding: 5px 10px;
   border-radius: 999px;
-  font-size: 0.8rem;
+  font-size: 0.68rem;
   font-weight: 800;
   letter-spacing: 0.01em;
   background: var(--badge-bg);
@@ -551,8 +672,8 @@ const cardStyle = computed(() => ({
 }
 
 .sub-card-icon {
-  width: 18px;
-  height: 18px;
+  width: 14px;
+  height: 14px;
   object-fit: contain;
   display: block;
   flex-shrink: 0;
@@ -563,32 +684,32 @@ const cardStyle = computed(() => ({
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 4px;
+  gap: 2px;
   text-align: right;
 }
 
 .sub-card-price-label {
   color: #94a3b8;
-  font-size: 0.78rem;
+  font-size: 0.62rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
 }
 
 .sub-card-price {
   color: #ffffff;
-  font-size: 1rem;
-  line-height: 1.2;
+  font-size: 0.82rem;
+  line-height: 1.14;
 }
 
 .sub-card-body {
-  margin-top: 18px;
+  margin-top: 8px;
 }
 
 .sub-card-body h3 {
-  margin: 0 0 10px;
-  font-size: 1.65rem;
-  line-height: 1.05;
+  margin: 0 0 5px;
+  font-size: 1.06rem;
+  line-height: 1.02;
   font-weight: 900;
   letter-spacing: -0.03em;
   color: #ffffff;
@@ -597,90 +718,125 @@ const cardStyle = computed(() => ({
 .sub-card-description {
   margin: 0;
   color: #94a3b8;
-  font-size: 0.96rem;
-  line-height: 1.7;
+  font-size: 0.75rem;
+  line-height: 1.32;
 }
 
 .selected-info {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-top: 16px;
+  gap: 6px;
+  margin-top: 8px;
 }
 
 .selected-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 52px;
-  height: 30px;
-  padding: 0 12px;
+  min-width: 34px;
+  height: 20px;
+  padding: 0 8px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.07);
   color: #ffffff;
-  font-size: 0.82rem;
+  font-size: 0.68rem;
   font-weight: 800;
 }
 
 .selected-info small {
   color: #94a3b8;
   font-weight: 700;
+  font-size: 0.68rem;
 }
 
 .sub-card-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  margin-top: 22px;
-}
-
-.field-block {
-  display: flex;
-  flex-direction: column;
   gap: 8px;
+  margin-top: 10px;
 }
 
 .field-topline {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 10px;
   flex-wrap: wrap;
 }
 
+.field-topline-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
 .field-label {
   color: #e2e8f0;
-  font-size: 0.9rem;
+  font-size: 0.74rem;
   font-weight: 800;
+}
+
+.field-label--multi {
+  line-height: 1.16;
+  max-width: 68%;
 }
 
 .field-help-text {
   color: var(--accent-color);
-  font-size: 0.78rem;
+  font-size: 0.64rem;
   font-weight: 800;
+  white-space: nowrap;
 }
 
 .field-note {
   color: #94a3b8;
-  font-size: 0.76rem;
-  line-height: 1.4;
+  font-size: 0.64rem;
+  line-height: 1.22;
+}
+
+.field-note--muted {
+  margin-top: 2px;
 }
 
 .field-error-label {
-  font-size: 0.78rem;
+  font-size: 0.65rem;
   color: #fca5a5;
-  margin-top: 2px;
-  display: block;
+  line-height: 1.2;
+}
+
+.rows-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.service-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.row-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 92px auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.row-link-col,
+.row-qty-col {
+  min-width: 0;
 }
 
 .field-input {
   width: 100%;
   box-sizing: border-box;
-  min-height: 48px;
-  border-radius: 16px;
+  min-height: 35px;
+  border-radius: 11px;
   border: 1px solid rgba(148, 163, 184, 0.16);
-  padding: 0 14px;
-  font-size: 0.95rem;
+  padding: 0 10px;
+  font-size: 0.78rem;
   font-weight: 600;
   color: #ffffff;
   background: rgba(255, 255, 255, 0.05);
@@ -688,6 +844,11 @@ const cardStyle = computed(() => ({
     border-color 0.18s ease,
     box-shadow 0.18s ease,
     background 0.18s ease;
+}
+
+.field-input--qty {
+  text-align: center;
+  padding: 0 8px;
 }
 
 .field-input::placeholder {
@@ -706,6 +867,50 @@ const cardStyle = computed(() => ({
   box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.08);
 }
 
+.row-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.row-action-btn {
+  width: 32px;
+  min-width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    filter 0.18s ease,
+    background 0.18s ease;
+  font-size: 1rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.row-action-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+
+.row-action-btn--add {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.row-action-btn--remove {
+  background: rgba(248, 113, 113, 0.12);
+  color: #fca5a5;
+}
+
+.row-meta {
+  min-height: 15px;
+}
+
 .profile-help-wrap {
   position: relative;
   display: inline-flex;
@@ -713,13 +918,13 @@ const cardStyle = computed(() => ({
 }
 
 .profile-help-btn {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   border: none;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.08);
   color: #ffffff;
-  font-size: 0.76rem;
+  font-size: 0.72rem;
   font-weight: 900;
   line-height: 1;
   cursor: pointer;
@@ -742,14 +947,14 @@ const cardStyle = computed(() => ({
   left: calc(100% + 10px);
   transform: translateY(-50%);
   z-index: 30;
-  min-width: 210px;
-  max-width: 260px;
+  min-width: 220px;
+  max-width: 280px;
   padding: 10px 12px;
   border-radius: 12px;
   background: rgba(7, 12, 24, 0.96);
   color: #ffffff;
-  font-size: 0.78rem;
-  line-height: 1.45;
+  font-size: 0.72rem;
+  line-height: 1.35;
   box-shadow:
     0 14px 28px rgba(2, 6, 23, 0.26),
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
@@ -770,23 +975,23 @@ const cardStyle = computed(() => ({
 
 .sub-card-footer {
   margin-top: auto;
-  padding-top: 22px;
+  padding-top: 10px;
 }
 
 .sub-card-btn {
   width: 100%;
-  min-height: 52px;
+  min-height: 38px;
   border: none;
-  border-radius: 18px;
-  padding: 14px 16px;
-  font-size: 1rem;
+  border-radius: 13px;
+  padding: 9px 12px;
+  font-size: 0.82rem;
   font-weight: 900;
   letter-spacing: 0.01em;
   cursor: pointer;
   color: #ffffff;
   background: var(--button-gradient);
   box-shadow:
-    0 14px 24px rgba(15, 23, 42, 0.16),
+    0 12px 20px rgba(15, 23, 42, 0.16),
     inset 0 1px 0 rgba(255, 255, 255, 0.14);
   transition:
     transform 0.18s ease,
@@ -798,20 +1003,33 @@ const cardStyle = computed(() => ({
   transform: translateY(-1px);
   filter: brightness(1.03);
   box-shadow:
-    0 18px 30px rgba(15, 23, 42, 0.2),
+    0 16px 24px rgba(15, 23, 42, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 @media (max-width: 768px) {
   .sub-service-card {
-    min-height: 400px;
-    padding: 18px;
-    border-radius: 24px;
+    min-height: 320px;
+    padding: 14px;
+    border-radius: 18px;
   }
 
   .sub-card-top {
     flex-direction: column;
     align-items: flex-start;
+    gap: 8px;
   }
 
   .sub-card-price-wrap {
@@ -820,16 +1038,39 @@ const cardStyle = computed(() => ({
   }
 
   .sub-card-body h3 {
-    font-size: 1.35rem;
+    font-size: 1rem;
   }
 
   .sub-card-description {
-    font-size: 0.92rem;
+    font-size: 0.76rem;
+  }
+
+  .field-label--multi {
+    max-width: 100%;
+  }
+
+  .field-topline-actions {
+    width: 100%;
+    justify-content: space-between;
+    margin-left: 0;
+  }
+
+  .row-main {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .row-actions {
+    justify-content: flex-end;
+  }
+
+  .field-input--qty {
+    text-align: left;
   }
 
   .sub-card-btn {
-    min-height: 48px;
-    font-size: 0.95rem;
+    min-height: 40px;
+    font-size: 0.84rem;
   }
 
   .profile-help-tooltip {
