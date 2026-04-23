@@ -72,11 +72,14 @@
     <div class="floating-socials-wrap">
       <FloatingSocials />
     </div>
+
+    <IosInstallPrompt />
   </main>
 </template>
 
 <script setup>
 import { computed, nextTick, ref, watch } from "vue";
+import IosInstallPrompt from "@/components/IosInstallPrompt.vue";
 import { RouterLink, RouterView } from "vue-router";
 import logoImpulso from "@/assets/impulso_redes_logo.png";
 import FloatingSocials from "@/components/FloatingSocials.vue";
