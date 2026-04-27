@@ -7,7 +7,7 @@
           type="button"
           @click="goBack"
         >
-          ← Cambiar plataforma
+          ← Cambiar de red social
         </button>
 
         <div class="subservices-stage-copy">
@@ -96,17 +96,18 @@ const filteredSubServices = computed(() => {
 });
 
 const handleAddSubService = async ({ service, sourceEl }) => {
-  const cartTarget = document.querySelector("[data-cart-target='true']");
-
-  await flyToCart(sourceEl, cartTarget);
-
-  addToCart({
-    ...service,
-    id: service.id,
-    price: Number(service.price || 0),
-    quantity: Number(service.quantity || 100),
-    cartType: "service",
-  });
+  try {
+    addToCart({
+      ...service,
+      id: service.id,
+      price: Number(service.price || 0),
+      quantity: Number(service.quantity || service.minQuantity || 100),
+      profile: service.profile,
+      cartType: "service",
+    });    
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 const goBack = () => {

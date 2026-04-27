@@ -1,12 +1,17 @@
 <template>
   <aside class="cart-panel">
-    <div class="section-header">
-      <div class="section-header-left">
+    <div class="cart-bg cart-bg--one"></div>
+    <div class="cart-bg cart-bg--two"></div>
+    <div class="cart-grid"></div>
+
+    <header class="cart-header">
+      <div>
         <span class="cart-kicker">Resumen</span>
         <h2>Tu pedido</h2>
+        <p>Revisa tus servicios antes de enviarlos por WhatsApp.</p>
       </div>
 
-      <div class="cart-header-actions">
+      <div class="cart-actions">
         <button
           class="close-cart-btn"
           type="button"
@@ -25,61 +30,74 @@
           aria-label="Vaciar carrito"
           title="Vaciar carrito"
         >
-          <span class="trash-icon">🗑️</span>
-          <span>Vaciar carrito</span>
+          Vaciar
         </button>
       </div>
-    </div>
+    </header>
 
-    <div class="summary-cards">
-      <div class="summary-mini-card">
-        <span>Elementos</span>
-        <strong>{{ cart.length }}</strong>
+    <section class="cart-score">
+      <div class="score-main">
+        <span>Total estimado</span>
+        <strong>${{ formatPrice(total) }}</strong>
+        <small>MXN</small>
       </div>
 
-      <div class="summary-mini-card">
+      <div class="score-pill">
+        {{ cart.length }} {{ cart.length === 1 ? "elemento" : "elementos" }}
+      </div>
+    </section>
+
+    <section class="summary-cards">
+      <article class="summary-mini-card">
         <span>Subtotal</span>
         <strong>${{ formatPrice(subtotal) }}</strong>
-      </div>
+      </article>
 
-      <div
+      <article
         v-if="discountPercentage > 0"
         class="summary-mini-card summary-mini-card--discount"
       >
-        <span>Descuento</span>
+        <span>Descuento {{ discountPercentage }}%</span>
         <strong>- ${{ formatPrice(discountAmount) }}</strong>
-      </div>
-    </div>
+      </article>
 
-    <div class="summary">
-      <div class="summary-row">
-        <span>Subtotal</span>
-        <strong>${{ formatPrice(subtotal) }}</strong>
-      </div>
-
-      <div class="summary-row" v-if="discountPercentage > 0">
-        <span>Descuento ({{ discountPercentage }}%)</span>
-        <strong>- ${{ formatPrice(discountAmount) }}</strong>
-      </div>
-
-      <div class="summary-row total-row">
+      <article class="summary-mini-card">
         <span>Total</span>
         <strong>${{ formatPrice(total) }}</strong>
+      </article>
+    </section>
+
+    <section class="trust-box">
+      <div>
+        <span>⚡</span>
+        <small>Entrega rápida</small>
       </div>
 
-      <button
-        class="quote-btn"
-        :disabled="cart.length === 0"
-        type="button"
-        @click="sendWhatsApp"
-      >
-        Solicitar servicios por WhatsApp
-      </button>
+      <div>
+        <span>🛡️</span>
+        <small>Sin contraseña</small>
+      </div>
 
-      <p class="summary-note">
-        Revisa tus servicios y cuando estés listo, envíanos tu solicitud para darte seguimiento inmediato.
-      </p>
-    </div>
+      <div>
+        <span>💬</span>
+        <small>Seguimiento WA</small>
+      </div>
+    </section>
+
+    <button
+      class="quote-btn"
+      :disabled="cart.length === 0"
+      type="button"
+      @click="sendWhatsApp"
+    >
+      <span>Solicitar por WhatsApp</span>
+      <strong>→</strong>
+    </button>
+
+    <p class="summary-note">
+      Te mandaremos seguimiento para confirmar enlaces, cantidades y disponibilidad
+      del servicio.
+    </p>
   </aside>
 </template>
 
@@ -96,7 +114,7 @@ const props = defineProps({
 defineEmits(["clear-cart", "close-cart"]);
 
 const sendWhatsApp = () => {
-  const phone = "529991519771";
+  const phone = "528122126718";
 
   const servicesText = props.cart
     .map((item, index) => {
@@ -104,7 +122,7 @@ const sendWhatsApp = () => {
         const included = (item.planItems || [])
           .map(
             (planItem) =>
-              `   - ${planItem.category}: ${planItem.name} (${planItem.quantity})`
+              `   - ${planItem.category}: ${planItem.name} (${planItem.quantity})`,
           )
           .join("\n");
 
@@ -118,7 +136,7 @@ Perfil: ${item.profile || "No especificado"}`;
     })
     .join("\n\n");
 
-  const finalMessage = `Hola ImpulsoRedes
+  const finalMessage = `Hola
 
 Quiero solicitar lo siguiente:
 
@@ -142,261 +160,348 @@ Resumen:
 }
 
 .cart-panel {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  padding: 22px;
+  border-radius: 30px;
   background:
-    linear-gradient(
-      180deg,
-      rgba(10, 18, 34, 0.88) 0%,
-      rgba(8, 14, 26, 0.92) 100%
-    );
-
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 24px;
-  padding: 20px;
-
+    radial-gradient(circle at 82% 12%, rgba(34, 197, 94, 0.16), transparent 28%),
+    radial-gradient(circle at 10% 100%, rgba(124, 58, 237, 0.18), transparent 34%),
+    linear-gradient(180deg, rgba(15, 12, 34, 0.92), rgba(7, 9, 22, 0.98));
+  border: 1px solid rgba(255, 255, 255, 0.085);
   box-shadow:
-    0 18px 40px rgba(2, 6, 23, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    0 30px 70px rgba(0, 0, 0, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.065);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 }
 
-.section-header {
+.cart-bg,
+.cart-grid {
+  position: absolute;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.cart-bg {
+  border-radius: 999px;
+  filter: blur(42px);
+}
+
+.cart-bg--one {
+  width: 180px;
+  height: 180px;
+  right: -70px;
+  top: -70px;
+  background: rgba(34, 197, 94, 0.32);
+}
+
+.cart-bg--two {
+  width: 160px;
+  height: 160px;
+  left: -70px;
+  bottom: -80px;
+  background: rgba(139, 92, 246, 0.28);
+}
+
+.cart-grid {
+  inset: 0;
+  opacity: 0.045;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: linear-gradient(to bottom, black, transparent 82%);
+}
+
+.cart-header {
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 16px;
-  margin-bottom: 20px;
-}
-
-.section-header-left {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  margin-bottom: 18px;
 }
 
 .cart-kicker {
-  color: #93c5fd;
-  font-size: 0.78rem;
-  font-weight: 800;
-  letter-spacing: 0.03em;
+  display: inline-flex;
+  margin-bottom: 8px;
+  color: #86efac;
+  font-size: 0.76rem;
+  font-weight: 950;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
-.section-header h2 {
+.cart-header h2 {
   margin: 0;
-  font-size: 2rem;
-  line-height: 1;
   color: #ffffff;
+  font-size: clamp(2rem, 4vw, 2.7rem);
+  line-height: 0.95;
+  letter-spacing: -0.055em;
+  font-weight: 950;
 }
 
-.cart-header-actions {
+.cart-header p {
+  max-width: 300px;
+  margin: 10px 0 0;
+  color: #94a3b8;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  font-weight: 650;
+}
+
+.cart-actions {
+  flex-shrink: 0;
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
   gap: 8px;
 }
 
 .close-cart-btn,
 .clear-cart-btn {
-  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+  color: #ffffff;
+  font-weight: 950;
+  transition:
+    transform 0.18s ease,
+    filter 0.18s ease,
+    background 0.18s ease;
+}
+
+.close-cart-btn:hover,
+.clear-cart-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
 }
 
 .close-cart-btn {
-  width: 40px;
-  height: 40px;
-
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-
-  background: rgba(255, 255, 255, 0.05);
-  color: #ffffff;
-
-  font-size: 1rem;
-  font-weight: 900;
-  cursor: pointer;
-}
-
-.close-cart-btn:hover {
-  transform: translateY(-1px);
-  background: rgba(255, 255, 255, 0.08);
+  width: 42px;
+  height: 42px;
+  border-radius: 15px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.065);
+  border: 1px solid rgba(255, 255, 255, 0.075);
 }
 
 .clear-cart-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-
   min-height: 42px;
   padding: 0 14px;
-
-  border-radius: 12px;
-  border: 1px solid rgba(248, 113, 113, 0.16);
-
-  background: rgba(127, 29, 29, 0.14);
+  border-radius: 15px;
   color: #fca5a5;
-
-  font-weight: 800;
-  cursor: pointer;
+  background: rgba(127, 29, 29, 0.16);
+  border: 1px solid rgba(248, 113, 113, 0.16);
 }
 
-.clear-cart-btn:hover {
-  transform: translateY(-1px);
-  background: rgba(127, 29, 29, 0.22);
+.cart-score {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 14px;
+  padding: 18px;
+  border-radius: 24px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(34, 197, 94, 0.18), transparent 32%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.035));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.score-main span {
+  display: block;
+  color: #94a3b8;
+  font-size: 0.78rem;
+  font-weight: 850;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.score-main strong {
+  display: inline-block;
+  margin-top: 8px;
+  color: #ffffff;
+  font-size: 2.15rem;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  font-weight: 950;
+}
+
+.score-main small {
+  margin-left: 6px;
+  color: #cbd5e1;
+  font-weight: 850;
+}
+
+.score-pill {
+  min-height: 36px;
+  padding: 0 13px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  color: #bbf7d0;
+  font-size: 0.82rem;
+  font-weight: 950;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.16);
 }
 
 .summary-cards {
   display: grid;
-  gap: 10px;
-  margin-bottom: 18px;
+  gap: 9px;
+  margin-bottom: 14px;
 }
 
 .summary-mini-card {
+  min-height: 54px;
+  padding: 0 15px;
+  border-radius: 17px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   gap: 12px;
-  padding: 14px 16px;
-
-  border-radius: 16px;
-
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .summary-mini-card span {
   color: #94a3b8;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .summary-mini-card strong {
   color: #ffffff;
+  font-weight: 950;
 }
 
 .summary-mini-card--discount strong {
   color: #86efac;
 }
 
-.summary {
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding-top: 18px;
-
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+.trust-box {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 9px;
+  margin: 14px 0;
 }
 
-.summary-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: #cbd5e1;
+.trust-box div {
+  min-height: 78px;
+  padding: 12px 10px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.055);
 }
 
-.summary-row strong {
-  color: #ffffff;
+.trust-box span {
+  font-size: 1.25rem;
 }
 
-.total-row {
-  margin-top: 4px;
-  padding-top: 8px;
-  font-size: 1.2rem;
-}
-
-.total-row span,
-.total-row strong {
-  color: #ffffff;
-  font-weight: 900;
+.trust-box small {
+  color: #e5e7eb;
+  font-size: 0.72rem;
+  line-height: 1.2;
+  font-weight: 800;
 }
 
 .quote-btn {
-  margin-top: 8px;
-
+  width: 100%;
+  min-height: 56px;
   border: none;
-  border-radius: 16px;
-
-  min-height: 54px;
+  border-radius: 18px;
   padding: 0 18px;
-
-  font-size: 1rem;
-  font-weight: 900;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   cursor: pointer;
-
-  background: linear-gradient(135deg, #22c55e, #16a34a);
   color: #ffffff;
-
-  box-shadow: 0 14px 26px rgba(34, 197, 94, 0.22);
-
-  transition: all 0.18s ease;
+  font-size: 1rem;
+  font-weight: 950;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  box-shadow:
+    0 20px 38px rgba(34, 197, 94, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  transition:
+    transform 0.18s ease,
+    filter 0.18s ease,
+    box-shadow 0.18s ease;
 }
 
 .quote-btn:hover:not(:disabled) {
-  transform: translateY(-1px);
-  filter: brightness(1.03);
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+  box-shadow:
+    0 26px 48px rgba(34, 197, 94, 0.36),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
 .quote-btn:disabled {
-  opacity: 0.5;
+  opacity: 0.52;
   cursor: not-allowed;
 }
 
+.quote-btn strong {
+  font-size: 1.1rem;
+}
+
 .summary-note {
-  margin: 6px 0 0;
+  margin: 14px 0 0;
   color: #94a3b8;
-  line-height: 1.6;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  line-height: 1.55;
 }
 
-/* TABLET */
 @media (max-width: 900px) {
-  .section-header {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .cart-header-actions {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
-}
-
-/* MOBILE */
-@media (max-width: 600px) {
   .cart-panel {
-    padding: 16px;
-    border-radius: 22px;
+    padding: 18px;
+    border-radius: 26px;
   }
 
-  .section-header h2 {
-    font-size: 1.55rem;
+  .cart-header {
+    flex-direction: column;
   }
 
-  .summary-mini-card {
-    padding: 12px 14px;
-  }
-
-  .quote-btn {
-    min-height: 50px;
-    font-size: 0.95rem;
+  .cart-actions {
+    width: 100%;
   }
 
   .clear-cart-btn {
     flex: 1;
-    justify-content: center;
   }
 }
 
-/* SMALL PHONE */
-@media (max-width: 420px) {
+@media (max-width: 520px) {
   .cart-panel {
-    padding: 14px;
+    padding: 16px;
+    border-radius: 24px;
   }
 
-  .cart-header-actions {
+  .cart-score {
     flex-direction: column;
-    align-items: stretch;
+    align-items: flex-start;
+  }
+
+  .score-main strong {
+    font-size: 1.9rem;
+  }
+
+  .trust-box {
+    grid-template-columns: 1fr;
+  }
+
+  .trust-box div {
+    min-height: 54px;
+    grid-template-columns: auto 1fr;
+    justify-items: start;
+    text-align: left;
   }
 
   .close-cart-btn,
@@ -404,13 +509,8 @@ Resumen:
     width: 100%;
   }
 
-  .summary-row,
-  .summary-mini-card {
-    font-size: 0.92rem;
-  }
-
-  .summary-note {
-    font-size: 0.84rem;
+  .cart-actions {
+    flex-direction: column;
   }
 }
 </style>

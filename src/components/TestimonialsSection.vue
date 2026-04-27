@@ -1,65 +1,54 @@
 <template>
   <section id="comentarios" class="testimonials-section">
-    <div class="testimonials-header">
-      <span class="testimonials-kicker">Resultados y reseñas</span>
+    <div class="testimonials-hero">
+      <div class="hero-copy">
+        <span class="section-kicker">Comentarios reales</span>
 
-      <h2>Marcas y negocios que ya impulsaron su presencia digital</h2>
+        <h2>
+          Historias de gente que quería verse más fuerte en redes
+          <span>sin complicarse.</span>
+        </h2>
 
-      <p>
-        Historias de clientes que buscaban crecer en redes sociales, mejorar su
-        imagen y conseguir resultados más visibles en menos tiempo.
-      </p>
-    </div>
+        <p>
+          Negocios, creadores y marcas que empezaron con una prueba o un paquete
+          pequeño y después armaron algo más a su medida.
+        </p>
+      </div>
 
-    <div class="testimonials-stats">
-      <article class="stat-card">
-        <strong>+120</strong>
-        <span>proyectos impulsados</span>
-      </article>
-
-      <article class="stat-card">
-        <strong>98%</strong>
-        <span>clientes satisfechos</span>
-      </article>
-
-      <article class="stat-card">
-        <strong>24-48h</strong>
-        <span>primer seguimiento</span>
-      </article>
+      <div class="rating-card">
+        <div class="rating-stars">★★★★★</div>
+        <strong>4.9/5</strong>
+        <span>Calificación promedio</span>
+      </div>
     </div>
 
     <div class="testimonials-grid">
       <article
         v-for="item in testimonials"
-        :key="item.name + item.business"
+        :key="item.name + item.city"
         class="testimonial-card"
+        :class="item.featured ? 'testimonial-card--featured' : ''"
       >
-        <div class="testimonial-top">
-          <span class="platform-chip" :class="item.platformClass">
-            {{ item.platform }}
-          </span>
-
-          <div class="stars">★★★★★</div>
-        </div>
-
-        <p class="testimonial-text">
-          “{{ item.text }}”
-        </p>
-
-        <div class="testimonial-result">
-          <span class="result-label">Resultado destacado</span>
-          <strong>{{ item.result }}</strong>
-        </div>
-
-        <div class="testimonial-footer">
-          <div class="avatar">
+        <div class="card-top">
+          <div class="avatar" :class="item.avatarClass">
             {{ item.initials }}
           </div>
 
-          <div class="testimonial-meta">
+          <div class="person">
             <strong>{{ item.name }}</strong>
-            <span>{{ item.business }}</span>
+            <span>{{ item.city }} · {{ item.business }}</span>
           </div>
+
+          <span class="platform-chip" :class="item.platformClass">
+            {{ item.platform }}
+          </span>
+        </div>
+
+        <p class="testimonial-text">“{{ item.text }}”</p>
+
+        <div class="result-pill">
+          <span>{{ item.resultLabel }}</span>
+          <strong>{{ item.result }}</strong>
         </div>
       </article>
     </div>
@@ -69,359 +58,399 @@
 <script setup>
 const testimonials = [
   {
-    name: "Emmanuel R.",
-    business: "Moda y lifestyle",
+    name: "Mariana López",
+    city: "Mérida",
+    business: "Uñas y belleza",
     platform: "Instagram",
     platformClass: "platform-instagram",
-    initials: "ER",
-    result: "Más alcance y mejor presencia visual",
+    initials: "ML",
+    avatarClass: "avatar-pink",
+    resultLabel: "Lo que notó",
+    result: "Más confianza al ver su perfil",
+    featured: true,
     text:
-      "Nos ayudaron a crecer la cuenta y a que el perfil se viera mucho más profesional. En poco tiempo empezamos a notar más movimiento, más interacción y una imagen mucho más sólida para la marca.",
+      "La neta al principio pedí poquito porque quería calar. Sí se notó el movimiento y mi perfil ya no se veía tan vacío. Me gustó que no me pidieron contraseña ni nada raro.",
   },
   {
-    name: "Café Central",
-    business: "Restaurante y cafetería",
-    platform: "Instagram + Facebook",
-    platformClass: "platform-facebook",
-    initials: "CC",
-    result: "Más seguidores reales y mejor conversión",
-    text:
-      "Lo que más nos gustó fue que no nos vendieron algo genérico. Pudimos elegir lo que sí necesitábamos, subir seguidores en nuestras páginas y reforzar la imagen del negocio sin pagar de más.",
-  },
-  {
-    name: "Andrea M.",
-    business: "Belleza y cuidado personal",
-    platform: "Instagram",
-    platformClass: "platform-instagram",
-    initials: "AM",
-    result: "Perfil más atractivo y más confianza",
-    text:
-      "Yo quería que mi cuenta se viera más fuerte y con más credibilidad. Se notó muchísimo el cambio en seguidores, imagen y percepción del perfil. Ahora se siente mucho más seria y competitiva.",
-  },
-  {
-    name: "Fit Studio MX",
-    business: "Entrenamiento y bienestar",
-    platform: "Instagram + TikTok",
-    platformClass: "platform-tiktok",
-    initials: "FS",
-    result: "Más visibilidad y mejor autoridad digital",
-    text:
-      "Nos ayudaron a levantar la presencia en redes y a que el contenido tuviera más impacto. El crecimiento en seguidores y la mejora visual hicieron que la marca se sintiera mucho más fuerte.",
-  },
-  {
-    name: "Oscar N.",
-    business: "Salud y bienestar",
-    platform: "Instagram",
-    platformClass: "platform-instagram",
-    initials: "ON",
-    result: "Mejor percepción de marca y más confianza",
-    text:
-      "La diferencia se notó rápido. Tener más seguidores y una mejor presentación del perfil hizo que todo se viera más profesional. Fue justo el impulso que necesitábamos para arrancar mejor.",
-  },
-  {
-    name: "Urban Food Lab",
-    business: "Comida y delivery",
+    name: "Carlos Medina",
+    city: "Monterrey",
+    business: "Comida a domicilio",
     platform: "Facebook",
     platformClass: "platform-facebook",
-    initials: "UF",
-    result: "Más presencia en la página del negocio",
+    initials: "CM",
+    avatarClass: "avatar-blue",
+    resultLabel: "Resultado",
+    result: "Página con más presencia",
     text:
-      "Queríamos reforzar la página y que se viera con más movimiento. Nos ayudaron a subir seguidores, mejorar la imagen y dejar una presencia más confiable para nuevos clientes.",
+      "Tenemos una página de Facebook del negocio y se veía medio abandonada. Con el paquete empezó a verse con más vida y la gente sí nos empezó a tomar más en serio.",
+  },
+  {
+    name: "Anónimo",
+    city: "CDMX",
+    business: "Creadora de contenido",
+    platform: "TikTok",
+    platformClass: "platform-tiktok",
+    initials: "VT",
+    avatarClass: "avatar-cyan",
+    resultLabel: "Lo mejor",
+    result: "Más vistas en videos clave",
+    text:
+      "Yo quería empujar unos videos que ya traían buena pinta. Me ayudó a que agarraran más views y se vieran más activos. No fue magia, pero sí fue el empujón que necesitaba.",
+  },
+  {
+    name: "Diego Ramírez",
+    city: "Guadalajara",
+    business: "Tienda de ropa",
+    platform: "Instagram",
+    platformClass: "platform-instagram",
+    initials: "DR",
+    avatarClass: "avatar-purple",
+    resultLabel: "Impacto",
+    result: "Mejor primera impresión",
+    text:
+      "Subimos seguidores y likes en publicaciones nuevas. Lo que más me gustó fue que el perfil empezó a verse más confiable para gente que apenas nos encontraba.",
+  },
+  {
+    name: "Fernanda Castillo",
+    city: "Cancún",
+    business: "Spa y skincare",
+    platform: "Instagram",
+    platformClass: "platform-instagram",
+    initials: "FC",
+    avatarClass: "avatar-orange",
+    resultLabel: "Experiencia",
+    result: "Proceso rápido por WhatsApp",
+    text:
+      "Les escribí por WhatsApp, me explicaron qué convenía y no sentí que me quisieran vender de más. Empecé con una prueba y luego armé un paquete más completo.",
+  },
+  {
+    name: "Jorge Herrera",
+    city: "Querétaro",
+    business: "Marca personal",
+    platform: "X",
+    platformClass: "platform-x",
+    initials: "JH",
+    avatarClass: "avatar-slate",
+    resultLabel: "Cambio visible",
+    result: "Más interacción en publicaciones",
+    text:
+      "Uso X para mover mi marca personal y necesitaba que mis publicaciones no se vieran tan solas. Me sirvió para darle más tracción a algunos posts importantes.",
   },
 ];
 </script>
 
 <style scoped>
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 .testimonials-section {
-  margin-top: 42px;
+  margin-top: 44px;
 }
 
-.testimonials-header {
-  text-align: center;
-  max-width: 900px;
-  margin: 0 auto 28px;
-}
-
-.testimonials-kicker {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 14px;
-  padding: 8px 14px;
-  border-radius: 999px;
-
-  background: rgba(124, 58, 237, 0.16);
-  color: #ddd6fe;
-
-  font-size: 0.82rem;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-}
-
-.testimonials-header h2 {
-  margin: 0 0 12px;
-  color: #ffffff;
-  font-size: clamp(2rem, 4vw, 3rem);
-  line-height: 1.06;
-  letter-spacing: -0.03em;
-}
-
-.testimonials-header p {
-  margin: 0 auto;
-  max-width: 760px;
-  color: #94a3b8;
-  font-size: 1rem;
-  line-height: 1.7;
-}
-
-.testimonials-stats {
+.testimonials-hero {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  gap: 22px;
+  align-items: end;
+  margin-bottom: 20px;
 }
 
-.stat-card {
+.hero-copy {
+  min-width: 0;
+}
+
+.section-kicker {
+  display: inline-flex;
+  width: fit-content;
+  margin-bottom: 14px;
+  padding: 8px 13px;
+  border-radius: 999px;
+  color: #d8b4fe;
+  background: rgba(124, 58, 237, 0.16);
+  border: 1px solid rgba(168, 85, 247, 0.18);
+  font-size: 0.76rem;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.testimonials-hero h2 {
+  max-width: 820px;
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  line-height: 1;
+  letter-spacing: -0.055em;
+  font-weight: 950;
+}
+
+.testimonials-hero h2 span {
+  background: linear-gradient(135deg, #a855f7, #ec4899);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.testimonials-hero p {
+  max-width: 720px;
+  margin: 14px 0 0;
+  color: #cbd5e1;
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.rating-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 150px;
+  padding: 20px;
+  border-radius: 26px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-
-  padding: 20px 22px;
-  border-radius: 22px;
-
-  background: linear-gradient(
-    180deg,
-    rgba(10, 18, 34, 0.86) 0%,
-    rgba(8, 14, 26, 0.92) 100%
-  );
-
-  border: 1px solid rgba(255, 255, 255, 0.08);
-
+  justify-content: center;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(236, 72, 153, 0.22), transparent 34%),
+    linear-gradient(180deg, rgba(15, 12, 34, 0.9), rgba(8, 8, 20, 0.96));
+  border: 1px solid rgba(255, 255, 255, 0.085);
   box-shadow:
-    0 18px 36px rgba(2, 6, 23, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
-
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+    0 24px 54px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
-.stat-card strong {
+.rating-stars {
+  color: #fbbf24;
+  letter-spacing: 0.08em;
+  font-size: 1rem;
+}
+
+.rating-card strong {
+  margin-top: 10px;
   color: #ffffff;
-  font-size: 1.8rem;
+  font-size: 2.25rem;
   line-height: 1;
-  font-weight: 900;
+  font-weight: 950;
 }
 
-.stat-card span {
+.rating-card span {
+  margin-top: 6px;
   color: #94a3b8;
-  font-size: 0.95rem;
-  font-weight: 600;
+  font-weight: 750;
+}
+
+.social-proof-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  overflow: hidden;
+  margin-bottom: 18px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.075);
+}
+
+.social-proof-strip article {
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  border-right: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.social-proof-strip article:last-child {
+  border-right: none;
+}
+
+.social-proof-strip strong {
+  color: #ffffff;
+  font-size: 1.25rem;
+  line-height: 1;
+  font-weight: 950;
+}
+
+.social-proof-strip span {
+  color: #94a3b8;
+  font-size: 0.88rem;
+  font-weight: 700;
 }
 
 .testimonials-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
+  gap: 16px;
 }
 
 .testimonial-card {
   position: relative;
   overflow: hidden;
-
+  min-height: 286px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
-
-  min-height: 320px;
-  padding: 22px;
-
-  border-radius: 24px;
+  gap: 16px;
+  padding: 20px;
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at 90% 0%, rgba(124, 58, 237, 0.16), transparent 28%),
+    linear-gradient(180deg, rgba(15, 12, 34, 0.86), rgba(8, 8, 20, 0.96));
   border: 1px solid rgba(255, 255, 255, 0.08);
-
-  background:
-    linear-gradient(
-      180deg,
-      rgba(10, 18, 34, 0.9) 0%,
-      rgba(8, 14, 26, 0.94) 100%
-    );
-
   box-shadow:
-    0 18px 36px rgba(2, 6, 23, 0.24),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
-
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-
+    0 22px 44px rgba(0, 0, 0, 0.26),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
   transition:
-    transform 0.22s ease,
-    border-color 0.22s ease,
-    box-shadow 0.22s ease;
-}
-
-.testimonial-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-
-  background:
-    radial-gradient(circle at 85% 10%, rgba(59, 130, 246, 0.1), transparent 24%),
-    radial-gradient(circle at 10% 0%, rgba(168, 85, 247, 0.08), transparent 20%);
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .testimonial-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(96, 165, 250, 0.16);
-
+  border-color: rgba(216, 180, 254, 0.18);
   box-shadow:
-    0 24px 42px rgba(2, 6, 23, 0.28),
-    0 0 18px rgba(59, 130, 246, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    0 28px 54px rgba(0, 0, 0, 0.34),
+    0 0 26px rgba(168, 85, 247, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
-.testimonial-top,
-.testimonial-text,
-.testimonial-result,
-.testimonial-footer {
-  position: relative;
-  z-index: 1;
+.testimonial-card--featured {
+  background:
+    radial-gradient(circle at 90% 0%, rgba(236, 72, 153, 0.18), transparent 28%),
+    radial-gradient(circle at 10% 100%, rgba(37, 99, 235, 0.14), transparent 30%),
+    linear-gradient(180deg, rgba(25, 12, 42, 0.9), rgba(8, 8, 20, 0.96));
+  border-color: rgba(236, 72, 153, 0.16);
 }
 
-.testimonial-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.card-top {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   gap: 12px;
-}
-
-.platform-chip {
-  display: inline-flex;
   align-items: center;
-  min-height: 32px;
-  padding: 0 14px;
-  border-radius: 999px;
-
-  font-size: 0.78rem;
-  font-weight: 800;
-  letter-spacing: 0.01em;
-
-  border: 1px solid transparent;
-}
-
-.platform-instagram {
-  background: linear-gradient(
-    135deg,
-    rgba(245, 133, 41, 0.14),
-    rgba(221, 42, 123, 0.18),
-    rgba(129, 52, 175, 0.14)
-  );
-  color: #f9a8d4;
-  border-color: rgba(221, 42, 123, 0.14);
-}
-
-.platform-facebook {
-  background: linear-gradient(
-    135deg,
-    rgba(24, 119, 242, 0.14),
-    rgba(96, 165, 250, 0.18)
-  );
-  color: #93c5fd;
-  border-color: rgba(59, 130, 246, 0.14);
-}
-
-.platform-tiktok {
-  background: linear-gradient(
-    135deg,
-    rgba(37, 244, 238, 0.12),
-    rgba(17, 24, 39, 0.14),
-    rgba(254, 44, 85, 0.14)
-  );
-  color: #e2e8f0;
-  border-color: rgba(148, 163, 184, 0.12);
-}
-
-.stars {
-  color: #fbbf24;
-  font-size: 1rem;
-  letter-spacing: 0.08em;
-  white-space: nowrap;
-}
-
-.testimonial-text {
-  margin: 0;
-  color: #e2e8f0;
-  font-size: 0.98rem;
-  line-height: 1.75;
-}
-
-.testimonial-result {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-
-  padding: 14px 16px;
-  border-radius: 18px;
-
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.result-label {
-  color: #93c5fd;
-  font-size: 0.78rem;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-}
-
-.testimonial-result strong {
-  color: #ffffff;
-  font-size: 0.98rem;
-  line-height: 1.45;
-  font-weight: 800;
-}
-
-.testimonial-footer {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: auto;
 }
 
 .avatar {
-  width: 46px;
-  height: 46px;
-  border-radius: 999px;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  width: 48px;
+  height: 48px;
+  border-radius: 17px;
+  display: grid;
+  place-items: center;
   color: #ffffff;
-
-  font-weight: 900;
-  font-size: 0.95rem;
-
-  box-shadow: 0 12px 20px rgba(59, 130, 246, 0.18);
+  font-weight: 950;
+  box-shadow:
+    0 18px 28px rgba(0, 0, 0, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
-.testimonial-meta {
+.avatar-pink {
+  background: linear-gradient(135deg, #ec4899, #8b5cf6);
+}
+
+.avatar-blue {
+  background: linear-gradient(135deg, #2563eb, #38bdf8);
+}
+
+.avatar-cyan {
+  background: linear-gradient(135deg, #14b8a6, #2563eb);
+}
+
+.avatar-purple {
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+}
+
+.avatar-orange {
+  background: linear-gradient(135deg, #f97316, #ec4899);
+}
+
+.avatar-slate {
+  background: linear-gradient(135deg, #334155, #020617);
+}
+
+.person {
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 3px;
 }
 
-.testimonial-meta strong {
+.person strong {
   color: #ffffff;
-  font-size: 0.96rem;
-  line-height: 1.2;
+  line-height: 1.15;
+  font-size: 0.98rem;
+  font-weight: 900;
 }
 
-.testimonial-meta span {
+.person span {
   color: #94a3b8;
-  font-size: 0.9rem;
-  line-height: 1.3;
+  font-size: 0.82rem;
+  line-height: 1.25;
+}
+
+.platform-chip {
+  min-height: 30px;
+  padding: 0 10px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 900;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+
+.platform-instagram {
+  color: #f9a8d4;
+  background: rgba(236, 72, 153, 0.12);
+  border-color: rgba(236, 72, 153, 0.14);
+}
+
+.platform-facebook {
+  color: #93c5fd;
+  background: rgba(37, 99, 235, 0.12);
+  border-color: rgba(37, 99, 235, 0.14);
+}
+
+.platform-tiktok {
+  color: #e2e8f0;
+  background: rgba(20, 184, 166, 0.12);
+  border-color: rgba(20, 184, 166, 0.14);
+}
+
+.platform-x {
+  color: #cbd5e1;
+  background: rgba(148, 163, 184, 0.1);
+  border-color: rgba(148, 163, 184, 0.14);
+}
+
+.testimonial-text {
+  margin: 0;
+  color: #e5e7eb;
+  font-size: 0.96rem;
+  line-height: 1.68;
+}
+
+.result-pill {
+  margin-top: auto;
+  padding: 14px 15px;
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.result-pill span {
+  color: #c084fc;
+  font-size: 0.72rem;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.result-pill strong {
+  color: #ffffff;
+  font-size: 0.95rem;
+  line-height: 1.35;
 }
 
 @media (max-width: 1100px) {
@@ -429,26 +458,45 @@ const testimonials = [
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .testimonials-stats {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  .testimonials-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .rating-card {
+    max-width: 360px;
   }
 }
 
-@media (max-width: 900px) {
-  .testimonials-header {
-    margin-bottom: 22px;
+@media (max-width: 760px) {
+  .testimonials-section {
+    margin-top: 32px;
   }
 
-  .testimonials-header h2 {
-    font-size: clamp(1.8rem, 6vw, 2.35rem);
+  .testimonials-hero h2 {
+    font-size: clamp(1.9rem, 9vw, 2.55rem);
   }
 
-  .testimonials-header p {
-    font-size: 0.96rem;
+  .testimonials-hero p {
+    font-size: 0.94rem;
   }
 
-  .testimonials-stats {
+  .rating-card {
+    max-width: none;
+    min-height: 126px;
+    border-radius: 22px;
+  }
+
+  .social-proof-strip {
     grid-template-columns: 1fr;
+  }
+
+  .social-proof-strip article {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  }
+
+  .social-proof-strip article:last-child {
+    border-bottom: none;
   }
 
   .testimonials-grid {
@@ -457,6 +505,17 @@ const testimonials = [
 
   .testimonial-card {
     min-height: auto;
+    border-radius: 22px;
+    padding: 18px;
+  }
+
+  .card-top {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .platform-chip {
+    grid-column: 1 / -1;
+    width: fit-content;
   }
 }
 </style>

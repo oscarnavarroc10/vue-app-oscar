@@ -1,37 +1,44 @@
 <template>
   <article class="sub-service-card" :style="cardStyle">
-    <div class="sub-card-glow glow-1"></div>
-    <div class="sub-card-glow glow-2"></div>
-    <div class="sub-card-grid"></div>
+    <div class="card-glow card-glow--one"></div>
+    <div class="card-glow card-glow--two"></div>
+    <div class="card-grid"></div>
+    <div class="card-noise"></div>
 
-    <div class="sub-card-top">
-      <span class="sub-card-badge">
-        <img
-          v-if="platformIcon"
-          :src="platformIcon"
-          :alt="service.category"
-          class="sub-card-icon"
-          aria-hidden="true"
-        />
-        {{ service.category }}
-      </span>
+    <header class="sub-card-header">
+      <div class="platform-info">
+        <span class="platform-badge">
+          <img
+            v-if="platformIcon"
+            :src="platformIcon"
+            :alt="service.category"
+            class="platform-icon"
+            aria-hidden="true"
+          />
+          {{ service.category }}
+        </span>
 
-      <div class="sub-card-price-wrap">
-        <span class="sub-card-price-label">Precio</span>
-        <strong class="sub-card-price">
-          ${{ formatPrice(service.price) }} por cada
-          {{ formatNumber(service.unitBase || 100) }}
-        </strong>
+        <span class="safe-chip">Sin contraseña</span>
       </div>
-    </div>
 
-    <div class="sub-card-body">
+      <div class="price-box">
+        <span>Desde</span>
+        <strong>
+          ${{ formatPrice(service.price) }}
+        </strong>
+        <small>
+          por cada {{ formatNumber(service.unitBase || 100) }}
+        </small>
+      </div>
+    </header>
+
+    <section class="sub-card-body">
       <h3>{{ service.name }}</h3>
 
-      <p class="sub-card-description">
+      <p>
         {{
           service.description ||
-          "Agrega la cantidad que necesitas y el enlace del perfil o página donde quieres aplicar el servicio."
+          "Agrega la cantidad que necesitas y el enlace donde quieres aplicar el servicio."
         }}
       </p>
 
@@ -39,9 +46,8 @@
         v-if="entriesReadyCount > 0 || existingCartRowsCount > 0"
         class="selected-info"
       >
-        <span class="selected-badge">
-          {{ entriesReadyCount }}
-        </span>
+        <span>{{ entriesReadyCount }}</span>
+
         <small>
           {{ entriesReadyCount === 1 ? "fila lista" : "filas listas" }}
           <template v-if="existingCartRowsCount > 0">
@@ -49,39 +55,34 @@
           </template>
         </small>
       </div>
-    </div>
+    </section>
 
-    <div class="sub-card-form">
-      <div class="field-topline">
-        <label class="field-label field-label--multi">
-          {{ service.linkDescription || "Link del perfil o página" }}
-        </label>
+    <section class="sub-card-form">
+      <div class="field-heading">
+        <div>
+          <strong>{{ service.linkDescription || "Link del perfil o página" }}</strong>
+          <small>Mínimo {{ formatNumber(service.minQuantity || 100) }} por fila</small>
+        </div>
 
-        <div class="field-topline-actions">
-          <span class="field-help-text">
-            Mínimo {{ formatNumber(service.minQuantity || 100) }} por fila
-          </span>
-
-          <div
-            class="profile-help-wrap"
-            @mouseenter="showHelp = true"
-            @mouseleave="showHelp = false"
+        <div
+          class="profile-help-wrap"
+          @mouseenter="showHelp = true"
+          @mouseleave="showHelp = false"
+        >
+          <button
+            type="button"
+            class="profile-help-btn"
+            @click.stop="showHelp = !showHelp"
+            @focus="showHelp = true"
+            @blur="showHelp = false"
+            aria-label="Ayuda sobre múltiples links"
           >
-            <button
-              type="button"
-              class="profile-help-btn"
-              @click.stop="showHelp = !showHelp"
-              @focus="showHelp = true"
-              @blur="showHelp = false"
-            >
-              ?
-            </button>
+            ?
+          </button>
 
-            <div v-if="showHelp" class="profile-help-tooltip">
-              Puedes agregar hasta {{ maxRows }} filas. Cada fila permite un
-              link con su propia cantidad y se enviará como un servicio separado
-              al carrito.
-            </div>
+          <div v-if="showHelp" class="profile-help-tooltip">
+            Puedes agregar hasta {{ maxRows }} filas. Cada fila permite un link
+            con su propia cantidad y se enviará como un servicio separado al carrito.
           </div>
         </div>
       </div>
@@ -93,13 +94,8 @@
           class="service-row"
         >
           <div class="row-main">
-            <div class="row-link-col">
-              <label
-                class="sr-only"
-                :for="`profile-${service.id}-${index}`"
-              >
-                Link {{ index + 1 }}
-              </label>
+            <label class="input-shell link-shell" :for="`profile-${service.id}-${index}`">
+              <span class="input-icon">🔗</span>
 
               <input
                 :id="`profile-${service.id}-${index}`"
@@ -109,12 +105,10 @@
                 type="url"
                 :placeholder="buildProfilePlaceholder(index)"
               />
-            </div>
+            </label>
 
-            <div class="row-qty-col">
-              <label class="sr-only" :for="`qty-${service.id}-${index}`">
-                Cantidad {{ index + 1 }}
-              </label>
+            <label class="input-shell qty-shell" :for="`qty-${service.id}-${index}`">
+              <span class="input-icon">#</span>
 
               <input
                 :id="`qty-${service.id}-${index}`"
@@ -126,7 +120,7 @@
                 :step="service.step || 100"
                 :placeholder="String(service.minQuantity || 100)"
               />
-            </div>
+            </label>
 
             <div class="row-actions">
               <button
@@ -159,8 +153,7 @@
             </small>
 
             <small v-else-if="entry.quantityError" class="field-error-label">
-              La cantidad mínima es
-              {{ formatNumber(service.minQuantity || 100) }}.
+              La cantidad mínima es {{ formatNumber(service.minQuantity || 100) }}.
             </small>
 
             <small v-else class="field-note">
@@ -169,31 +162,31 @@
           </div>
         </div>
       </div>
+    </section>
 
-      <small class="field-note field-note--muted">
-        Máximo {{ maxRows }} filas por servicio.
-      </small>
-    </div>
-
-    <div class="sub-card-footer">
+    <footer class="sub-card-footer">
       <button
         ref="addBtnRef"
         class="sub-card-btn"
         type="button"
         @click="handleAddToCart"
       >
-        {{
-          entriesReadyCount > 1
-            ? `Agregar ${entriesReadyCount} servicios al carrito`
-            : "Agregar al carrito"
-        }}
+        <span>
+          {{
+            entriesReadyCount > 1
+              ? `Agregar ${entriesReadyCount} servicios`
+              : "Agregar al carrito"
+          }}
+        </span>
+        <strong>→</strong>
       </button>
-    </div>
+    </footer>
   </article>
 </template>
 
 <script setup>
 import { computed, ref, onMounted, onBeforeUnmount } from "vue";
+
 import instagramIcon from "@/assets/instagram_neon.svg";
 import facebookIcon from "@/assets/facebook_neon.svg";
 import tiktokIcon from "@/assets/tiktok_neon.svg";
@@ -237,7 +230,15 @@ const createEntry = () => ({
 const entries = ref([createEntry()]);
 
 const normalizeProfile = (value) => {
-  return (value || "").trim().replace(/\/+$/, "");
+  const cleaned = (value || "").trim().replace(/\/+$/, "");
+
+  if (!cleaned) return "";
+
+  if (cleaned.startsWith("http://") || cleaned.startsWith("https://")) {
+    return cleaned;
+  }
+
+  return `https://${cleaned}`;
 };
 
 const formatNumber = (value) => {
@@ -312,6 +313,7 @@ const validateEntry = (entry) => {
     String(entry.quantity).trim() !== "";
 
   const isCompletelyEmpty = !profileFilled && !quantityFilled;
+
   if (isCompletelyEmpty) {
     entry.profileError = false;
     entry.quantityError = false;
@@ -382,145 +384,133 @@ const handleAddToCart = () => {
 
 const SOCIAL_THEME_MAP = {
   Instagram: {
-    glow1: "rgba(225, 48, 108, 0.18)",
-    glow2: "rgba(245, 133, 41, 0.14)",
+    glow1: "rgba(236, 72, 153, 0.32)",
+    glow2: "rgba(249, 115, 22, 0.22)",
     badgeBg:
-      "linear-gradient(135deg, rgba(245, 133, 41, 0.18), rgba(221, 42, 123, 0.20), rgba(129, 52, 175, 0.18))",
+      "linear-gradient(135deg, rgba(249, 115, 22, 0.16), rgba(236, 72, 153, 0.18), rgba(139, 92, 246, 0.14))",
     badgeColor: "#f9a8d4",
-    badgeBorder: "rgba(221, 42, 123, 0.20)",
-    badgeShadow: "rgba(221, 42, 123, 0.18)",
-    buttonGradient: "linear-gradient(135deg, #f58529, #dd2a7b, #8134af)",
+    badgeBorder: "rgba(236, 72, 153, 0.22)",
+    buttonGradient: "linear-gradient(135deg, #f97316, #ec4899, #8b5cf6)",
     icon: instagramIcon,
     accent: "#f9a8d4",
   },
   Facebook: {
-    glow1: "rgba(24, 119, 242, 0.18)",
-    glow2: "rgba(96, 165, 250, 0.14)",
+    glow1: "rgba(59, 130, 246, 0.32)",
+    glow2: "rgba(96, 165, 250, 0.18)",
     badgeBg:
-      "linear-gradient(135deg, rgba(24, 119, 242, 0.16), rgba(96, 165, 250, 0.18))",
+      "linear-gradient(135deg, rgba(37, 99, 235, 0.16), rgba(96, 165, 250, 0.16))",
     badgeColor: "#93c5fd",
-    badgeBorder: "rgba(24, 119, 242, 0.20)",
-    badgeShadow: "rgba(24, 119, 242, 0.16)",
-    buttonGradient: "linear-gradient(135deg, #1877f2, #60a5fa)",
+    badgeBorder: "rgba(59, 130, 246, 0.22)",
+    buttonGradient: "linear-gradient(135deg, #2563eb, #60a5fa)",
     icon: facebookIcon,
     accent: "#93c5fd",
   },
   TikTok: {
-    glow1: "rgba(37, 244, 238, 0.16)",
-    glow2: "rgba(254, 44, 85, 0.14)",
+    glow1: "rgba(34, 211, 238, 0.26)",
+    glow2: "rgba(236, 72, 153, 0.2)",
     badgeBg:
-      "linear-gradient(135deg, rgba(37, 244, 238, 0.14), rgba(17, 24, 39, 0.18), rgba(254, 44, 85, 0.14))",
+      "linear-gradient(135deg, rgba(34, 211, 238, 0.13), rgba(236, 72, 153, 0.13))",
     badgeColor: "#e2e8f0",
-    badgeBorder: "rgba(148, 163, 184, 0.16)",
-    badgeShadow: "rgba(17, 24, 39, 0.10)",
-    buttonGradient: "linear-gradient(135deg, #111827, #25f4ee, #fe2c55)",
+    badgeBorder: "rgba(148, 163, 184, 0.18)",
+    buttonGradient: "linear-gradient(135deg, #111827, #22d3ee, #ec4899)",
     icon: tiktokIcon,
     accent: "#e2e8f0",
   },
   YouTube: {
-    glow1: "rgba(255, 0, 0, 0.18)",
-    glow2: "rgba(248, 113, 113, 0.14)",
+    glow1: "rgba(239, 68, 68, 0.28)",
+    glow2: "rgba(248, 113, 113, 0.16)",
     badgeBg:
-      "linear-gradient(135deg, rgba(255, 0, 0, 0.14), rgba(239, 68, 68, 0.18))",
+      "linear-gradient(135deg, rgba(220, 38, 38, 0.14), rgba(248, 113, 113, 0.14))",
     badgeColor: "#fca5a5",
-    badgeBorder: "rgba(220, 38, 38, 0.20)",
-    badgeShadow: "rgba(220, 38, 38, 0.16)",
+    badgeBorder: "rgba(239, 68, 68, 0.2)",
     buttonGradient: "linear-gradient(135deg, #dc2626, #ef4444)",
     icon: youtubeIcon,
     accent: "#fca5a5",
   },
   Snapchat: {
-    glow1: "rgba(250, 204, 21, 0.18)",
-    glow2: "rgba(253, 224, 71, 0.14)",
+    glow1: "rgba(250, 204, 21, 0.26)",
+    glow2: "rgba(245, 158, 11, 0.16)",
     badgeBg:
-      "linear-gradient(135deg, rgba(250, 204, 21, 0.22), rgba(245, 158, 11, 0.18))",
+      "linear-gradient(135deg, rgba(250, 204, 21, 0.16), rgba(245, 158, 11, 0.14))",
     badgeColor: "#fde68a",
-    badgeBorder: "rgba(245, 158, 11, 0.20)",
-    badgeShadow: "rgba(245, 158, 11, 0.18)",
-    buttonGradient: "linear-gradient(135deg, #facc15, #f59e0b)",
+    badgeBorder: "rgba(250, 204, 21, 0.2)",
+    buttonGradient: "linear-gradient(135deg, #facc15, #f97316)",
     icon: snapchatIcon,
     accent: "#fde68a",
   },
   X: {
-    glow1: "rgba(15, 23, 42, 0.18)",
-    glow2: "rgba(71, 85, 105, 0.14)",
+    glow1: "rgba(148, 163, 184, 0.22)",
+    glow2: "rgba(255, 255, 255, 0.1)",
     badgeBg:
-      "linear-gradient(135deg, rgba(30, 41, 59, 0.14), rgba(71, 85, 105, 0.16))",
+      "linear-gradient(135deg, rgba(148, 163, 184, 0.12), rgba(30, 41, 59, 0.16))",
     badgeColor: "#cbd5e1",
-    badgeBorder: "rgba(148, 163, 184, 0.14)",
-    badgeShadow: "rgba(15, 23, 42, 0.12)",
-    buttonGradient: "linear-gradient(135deg, #111827, #334155)",
+    badgeBorder: "rgba(148, 163, 184, 0.18)",
+    buttonGradient: "linear-gradient(135deg, #111827, #334155, #64748b)",
     icon: xIcon,
     accent: "#cbd5e1",
   },
   Discord: {
-    glow1: "rgba(88, 101, 242, 0.18)",
-    glow2: "rgba(129, 140, 248, 0.14)",
+    glow1: "rgba(129, 140, 248, 0.28)",
+    glow2: "rgba(168, 85, 247, 0.16)",
     badgeBg:
-      "linear-gradient(135deg, rgba(88, 101, 242, 0.16), rgba(129, 140, 248, 0.18))",
+      "linear-gradient(135deg, rgba(88, 101, 242, 0.16), rgba(168, 85, 247, 0.14))",
     badgeColor: "#c4b5fd",
-    badgeBorder: "rgba(88, 101, 242, 0.20)",
-    badgeShadow: "rgba(88, 101, 242, 0.16)",
-    buttonGradient: "linear-gradient(135deg, #5865f2, #818cf8)",
+    badgeBorder: "rgba(129, 140, 248, 0.2)",
+    buttonGradient: "linear-gradient(135deg, #5865f2, #8b5cf6)",
     icon: discordIcon,
     accent: "#c4b5fd",
   },
   Twitch: {
-    glow1: "rgba(145, 70, 255, 0.18)",
+    glow1: "rgba(168, 85, 247, 0.3)",
     glow2: "rgba(196, 181, 253, 0.14)",
     badgeBg:
-      "linear-gradient(135deg, rgba(145, 70, 255, 0.16), rgba(168, 85, 247, 0.18))",
+      "linear-gradient(135deg, rgba(124, 58, 237, 0.16), rgba(168, 85, 247, 0.14))",
     badgeColor: "#d8b4fe",
-    badgeBorder: "rgba(145, 70, 255, 0.20)",
-    badgeShadow: "rgba(145, 70, 255, 0.16)",
-    buttonGradient: "linear-gradient(135deg, #9146ff, #a855f7)",
+    badgeBorder: "rgba(168, 85, 247, 0.2)",
+    buttonGradient: "linear-gradient(135deg, #7c3aed, #a855f7)",
     icon: twitchIcon,
     accent: "#d8b4fe",
   },
   Spotify: {
-    glow1: "rgba(29, 185, 84, 0.18)",
-    glow2: "rgba(74, 222, 128, 0.14)",
+    glow1: "rgba(34, 197, 94, 0.26)",
+    glow2: "rgba(134, 239, 172, 0.14)",
     badgeBg:
-      "linear-gradient(135deg, rgba(29, 185, 84, 0.16), rgba(34, 197, 94, 0.18))",
+      "linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(134, 239, 172, 0.12))",
     badgeColor: "#86efac",
-    badgeBorder: "rgba(29, 185, 84, 0.20)",
-    badgeShadow: "rgba(29, 185, 84, 0.16)",
-    buttonGradient: "linear-gradient(135deg, #1db954, #22c55e)",
+    badgeBorder: "rgba(34, 197, 94, 0.2)",
+    buttonGradient: "linear-gradient(135deg, #16a34a, #22c55e)",
     icon: spotifyIcon,
     accent: "#86efac",
   },
   Telegram: {
-    glow1: "rgba(0, 136, 204, 0.18)",
-    glow2: "rgba(56, 189, 248, 0.14)",
+    glow1: "rgba(56, 189, 248, 0.28)",
+    glow2: "rgba(14, 165, 233, 0.16)",
     badgeBg:
-      "linear-gradient(135deg, rgba(0, 136, 204, 0.16), rgba(56, 189, 248, 0.18))",
+      "linear-gradient(135deg, rgba(14, 165, 233, 0.16), rgba(56, 189, 248, 0.14))",
     badgeColor: "#7dd3fc",
-    badgeBorder: "rgba(0, 136, 204, 0.20)",
-    badgeShadow: "rgba(0, 136, 204, 0.16)",
-    buttonGradient: "linear-gradient(135deg, #0088cc, #38bdf8)",
+    badgeBorder: "rgba(56, 189, 248, 0.2)",
+    buttonGradient: "linear-gradient(135deg, #0284c7, #38bdf8)",
     icon: telegramIcon,
     accent: "#7dd3fc",
   },
   WhatsApp: {
-    glow1: "rgba(37, 211, 102, 0.18)",
+    glow1: "rgba(37, 211, 102, 0.26)",
     glow2: "rgba(134, 239, 172, 0.14)",
     badgeBg:
-      "linear-gradient(135deg, rgba(37, 211, 102, 0.16), rgba(74, 222, 128, 0.18))",
+      "linear-gradient(135deg, rgba(37, 211, 102, 0.15), rgba(134, 239, 172, 0.12))",
     badgeColor: "#86efac",
-    badgeBorder: "rgba(37, 211, 102, 0.20)",
-    badgeShadow: "rgba(37, 211, 102, 0.16)",
-    buttonGradient: "linear-gradient(135deg, #25d366, #4ade80)",
+    badgeBorder: "rgba(37, 211, 102, 0.2)",
+    buttonGradient: "linear-gradient(135deg, #16a34a, #25d366)",
     icon: whatsappIcon,
     accent: "#86efac",
   },
   default: {
-    glow1: "rgba(148, 163, 184, 0.16)",
-    glow2: "rgba(203, 213, 225, 0.12)",
+    glow1: "rgba(148, 163, 184, 0.18)",
+    glow2: "rgba(203, 213, 225, 0.1)",
     badgeBg:
-      "linear-gradient(135deg, rgba(148, 163, 184, 0.12), rgba(203, 213, 225, 0.16))",
+      "linear-gradient(135deg, rgba(148, 163, 184, 0.12), rgba(203, 213, 225, 0.1))",
     badgeColor: "#cbd5e1",
-    badgeBorder: "rgba(148, 163, 184, 0.14)",
-    badgeShadow: "rgba(148, 163, 184, 0.12)",
+    badgeBorder: "rgba(148, 163, 184, 0.16)",
     buttonGradient: "linear-gradient(135deg, #334155, #64748b)",
     icon: null,
     accent: "#cbd5e1",
@@ -535,17 +525,17 @@ const platformIcon = computed(() => socialTheme.value.icon);
 
 const profilePlaceholder = computed(() => {
   const map = {
-    Instagram: "Ejemplo: https://www.instagram.com/tu_usuario/",
-    Facebook: "Ejemplo: https://www.facebook.com/tu_pagina/",
-    TikTok: "Ejemplo: https://www.tiktok.com/@tu_usuario",
-    YouTube: "Ejemplo: https://www.youtube.com/@tu_canal",
-    Snapchat: "Ejemplo: https://www.snapchat.com/add/tu_usuario",
-    X: "Ejemplo: https://x.com/tu_usuario",
-    Discord: "Ejemplo: https://discord.gg/tu-servidor",
-    Twitch: "Ejemplo: https://www.twitch.tv/tu_canal",
-    Spotify: "Ejemplo: https://open.spotify.com/artist/...",
-    Telegram: "Ejemplo: https://t.me/tu_canal",
-    WhatsApp: "Ejemplo: https://wa.me/5219999999999",
+    Instagram: "https://www.instagram.com/tu_usuario/",
+    Facebook: "https://www.facebook.com/tu_pagina/",
+    TikTok: "https://www.tiktok.com/@tu_usuario",
+    YouTube: "https://www.youtube.com/@tu_canal",
+    Snapchat: "https://www.snapchat.com/add/tu_usuario",
+    X: "https://x.com/tu_usuario",
+    Discord: "https://discord.gg/tu-servidor",
+    Twitch: "https://www.twitch.tv/tu_canal",
+    Spotify: "https://open.spotify.com/artist/...",
+    Telegram: "https://t.me/tu_canal",
+    WhatsApp: "https://wa.me/5219999999999",
   };
 
   return map[props.service.category] || "Pega aquí tu perfil o enlace";
@@ -557,358 +547,399 @@ const cardStyle = computed(() => ({
   "--badge-bg": socialTheme.value.badgeBg,
   "--badge-color": socialTheme.value.badgeColor,
   "--badge-border": socialTheme.value.badgeBorder,
-  "--badge-shadow": socialTheme.value.badgeShadow,
   "--button-gradient": socialTheme.value.buttonGradient,
   "--accent-color": socialTheme.value.accent,
 }));
 </script>
 
 <style scoped>
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 .sub-service-card {
   position: relative;
-  min-height: 278px;
+  overflow: hidden;
+  min-height: auto;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  border-radius: 18px;
-  padding: 14px;
-  background: linear-gradient(
-    180deg,
-    rgba(10, 18, 34, 0.9) 0%,
-    rgba(8, 14, 26, 0.95) 100%
-  );
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 16px;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 92% 0%, var(--glow-1), transparent 28%),
+    radial-gradient(circle at 8% 100%, var(--glow-2), transparent 34%),
+    linear-gradient(180deg, rgba(15, 12, 34, 0.88), rgba(7, 9, 22, 0.97));
+  border: 1px solid rgba(255, 255, 255, 0.085);
   box-shadow:
-    0 16px 28px rgba(2, 6, 23, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+    0 22px 44px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.055);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  isolation: isolate;
   transition:
     transform 0.22s ease,
-    box-shadow 0.22s ease,
-    border-color 0.22s ease;
+    border-color 0.22s ease,
+    box-shadow 0.22s ease;
 }
 
 .sub-service-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(255, 255, 255, 0.12);
+  transform: translateY(-4px);
+  border-color: var(--badge-border);
   box-shadow:
-    0 20px 34px rgba(2, 6, 23, 0.24),
-    0 0 14px rgba(59, 130, 246, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    0 30px 58px rgba(0, 0, 0, 0.38),
+    0 0 24px var(--glow-1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
 }
 
-.sub-card-glow,
-.sub-card-grid {
+.card-glow,
+.card-grid,
+.card-noise {
   position: absolute;
   pointer-events: none;
 }
 
-.sub-card-glow {
+.card-glow {
+  z-index: -1;
   border-radius: 999px;
-  filter: blur(24px);
-  z-index: 0;
+  filter: blur(36px);
 }
 
-.glow-1 {
-  width: 112px;
-  height: 112px;
-  top: -22px;
-  right: -18px;
-  opacity: 0.68;
+.card-glow--one {
+  top: -60px;
+  right: -54px;
+  width: 180px;
+  height: 180px;
   background: var(--glow-1);
+  opacity: 0.7;
 }
 
-.glow-2 {
-  width: 82px;
-  height: 82px;
-  bottom: -18px;
-  left: -10px;
-  opacity: 0.42;
+.card-glow--two {
+  left: -46px;
+  bottom: -60px;
+  width: 140px;
+  height: 140px;
   background: var(--glow-2);
+  opacity: 0.58;
 }
 
-.sub-card-grid {
+.card-grid {
   inset: 0;
-  z-index: 0;
+  z-index: -1;
+  opacity: 0.045;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: linear-gradient(to bottom, black 0%, transparent 78%);
+}
+
+.card-noise {
+  inset: 0;
+  z-index: -1;
   opacity: 0.04;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
-  background-size: 22px 22px;
-  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.85), transparent 88%);
+    repeating-radial-gradient(
+      circle at 18% 24%,
+      rgba(255, 255, 255, 0.8) 0 1px,
+      transparent 1px 4px
+    );
 }
 
-.sub-card-top,
-.sub-card-body,
-.sub-card-form,
-.sub-card-footer {
-  position: relative;
-  z-index: 1;
+.sub-card-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: start;
 }
 
-.sub-card-top {
+.platform-info {
+  min-width: 0;
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 10px;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
-.sub-card-badge {
+.platform-badge,
+.safe-chip {
+  min-height: 30px;
+  padding: 0 11px;
+  border-radius: 999px;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 5px 10px;
-  border-radius: 999px;
-  font-size: 0.68rem;
-  font-weight: 800;
-  letter-spacing: 0.01em;
-  background: var(--badge-bg);
+  gap: 7px;
+  font-size: 0.72rem;
+  font-weight: 950;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.platform-badge {
   color: var(--badge-color);
-  border: 1px solid var(--badge-border);
-  box-shadow:
-    0 8px 18px var(--badge-shadow),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  background: var(--badge-bg);
+  border-color: var(--badge-border);
 }
 
-.sub-card-icon {
-  width: 14px;
-  height: 14px;
+.safe-chip {
+  color: #bbf7d0;
+  background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.14);
+}
+
+.platform-icon {
+  width: 16px;
+  height: 16px;
   object-fit: contain;
-  display: block;
-  flex-shrink: 0;
-  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.12));
 }
 
-.sub-card-price-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 2px;
+.price-box {
+  min-width: 116px;
+  padding: 10px 12px;
+  border-radius: 18px;
   text-align: right;
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.07);
 }
 
-.sub-card-price-label {
+.price-box span {
+  display: block;
   color: #94a3b8;
-  font-size: 0.62rem;
-  font-weight: 700;
+  font-size: 0.65rem;
+  font-weight: 850;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
 
-.sub-card-price {
+.price-box strong {
+  display: block;
+  margin-top: 2px;
   color: #ffffff;
-  font-size: 0.82rem;
-  line-height: 1.14;
+  font-size: 1.2rem;
+  line-height: 1;
+  font-weight: 950;
+}
+
+.price-box small {
+  display: block;
+  margin-top: 5px;
+  color: #cbd5e1;
+  font-size: 0.68rem;
+  line-height: 1.15;
+  font-weight: 750;
 }
 
 .sub-card-body {
-  margin-top: 8px;
+  margin-top: 14px;
 }
 
 .sub-card-body h3 {
-  margin: 0 0 5px;
-  font-size: 1.06rem;
-  line-height: 1.02;
-  font-weight: 900;
-  letter-spacing: -0.03em;
+  margin: 0;
   color: #ffffff;
+  font-size: 1.22rem;
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+  font-weight: 950;
 }
 
-.sub-card-description {
-  margin: 0;
-  color: #94a3b8;
-  font-size: 0.75rem;
-  line-height: 1.32;
+.sub-card-body p {
+  margin: 8px 0 0;
+  color: #aab6ca;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  font-weight: 650;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .selected-info {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 8px;
-}
-
-.selected-badge {
+  width: fit-content;
+  margin-top: 10px;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  min-width: 34px;
-  height: 20px;
-  padding: 0 8px;
+  gap: 7px;
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.selected-info span {
+  min-width: 22px;
+  height: 22px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.07);
+  display: grid;
+  place-items: center;
   color: #ffffff;
-  font-size: 0.68rem;
-  font-weight: 800;
+  font-size: 0.72rem;
+  font-weight: 950;
+  background: var(--button-gradient);
 }
 
 .selected-info small {
-  color: #94a3b8;
-  font-weight: 700;
-  font-size: 0.68rem;
+  color: #cbd5e1;
+  font-size: 0.72rem;
+  font-weight: 800;
 }
 
 .sub-card-form {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 10px;
+  margin-top: 14px;
 }
 
-.field-topline {
+.field-heading {
+  margin-bottom: 9px;
   display: flex;
-  align-items: flex-start;
   justify-content: space-between;
+  align-items: flex-start;
   gap: 10px;
-  flex-wrap: wrap;
 }
 
-.field-topline-actions {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-left: auto;
+.field-heading strong {
+  display: block;
+  color: #ffffff;
+  font-size: 0.82rem;
+  line-height: 1.25;
+  font-weight: 900;
 }
 
-.field-label {
-  color: #e2e8f0;
-  font-size: 0.74rem;
-  font-weight: 800;
-}
-
-.field-label--multi {
-  line-height: 1.16;
-  max-width: 68%;
-}
-
-.field-help-text {
+.field-heading small {
+  display: block;
+  margin-top: 3px;
   color: var(--accent-color);
-  font-size: 0.64rem;
-  font-weight: 800;
-  white-space: nowrap;
-}
-
-.field-note {
-  color: #94a3b8;
-  font-size: 0.64rem;
-  line-height: 1.22;
-}
-
-.field-note--muted {
-  margin-top: 2px;
-}
-
-.field-error-label {
-  font-size: 0.65rem;
-  color: #fca5a5;
-  line-height: 1.2;
+  font-size: 0.7rem;
+  font-weight: 850;
 }
 
 .rows-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: grid;
+  gap: 9px;
 }
 
 .service-row {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  padding: 10px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.055);
 }
 
 .row-main {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 92px auto;
+  grid-template-columns: minmax(0, 1fr) 120px auto;
   gap: 8px;
   align-items: center;
 }
 
-.row-link-col,
-.row-qty-col {
+.input-shell {
   min-width: 0;
-}
-
-.field-input {
-  width: 100%;
-  box-sizing: border-box;
-  min-height: 35px;
-  border-radius: 11px;
-  border: 1px solid rgba(148, 163, 184, 0.16);
-  padding: 0 10px;
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.05);
+  min-height: 42px;
+  padding: 0 12px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(7, 10, 24, 0.72);
+  border: 1px solid rgba(148, 163, 184, 0.14);
   transition:
     border-color 0.18s ease,
     box-shadow 0.18s ease,
     background 0.18s ease;
 }
 
+.input-shell:focus-within {
+  border-color: var(--badge-border);
+  box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.1);
+  background: rgba(7, 10, 24, 0.88);
+}
+
+.input-icon {
+  flex-shrink: 0;
+  color: #94a3b8;
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.field-input {
+  width: 100%;
+  min-width: 0;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  background: transparent;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
 .field-input--qty {
   text-align: center;
-  padding: 0 8px;
 }
 
 .field-input::placeholder {
-  color: #94a3b8;
+  color: rgba(148, 163, 184, 0.82);
 }
 
-.field-input:focus {
-  outline: none;
-  border-color: rgba(96, 165, 250, 0.4);
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
-  background: rgba(255, 255, 255, 0.07);
-}
-
-.field-input-error {
-  border-color: rgba(248, 113, 113, 0.45);
+.input-shell:has(.field-input-error) {
+  border-color: rgba(248, 113, 113, 0.5);
   box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.08);
 }
 
 .row-actions {
   display: inline-flex;
-  align-items: center;
   gap: 6px;
 }
 
 .row-action-btn {
-  width: 32px;
-  min-width: 32px;
-  height: 32px;
+  width: 38px;
+  height: 38px;
   border: none;
-  border-radius: 10px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  border-radius: 13px;
+  display: grid;
+  place-items: center;
   cursor: pointer;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 950;
   transition:
     transform 0.18s ease,
     filter 0.18s ease,
     background 0.18s ease;
-  font-size: 1rem;
-  font-weight: 900;
-  line-height: 1;
 }
 
 .row-action-btn:hover {
   transform: translateY(-1px);
-  filter: brightness(1.05);
+  filter: brightness(1.06);
 }
 
 .row-action-btn--add {
-  background: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
+  background: var(--button-gradient);
 }
 
 .row-action-btn--remove {
-  background: rgba(248, 113, 113, 0.12);
   color: #fca5a5;
+  background: rgba(248, 113, 113, 0.12);
+  border: 1px solid rgba(248, 113, 113, 0.12);
 }
 
 .row-meta {
-  min-height: 15px;
+  min-height: 18px;
+  margin-top: 5px;
+}
+
+.field-note,
+.field-error-label {
+  font-size: 0.7rem;
+  line-height: 1.25;
+}
+
+.field-note {
+  color: #94a3b8;
+}
+
+.field-error-label {
+  color: #fca5a5;
+  font-weight: 800;
 }
 
 .profile-help-wrap {
@@ -918,27 +949,18 @@ const cardStyle = computed(() => ({
 }
 
 .profile-help-btn {
-  width: 20px;
-  height: 20px;
+  width: 28px;
+  height: 28px;
   border: none;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
-  font-size: 0.72rem;
-  font-weight: 900;
-  line-height: 1;
+  display: grid;
+  place-items: center;
   cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  flex-shrink: 0;
-  transition: background 0.18s ease, transform 0.18s ease;
-}
-
-.profile-help-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
-  transform: translateY(-1px);
+  color: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 950;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.075);
 }
 
 .profile-help-tooltip {
@@ -947,130 +969,82 @@ const cardStyle = computed(() => ({
   left: calc(100% + 10px);
   transform: translateY(-50%);
   z-index: 30;
-  min-width: 220px;
-  max-width: 280px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  background: rgba(7, 12, 24, 0.96);
+  width: 250px;
+  padding: 12px 13px;
+  border-radius: 16px;
   color: #ffffff;
-  font-size: 0.72rem;
-  line-height: 1.35;
+  background: rgba(7, 10, 24, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow:
-    0 14px 28px rgba(2, 6, 23, 0.26),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  white-space: normal;
-}
-
-.profile-help-tooltip::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: -6px;
-  transform: translateY(-50%);
-  border-top: 6px solid transparent;
-  border-bottom: 6px solid transparent;
-  border-right: 6px solid rgba(7, 12, 24, 0.96);
+    0 18px 34px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  font-size: 0.75rem;
+  line-height: 1.45;
 }
 
 .sub-card-footer {
   margin-top: auto;
-  padding-top: 10px;
+  padding-top: 14px;
 }
 
 .sub-card-btn {
   width: 100%;
-  min-height: 38px;
+  min-height: 50px;
   border: none;
-  border-radius: 13px;
-  padding: 9px 12px;
-  font-size: 0.82rem;
-  font-weight: 900;
-  letter-spacing: 0.01em;
+  border-radius: 17px;
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   cursor: pointer;
   color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 950;
   background: var(--button-gradient);
   box-shadow:
-    0 12px 20px rgba(15, 23, 42, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    0 18px 34px rgba(0, 0, 0, 0.28),
+    0 0 20px var(--glow-1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
   transition:
     transform 0.18s ease,
-    box-shadow 0.18s ease,
     filter 0.18s ease;
 }
 
 .sub-card-btn:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.03);
-  box-shadow:
-    0 16px 24px rgba(15, 23, 42, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  transform: translateY(-2px);
+  filter: brightness(1.06);
 }
 
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
+.sub-card-btn strong {
+  font-size: 1.1rem;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 780px) {
   .sub-service-card {
-    min-height: 320px;
-    padding: 14px;
-    border-radius: 18px;
+    padding: 15px;
+    border-radius: 22px;
   }
 
-  .sub-card-top {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
+  .sub-card-header {
+    grid-template-columns: 1fr;
   }
 
-  .sub-card-price-wrap {
-    align-items: flex-start;
-    text-align: left;
-  }
-
-  .sub-card-body h3 {
-    font-size: 1rem;
-  }
-
-  .sub-card-description {
-    font-size: 0.76rem;
-  }
-
-  .field-label--multi {
-    max-width: 100%;
-  }
-
-  .field-topline-actions {
+  .price-box {
     width: 100%;
-    justify-content: space-between;
-    margin-left: 0;
+    text-align: left;
   }
 
   .row-main {
     grid-template-columns: 1fr;
-    gap: 6px;
-  }
-
-  .row-actions {
-    justify-content: flex-end;
   }
 
   .field-input--qty {
     text-align: left;
   }
 
-  .sub-card-btn {
-    min-height: 40px;
-    font-size: 0.84rem;
+  .row-actions {
+    justify-content: flex-end;
   }
 
   .profile-help-tooltip {
@@ -1078,13 +1052,7 @@ const cardStyle = computed(() => ({
     right: 0;
     top: calc(100% + 8px);
     transform: none;
-  }
-
-  .profile-help-tooltip::before {
-    left: auto;
-    right: 10px;
-    top: -6px;
-    transform: rotate(-90deg);
+    width: min(260px, 80vw);
   }
 }
 </style>

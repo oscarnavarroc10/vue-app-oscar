@@ -1,54 +1,107 @@
 <template>
-  <article class="package-card">
-    <div class="card-glow"></div>
+  <article
+    class="package-card"
+    :class="{ 'package-card--deal': hasDiscount }"
+  >
+    <div class="card-shine"></div>
+    <div class="card-orb card-orb--one"></div>
+    <div class="card-orb card-orb--two"></div>
     <div class="card-grid"></div>
 
-    <div class="package-card-header">
-      <div class="package-card-topbar">
-        <div class="mini-badge">
+    <header class="package-header">
+      <div class="package-top">
+        <span class="package-badge">
           {{ displayBadge }}
-        </div>
+        </span>
 
-        <div v-if="plan.price" class="price-badge">
-          <span class="price-currency">$</span>
-          <span class="price-value">{{ formatNumber(plan.price) }}</span>
-          <span class="price-label">MXN</span>
-        </div>
+        <span v-if="hasDiscount" class="deal-badge">
+          Ahorra ${{ formatNumber(savingsAmount) }}
+        </span>
       </div>
 
-      <h3>{{ plan.name }}</h3>
+      <div class="package-title-block">
+        <h3 class="package-title">
+          {{ cleanName }}
+        </h3>
 
-      <p v-html="formattedDescription"></p>
-    </div>
-
-    <ul class="package-list">
-      <li
-        v-for="item in props.resolvedItems || []"
-        :key="item.id"
-        class="package-item"
-      >
-        <span class="item-dot">✦</span>
-
-        <span class="item-text">
-          <strong>{{ formatNumber(item.quantity) }}</strong>
-          {{ item.name }}
+        <span v-if="hasDiscount" class="limited-label">
+          Promo activa hoy
         </span>
-      </li>
-    </ul>
+      </div>
 
-    <div class="package-footer">
+      <p class="package-description" v-html="formattedDescription"></p>
+
+      <div class="price-panel">
+        <div class="price-copy">
+          <span v-if="hasDiscount" class="old-price">
+            Antes ${{ formatNumber(plan.oldPrice) }} MXN
+          </span>
+
+          <span v-else class="price-kicker">
+            Precio del paquete
+          </span>
+
+          <div class="price-line">
+            <span class="price-currency">$</span>
+            <strong>{{ formatNumber(plan.price) }}</strong>
+            <small>MXN</small>
+          </div>
+
+          <span v-if="hasDiscount" class="today-price">
+            Precio especial por tiempo limitado
+          </span>
+        </div>
+
+        <div v-if="hasDiscount" class="discount-pill">
+          <span>-{{ discountPercent }}%</span>
+          <small>OFF</small>
+        </div>
+      </div>
+    </header>
+
+    <section class="package-includes">
+      <div class="includes-header">
+        <span>Incluye</span>
+        <strong>{{ (props.resolvedItems || []).length }} servicios</strong>
+      </div>
+
+      <ul class="feature-list">
+        <li
+          v-for="item in props.resolvedItems || []"
+          :key="item.id"
+          class="feature-item"
+        >
+          <span class="feature-dot"></span>
+
+          <span class="feature-text">
+            <strong>{{ formatNumber(item.quantity) }}</strong>
+            {{ item.name }}
+          </span>
+        </li>
+      </ul>
+    </section>
+
+    <footer class="package-footer">
       <button
         ref="chooseBtnRef"
-        class="package-btn"
+        class="buy-btn buy-btn--whatsapp"
         type="button"
         @click="handlePrimaryAction"
       >
-        <span class="package-btn-icon" aria-hidden="true">
-          {{ isWhatsAppAction ? "💬" : "🛒" }}
+        <span class="whatsapp-icon" aria-hidden="true">☘</span>
+
+        <span class="buy-btn-copy">
+          <strong>Comprar por WhatsApp</strong>
+          <small>Respuesta rápida</small>
         </span>
-        <span>{{ normalizedButtonText }}</span>
+
+        <span class="buy-arrow">→</span>
       </button>
-    </div>
+
+      <p class="secure-note">
+        🔒 Sin contraseña · Activación segura
+      </p>
+    </footer>
   </article>
 </template>
 
@@ -69,18 +122,34 @@ const props = defineProps({
 const emit = defineEmits(["choose"]);
 const chooseBtnRef = ref(null);
 
-const WHATSAPP_NUMBER = "529991519771";
+const WHATSAPP_NUMBER = "528122126718";
 
 const formatNumber = (num) => {
   return new Intl.NumberFormat("es-MX").format(Number(num || 0));
 };
 
+const hasDiscount = computed(() => {
+  return Number(props.plan.oldPrice || 0) > Number(props.plan.price || 0);
+});
+
+const savingsAmount = computed(() => {
+  return Math.max(Number(props.plan.oldPrice || 0) - Number(props.plan.price || 0), 0);
+});
+
+const discountPercent = computed(() => {
+  if (!hasDiscount.value) return 0;
+
+  return Math.round((savingsAmount.value / Number(props.plan.oldPrice)) * 100);
+});
+
 const formattedDescription = computed(() => {
-  return props.plan.description?.replace(/\n/g, "<br>") || "";
+  return (props.plan.description || "")
+    .replace(/💥/g, "•")
+    .replace(/\n/g, "<br>");
 });
 
 const normalizedButtonText = computed(() => {
-  return props.plan.buttonText?.trim() || "Comprar por WhatsApp";
+  return props.plan.buttonText?.trim() || "Comprar ahora";
 });
 
 const isWhatsAppAction = computed(() => {
@@ -89,9 +158,15 @@ const isWhatsAppAction = computed(() => {
 });
 
 const displayBadge = computed(() => {
-  if (props.plan.tag) return props.plan.tag;
-  if (props.plan.style) return props.plan.style;
-  return "Promoción";
+  if (hasDiscount.value) return "PROMOCIÓN ACTIVA";
+  if (props.plan.tag) return props.plan.tag.replace(/[🔥⭐🚀💎🏆]/g, "").trim();
+  return "POPULAR";
+});
+
+const cleanName = computed(() => {
+  return (props.plan.name || "")
+    .replace(/[🟢🔵🟣🟠🏆🔥🚀💎📈👑⭐🥉]/g, "")
+    .trim();
 });
 
 const buildWhatsAppMessage = () => {
@@ -102,27 +177,31 @@ const buildWhatsAppMessage = () => {
   const lines = [
     "Hola 👋",
     "",
-    "Quiero comprar este paquete de Impulso Redes:",
+    "Me interesa este paquete:",
     "",
-    `📦 Paquete: ${props.plan.name}`,
-    props.plan.price ? `💸 Precio: $${formatNumber(props.plan.price)} MXN` : "",
-    includedItems ? "" : "",
-    includedItems ? "✅ Incluye:" : "",
-    includedItems || "",
+    `📦 ${cleanName.value}`,
+    props.plan.price ? `💸 $${formatNumber(props.plan.price)} MXN` : "",
+    hasDiscount.value
+      ? `🔥 Precio antes: $${formatNumber(props.plan.oldPrice)} MXN`
+      : "",
     "",
-    "¿Me compartes el siguiente paso para contratarlo? 🚀",
+    includedItems ? "Incluye:" : "",
+    includedItems,
+    "",
+    "Quiero activarlo 🚀",
   ].filter(Boolean);
 
   return lines.join("\n");
 };
 
 const openWhatsAppCheckout = () => {
-  const message = buildWhatsAppMessage();
-  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+    buildWhatsAppMessage(),
+  )}`;
 
   const isMobile =
     /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(
-      navigator.userAgent
+      navigator.userAgent,
     );
 
   if (isMobile) {
@@ -158,350 +237,425 @@ const handlePrimaryAction = () => {
 }
 
 .package-card {
+  zoom: 0.85;
+  transform-origin: top center;
   position: relative;
   width: 100%;
-  max-width: 300px;
+  min-height: 510px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding: 18px;
-  border-radius: 26px;
-  border: 1px solid rgba(96, 165, 250, 0.2);
+  gap: 18px;
+  padding: 22px;
+  border-radius: 30px;
   background:
-    linear-gradient(
-      180deg,
-      rgba(15, 23, 42, 0.96) 0%,
-      rgba(17, 24, 39, 0.93) 100%
-    );
+    radial-gradient(circle at 100% 0%, rgba(168, 85, 247, 0.22), transparent 28%),
+    radial-gradient(circle at 0% 100%, rgba(37, 99, 235, 0.18), transparent 32%),
+    linear-gradient(180deg, rgba(14, 12, 32, 0.98), rgba(7, 8, 20, 0.98));
+  border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow:
-    0 18px 36px rgba(2, 6, 23, 0.28),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+    0 24px 58px rgba(0, 0, 0, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(18px);
   transition:
-    transform 0.22s ease,
-    box-shadow 0.22s ease,
-    border-color 0.22s ease;
+    transform .22s ease,
+    box-shadow .22s ease,
+    border-color .22s ease;
+}
+
+.package-card--deal {
+  border-color: rgba(34, 197, 94, 0.28);
+  box-shadow:
+    0 28px 64px rgba(0, 0, 0, 0.36),
+    0 0 0 1px rgba(34, 197, 94, 0.08),
+    0 0 24px rgba(34, 197, 94, 0.12);
 }
 
 .package-card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(96, 165, 250, 0.38);
+  transform: translateY(-8px);
+  border-color: rgba(168, 85, 247, 0.32);
   box-shadow:
-    0 24px 48px rgba(2, 6, 23, 0.36),
-    0 0 18px rgba(59, 130, 246, 0.16);
+    0 36px 74px rgba(0, 0, 0, 0.42),
+    0 0 30px rgba(168, 85, 247, 0.12);
 }
 
-.card-glow,
+.card-shine,
+.card-orb,
 .card-grid {
   position: absolute;
-  inset: 0;
   pointer-events: none;
 }
 
-.card-glow {
-  background:
-    radial-gradient(circle at 85% 8%, rgba(59, 130, 246, 0.16), transparent 18%),
-    radial-gradient(circle at 12% 0%, rgba(168, 85, 247, 0.12), transparent 18%);
+.card-shine {
+  inset: -30%;
+  background: linear-gradient(
+    115deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.05) 48%,
+    transparent 58%
+  );
+  transform: rotate(12deg);
+}
+
+.card-orb {
+  border-radius: 999px;
+  filter: blur(60px);
+  opacity: 0.34;
+}
+
+.card-orb--one {
+  width: 180px;
+  height: 180px;
+  top: -70px;
+  right: -60px;
+  background: #8b5cf6;
+}
+
+.card-orb--two {
+  width: 160px;
+  height: 160px;
+  left: -60px;
+  bottom: -70px;
+  background: #2563eb;
 }
 
 .card-grid {
-  opacity: 0.04;
+  inset: 0;
+  opacity: 0.035;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
-  background-size: 24px 24px;
-  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), transparent 88%);
+    linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px);
+  background-size: 26px 26px;
 }
 
-.package-card-header,
-.package-list,
+.package-header,
+.package-includes,
 .package-footer {
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 
-.package-card-header {
+.package-top {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
   gap: 10px;
 }
 
-.package-card-topbar {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.mini-badge {
-  width: fit-content;
-  padding: 6px 12px;
+.package-badge,
+.deal-badge,
+.limited-label {
+  min-height: 32px;
+  padding: 0 12px;
   border-radius: 999px;
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-  color: #93c5fd;
-  background: rgba(59, 130, 246, 0.14);
-  border: 1px solid rgba(59, 130, 246, 0.18);
-}
-
-.price-badge {
   display: inline-flex;
-  align-items: baseline;
-  gap: 4px;
-  padding: 10px 14px;
-  border-radius: 16px;
-  background: linear-gradient(
-    135deg,
-    rgba(37, 99, 235, 0.2),
-    rgba(59, 130, 246, 0.28)
-  );
-  border: 1px solid rgba(96, 165, 250, 0.24);
-  box-shadow:
-    0 10px 24px rgba(37, 99, 235, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  color: #ffffff;
-  flex-shrink: 0;
-}
-
-.price-currency {
-  font-size: 0.85rem;
-  font-weight: 800;
-  color: #93c5fd;
-}
-
-.price-value {
-  font-size: 1.35rem;
-  font-weight: 900;
-  line-height: 1;
-  letter-spacing: -0.03em;
-  color: #ffffff;
-}
-
-.price-label {
-  font-size: 0.68rem;
-  font-weight: 800;
-  color: #cbd5e1;
+  align-items: center;
+  white-space: nowrap;
+  font-size: .72rem;
+  font-weight: 950;
+  letter-spacing: .04em;
   text-transform: uppercase;
 }
 
-.package-card-header h3 {
+.package-badge {
+  color: #d8b4fe;
+  background: rgba(168, 85, 247, 0.14);
+  border: 1px solid rgba(168, 85, 247, 0.24);
+}
+
+.deal-badge {
+  color: #dcfce7;
+  background: rgba(34, 197, 94, 0.14);
+  border: 1px solid rgba(34, 197, 94, 0.28);
+}
+
+.package-title-block {
+  margin-top: 14px;
+}
+
+.package-title {
   margin: 0;
-  font-size: 1.35rem;
-  line-height: 1.08;
-  letter-spacing: -0.02em;
   color: #ffffff;
+  font-size: 1.72rem;
+  line-height: 1.02;
+  letter-spacing: -0.055em;
+  font-weight: 950;
+}
+
+.limited-label {
+  margin-top: 10px;
+  color: #fef3c7;
+  background: rgba(245, 158, 11, 0.14);
+  border: 1px solid rgba(245, 158, 11, 0.22);
+}
+
+.package-description {
+  margin: 12px 0 0;
+  color: #aab6ca;
+  font-size: .92rem;
+  line-height: 1.58;
+  font-weight: 700;
+}
+
+.price-panel {
+  margin-top: 18px;
+  padding: 16px;
+  border-radius: 24px;
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: center;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(34, 197, 94, 0.16), transparent 28%),
+    linear-gradient(135deg, rgba(255,255,255,.06), rgba(255,255,255,.025));
+  border: 1px solid rgba(255,255,255,.08);
+}
+
+.price-copy {
+  display: grid;
+  gap: 4px;
+}
+
+.old-price {
+  color: #94a3b8;
+  font-size: .82rem;
+  font-weight: 900;
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+  text-decoration-color: #ef4444;
+}
+
+.price-kicker,
+.today-price {
+  color: #86efac;
+  font-size: .76rem;
+  font-weight: 900;
+  letter-spacing: .02em;
+}
+
+.price-line {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.price-currency {
+  color: #86efac;
+  font-size: 1rem;
+  font-weight: 950;
+}
+
+.price-line strong {
+  color: #ffffff;
+  font-size: 2.5rem;
+  line-height: .9;
+  letter-spacing: -0.06em;
+  font-weight: 950;
+}
+
+.price-line small {
+  color: #cbd5e1;
+  font-size: .74rem;
   font-weight: 900;
 }
 
-.package-card-header p {
-  margin: 0;
-  color: #94a3b8;
-  font-size: 0.9rem;
-  line-height: 1.55;
-  font-weight: 600;
+.discount-pill {
+  min-width: 74px;
+  height: 74px;
+  border-radius: 22px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: #ffffff;
+  box-shadow:
+    0 18px 34px rgba(34, 197, 94, 0.26),
+    inset 0 1px 0 rgba(255,255,255,.18);
 }
 
-.package-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.discount-pill span {
+  display: block;
+  font-size: 1.08rem;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.discount-pill small {
+  display: block;
+  margin-top: 2px;
+  font-size: .65rem;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+
+.package-includes {
+  display: grid;
+  gap: 12px;
   flex: 1;
 }
 
-.package-item {
+.includes-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #94a3b8;
+  font-size: .82rem;
+  font-weight: 850;
+}
+
+.includes-header strong {
+  color: #ffffff;
+}
+
+.feature-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.feature-item {
+  min-height: 48px;
+  padding: 10px 12px;
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 12px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.035);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  background: rgba(255,255,255,.035);
+  border: 1px solid rgba(255,255,255,.05);
 }
 
-.item-dot {
+.feature-dot {
+  width: 10px;
+  height: 10px;
   flex-shrink: 0;
-  color: #60a5fa;
-  font-size: 0.82rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #22c55e, #14b8a6);
+  box-shadow: 0 0 14px rgba(34,197,94,.42);
 }
 
-.item-text {
-  color: #cbd5e1;
-  font-size: 0.95rem;
+.feature-text {
+  color: #dbe3ef;
+  font-size: .9rem;
   line-height: 1.35;
+  font-weight: 750;
 }
 
-.item-text strong {
+.feature-text strong {
   color: #ffffff;
-  font-weight: 900;
   margin-right: 6px;
+  font-weight: 950;
 }
 
 .package-footer {
   margin-top: auto;
-  padding-top: 10px;
 }
 
-.package-btn {
+.buy-btn {
   width: 100%;
-  min-height: 50px;
   border: none;
-  border-radius: 15px;
-  padding: 14px 16px;
-  background: linear-gradient(135deg, #22c55e, #16a34a);
-  color: #ffffff;
-  font-size: 0.95rem;
-  font-weight: 900;
   cursor: pointer;
-  box-shadow: 0 12px 24px rgba(22, 163, 74, 0.22);
   transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease,
-    filter 0.15s ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+    transform .18s ease,
+    box-shadow .18s ease,
+    filter .18s ease;
 }
 
-.package-btn:hover {
-  transform: translateY(-2px);
+.buy-btn--whatsapp {
+  min-height: 62px;
+  padding: 0 16px;
+  border-radius: 20px;
+  display: grid;
+  grid-template-columns: 38px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(255,255,255,.22), transparent 35%),
+    linear-gradient(135deg, #25d366, #16a34a);
+  color: #ffffff;
+  box-shadow:
+    0 22px 42px rgba(37, 211, 102, 0.28),
+    inset 0 1px 0 rgba(255,255,255,.18);
+}
+
+.buy-btn:hover {
+  transform: translateY(-3px);
   filter: brightness(1.03);
-  box-shadow: 0 16px 28px rgba(22, 163, 74, 0.28);
 }
 
-.package-btn-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+.whatsapp-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: rgba(255,255,255,.14);
+  font-size: 1.15rem;
 }
 
-/* TABLET */
-@media (max-width: 900px) {
+.buy-btn-copy {
+  display: grid;
+  text-align: left;
+}
+
+.buy-btn-copy strong {
+  font-size: .95rem;
+  line-height: 1.1;
+  font-weight: 950;
+}
+
+.buy-btn-copy small {
+  margin-top: 2px;
+  color: rgba(255,255,255,.86);
+  font-size: .72rem;
+  font-weight: 700;
+}
+
+.buy-arrow {
+  font-size: 1.15rem;
+  font-weight: 950;
+}
+
+.secure-note {
+  margin: 10px 2px 0;
+  text-align: center;
+  color: #94a3b8;
+  font-size: .74rem;
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
   .package-card {
-    max-width: 100%;
-    padding: 16px;
+    zoom: 0.85;
+    min-height: auto;
+    padding: 18px;
+    border-radius: 24px;
   }
 
-  .package-card-header h3 {
-    font-size: 1.18rem;
+  .package-title {
+    font-size: 1.46rem;
   }
 
-  .package-card-header p {
-    font-size: 0.86rem;
+  .price-line strong {
+    font-size: 2.08rem;
   }
 
-  .item-text {
-    font-size: 0.9rem;
+  .discount-pill {
+    min-width: 64px;
+    height: 64px;
+    border-radius: 18px;
   }
 
-  .package-btn {
-    min-height: 48px;
-    font-size: 0.92rem;
-  }
-}
-
-/* MOBILE */
-@media (max-width: 700px) {
-  .package-card {
-    width: 86vw;
-    min-width: 86vw;
-    max-width: 86vw;
-    padding: 15px;
-    border-radius: 22px;
+  .buy-btn--whatsapp {
+    min-height: 58px;
+    border-radius: 18px;
+    grid-template-columns: 34px 1fr auto;
   }
 
-  .package-card-topbar {
-    gap: 10px;
-  }
-
-  .price-badge {
-    padding: 8px 12px;
-    border-radius: 14px;
-  }
-
-  .price-value {
-    font-size: 1.08rem;
-  }
-
-  .price-label {
-    font-size: 0.62rem;
-  }
-
-  .package-card-header h3 {
-    font-size: 1.08rem;
-  }
-
-  .package-card-header p {
-    font-size: 0.84rem;
-    line-height: 1.45;
-  }
-
-  .package-item {
-    padding: 9px 10px;
-    border-radius: 12px;
-  }
-
-  .item-text {
-    font-size: 0.86rem;
-  }
-
-  .package-btn {
-    min-height: 46px;
-    border-radius: 13px;
-    font-size: 0.9rem;
-  }
-}
-
-/* SMALL IPHONE */
-@media (max-width: 480px) {
-  .package-card {
-    width: 88vw;
-    min-width: 88vw;
-    max-width: 88vw;
-    padding: 14px;
-  }
-
-  .mini-badge {
-    font-size: 0.68rem;
-  }
-
-  .price-badge {
-    padding: 7px 10px;
-    border-radius: 12px;
-  }
-
-  .price-currency {
-    font-size: 0.72rem;
-  }
-
-  .price-value {
-    font-size: 0.96rem;
-  }
-
-  .price-label {
-    font-size: 0.56rem;
-  }
-
-  .package-card-header h3 {
-    font-size: 1rem;
-  }
-
-  .package-card-header p {
-    font-size: 0.8rem;
-  }
-
-  .item-text {
-    font-size: 0.82rem;
-  }
-
-  .package-btn {
-    font-size: 0.88rem;
+  .whatsapp-icon {
+    width: 34px;
+    height: 34px;
   }
 }
 </style>

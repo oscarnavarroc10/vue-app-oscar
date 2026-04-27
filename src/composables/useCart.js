@@ -2,6 +2,18 @@ import { computed, ref } from "vue";
 
 const cart = ref([]);
 
+const createCartId = () => {
+  if (
+    typeof window !== "undefined" &&
+    window.crypto &&
+    typeof window.crypto.randomUUID === "function"
+  ) {
+    return window.crypto.randomUUID();
+  }
+
+  return `cart-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+};
+
 export function useCart() {
   const normalizeProfile = (value) => {
     return (value || "").trim().replace(/\/+$/, "");
@@ -16,7 +28,7 @@ export function useCart() {
 
     return {
       ...service,
-      cartId: crypto.randomUUID(),
+      cartId: createCartId(),
       quantity: Number(service.quantity ?? service.minQuantity ?? 100),
       profile: normalizedProfile,
       cartType: service.cartType || "service",
@@ -32,7 +44,7 @@ export function useCart() {
     if (isPlan) {
       cart.value.push({
         ...service,
-        cartId: crypto.randomUUID(),
+        cartId: createCartId(),
         quantity: Number(service.quantity ?? 1),
       });
       return;

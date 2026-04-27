@@ -45,7 +45,7 @@
     "description": "Lleva tu canal al siguiente nivel con suscriptores, views y engagement para crecer de forma constante.",
     "category": "YouTube",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
-    "isEnabled": true
+    "isEnabled": false
   },
   {
     "id": 7,
@@ -61,7 +61,7 @@
     "description": "Aumenta tus reproducciones, seguidores y oyentes para posicionar tu música y ganar más visibilidad.",
     "category": "Spotify",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
-    "isEnabled": true
+    "isEnabled": false
   },
   {
     "id": 9,
@@ -77,7 +77,7 @@
     "description": "Haz crecer tu comunidad con miembros, reacciones y comentarios que aumentan tu autoridad.",
     "category": "Telegram",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
-    "isEnabled": true
+    "isEnabled": false
   },
   {
     "id": 11,
@@ -85,6 +85,6 @@
     "description": "Potencia tu canal con más miembros, seguidores y reacciones para crear una comunidad sólida.",
     "category": "WhatsApp",
     "bannerUrl": "https://esto-no-existe.com/imagen.jpg",
-    "isEnabled": true
+    "isEnabled": false
   }
 ]
