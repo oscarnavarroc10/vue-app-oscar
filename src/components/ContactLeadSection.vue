@@ -45,7 +45,7 @@
 
       <form
         class="contact-form"
-        action="https://formsubmit.co/impulsoredes@hotmail.com"
+        action="https://formsubmit.co/sasukeamaterasu9@gmail.com"
         method="POST"
       >
         <input
@@ -55,7 +55,7 @@
         />
         <input type="hidden" name="_captcha" value="false" />
         <input type="hidden" name="_template" value="table" />
-        <input type="hidden" name="_next" value="https://impulsoredes.com.mx/" />
+        <input type="hidden" name="_next" value="https://impulsocuentas.com/" />
 
         <div class="form-head">
           <span>🚀 Solicitud rápida</span>

@@ -5,7 +5,7 @@
       class="ios-install-prompt"
       role="dialog"
       aria-live="polite"
-      aria-label="Instalar ImpulsoRedes"
+      aria-label="Instalar ImpulsoCuentas"
     >
       <button
         type="button"
@@ -20,7 +20,7 @@
         <div class="ios-install-icon">📲</div>
 
         <div class="ios-install-text">
-          <h4>Instala ImpulsoRedes</h4>
+          <h4>Instala ImpulsoCuentas</h4>
           <p>
             Para tener acceso rápido desde tu iPhone, abre el menú
             <strong>Compartir</strong>
@@ -44,7 +44,7 @@
 import { computed, onMounted, ref } from "vue";
 
 const dismissed = ref(false);
-const STORAGE_KEY = "impulsoredes-ios-install-prompt-dismissed";
+const STORAGE_KEY = "impulsocuentas-ios-install-prompt-dismissed";
 
 const isIos = computed(() => {
   const ua = window.navigator.userAgent.toLowerCase();

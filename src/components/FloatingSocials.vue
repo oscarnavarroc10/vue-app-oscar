@@ -61,7 +61,7 @@ const socialLinks = [
   {
     name: "Instagram",
     label: "Instagram",
-    href: "https://www.instagram.com/impulsoredes.mx/",
+    href: "https://www.instagram.com/impulacuentas_/",
     icon: instagramNeon,
     variant: "instagram",
   },

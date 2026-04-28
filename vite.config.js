@@ -25,8 +25,8 @@ export default defineConfig({
       ],
 
       manifest: {
-        name: "ImpulsoRedes",
-        short_name: "ImpulsoRedes",
+        name: "ImpulsoCuentas",
+        short_name: "ImpulsoCuentas",
         description:
           "Servicios y paquetes de redes sociales para crecer tu presencia digital.",
         theme_color: "#0f172a",
