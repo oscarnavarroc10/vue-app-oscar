@@ -5,7 +5,7 @@
         <span class="hero-kicker">⚡ Potencia tu presencia online</span>
 
         <h1>
-          Impulsa tus redes.
+          Impulsa tus redes sociales.
           <br />
           Resultados que <span>se notan.</span>
         </h1>

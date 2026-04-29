@@ -5,7 +5,7 @@
         <span class="faq-kicker">Preguntas frecuentes</span>
 
         <h2>
-          Dudas normales antes de impulsar tus redes.
+          Dudas normales antes de impulsar tus cuentas en redes sociales.
           <span>Te las resolvemos claro.</span>
         </h2>
 

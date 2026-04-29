@@ -370,7 +370,7 @@ watch(
 .brand-logo {
   width: 150px;
   max-height: 64px;
-  transform: scale(3.5);
+  transform: scale(3.6);
   object-fit: contain;
   display: block;
   filter:
