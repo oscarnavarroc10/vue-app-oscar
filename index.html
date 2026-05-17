@@ -3,34 +3,36 @@
   <head>
     <meta charset="UTF-8" />
 
-    <!-- Base -->
-    <link rel="icon" href="/favicon.ico" />
-    <link rel="canonical" href="https://impulsocuentas.com/" />
-
-    <!-- PWA / App -->
-    <link rel="manifest" href="/manifest.webmanifest" />
-    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
-    <link rel="mask-icon" href="/favicon.ico" color="#000000" />
-
+    <!-- Viewport -->
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://www.impulsocuentas.com/" />
+
+    <!-- Favicon / Icons -->
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <link rel="mask-icon" href="/favicon.ico" color="#000000" />
+
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.webmanifest" />
     <meta name="theme-color" content="#000000" />
     <meta name="color-scheme" content="dark light" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="Impulso Cuentas" />
 
-    <!-- iPhone / Mobile App Mode -->
+    <!-- iOS PWA -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta
       name="apple-mobile-web-app-status-bar-style"
       content="black-translucent"
     />
     <meta name="apple-mobile-web-app-title" content="Impulso Cuentas" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="application-name" content="Impulso Cuentas" />
-    <meta name="format-detection" content="telephone=no" />
 
-    <!-- SEO -->
+    <!-- Basic SEO -->
     <title>
       Impulso Cuentas | Seguidores, Likes y Marketing Digital para Redes Sociales
     </title>
@@ -47,10 +49,14 @@
 
     <meta name="author" content="Impulso Cuentas" />
     <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="format-detection" content="telephone=no" />
 
     <!-- Open Graph -->
     <meta property="og:locale" content="es_MX" />
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Impulso Cuentas" />
+    <meta property="og:url" content="https://www.impulsocuentas.com/" />
     <meta
       property="og:title"
       content="Impulso Cuentas | Seguidores, Likes y Marketing Digital"
@@ -59,18 +65,18 @@
       property="og:description"
       content="Haz crecer tu negocio en redes sociales con paquetes, servicios personalizados y soluciones digitales para impulsar tu marca."
     />
-    <meta property="og:url" content="https://impulsocuentas.com/" />
-    <meta property="og:site_name" content="Impulso Cuentas" />
     <meta
       property="og:image"
-      content="https://impulsocuentas.com/og-cover.jpg"
+      content="https://www.impulsocuentas.com/og-cover.png"
     />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta
       property="og:image:alt"
       content="Impulso Cuentas - Marketing Digital y Redes Sociales"
     />
 
-    <!-- Twitter -->
+    <!-- Twitter / X -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta
       name="twitter:title"
@@ -82,21 +88,33 @@
     />
     <meta
       name="twitter:image"
-      content="https://impulsocuentas.com/og-cover.jpg"
+      content="https://www.impulsocuentas.com/og-cover.png"
     />
 
     <!-- Structured Data -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "Organization",
-        "name": "Impulso Cuentas",
-        "url": "https://impulsocuentas.com/",
-        "logo": "https://impulsocuentas.com/icons/apple-touch-icon.png",
-        "description": "Servicios de impulso y marketing digital para redes sociales.",
-        "sameAs": [
-          "https://www.instagram.com/impulacuentas_/",
-          "https://facebook.com/"
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://www.impulsocuentas.com/#organization",
+            "name": "Impulso Cuentas",
+            "url": "https://www.impulsocuentas.com/",
+            "logo": "https://www.impulsocuentas.com/icons/apple-touch-icon.png",
+            "description": "Servicios de impulso y marketing digital para redes sociales."
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://www.impulsocuentas.com/#website",
+            "url": "https://www.impulsocuentas.com/",
+            "name": "Impulso Cuentas",
+            "description": "Seguidores, likes, views y servicios de marketing digital para redes sociales.",
+            "publisher": {
+              "@id": "https://www.impulsocuentas.com/#organization"
+            },
+            "inLanguage": "es-MX"
+          }
         ]
       }
     </script>
