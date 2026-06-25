@@ -1,23 +1,18 @@
 <template>
   <section class="plans-view">
-    <div class="plans-shell">
-      <div class="section-header plans-header">
+    <GlassCard>
+      <div class="plans-header">
         <div>
           <button class="back-btn" type="button" @click="goHome">
-            ← Volver a home
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m0 0l7 7m-7-7l7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Volver
           </button>
-
           <h2>Planes por red social</h2>
-
-          <p class="section-subtitle">
-            Explora nuestros paquetes recomendados y agrega el que mejor se adapte
-            a tu negocio.
+          <p class="plans-subtitle">
+            Explora nuestros paquetes recomendados y agrega el que mejor se adapte a tu negocio.
           </p>
         </div>
-
-        <div class="selected-chip">
-          {{ enabledServices.length }} categorías
-        </div>
+        <span class="count-chip">{{ enabledServices.length }} categorías</span>
       </div>
 
       <SocialTabsBuilder
@@ -26,151 +21,87 @@
         :get-plan-items="getPlanItems"
         @choose="choosePlan"
       />
-    </div>
+    </GlassCard>
   </section>
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
-import { flyToCart } from "@/utils/flyToCart";
-
-import servicesData from "@/data/services.json";
-import packagePlansData from "@/data/package-plans.json";
-import serviceOptionsData from "@/data/service-options.json";
-
-import { useCart } from "@/composables/useCart";
+import { usePlanLogic } from "@/composables/usePlanLogic";
+import GlassCard from "@/components/GlassCard.vue";
 import SocialTabsBuilder from "@/components/SocialTabsBuilder.vue";
 
 const router = useRouter();
-const { addToCart } = useCart();
+const { enabledServices, packagePlans, getPlanItems, choosePlan } = usePlanLogic();
 
-const availableServices = ref(servicesData);
-const packagePlans = ref(packagePlansData);
-const serviceOptions = ref(serviceOptionsData);
-
-const enabledServices = computed(() => {
-  return availableServices.value.filter((service) => service.isEnabled);
-});
-
-const getPlanItems = (plan) => {
-  return (plan.includedOptions || []).map((included) => {
-    const option = serviceOptions.value.find(
-      (item) => item.id === included.optionId
-    );
-
-    return {
-      id: included.optionId,
-      optionId: included.optionId,
-      quantity: Number(included.quantity || 0),
-      name: option?.name || "",
-      description: option?.description || "",
-      category: option?.category || plan.category || "",
-      price: Number(option?.price || 0),
-    };
-  });
-};
-
-const choosePlan = async ({ plan, sourceEl }) => {
-  const cartTarget = document.querySelector("[data-cart-target='true']");
-
-  await flyToCart(sourceEl, cartTarget);
-
-  addToCart({
-    ...plan,
-    id: `plan-${plan.id}`,
-    price: Number(plan.price || 0),
-    oldPrice: Number(plan.oldPrice || 0),
-    quantity: 1,
-    profile: "",
-    cartType: "plan",
-    planItems: getPlanItems(plan),
-  });
-};
-
-const goHome = () => {
-  router.push("/");
-};
+const goHome = () => router.push("/");
 </script>
 
 <style scoped>
 .plans-view {
-  max-width: 1400px;
+  max-width: 1280px;
   margin: 0 auto;
 }
 
-.plans-shell {
-  background: rgba(15, 23, 42, 0.7);
-  border-radius: 26px;
-  padding: 24px;
-  overflow: hidden;
-  min-width: 0;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow:
-    0 18px 40px rgba(2, 6, 23, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-.section-header {
+.plans-header {
   display: flex;
   justify-content: space-between;
-  align-items: end;
-  gap: 14px;
-  margin-bottom: 18px;
+  align-items: flex-end;
+  gap: var(--space-4, 16px);
+  margin-bottom: var(--space-6, 24px);
 }
 
 .plans-header h2 {
   margin: 0;
-  color: #ffffff;
-  line-height: 1.08;
+  font-size: var(--text-2xl, 1.5rem);
+  font-weight: var(--font-bold, 700);
+  color: var(--color-text, #111827);
 }
 
-.section-subtitle {
-  color: #94a3b8;
+.plans-subtitle {
+  margin: var(--space-1, 4px) 0 0;
+  color: var(--color-text-secondary, #6b7280);
+  font-size: var(--text-sm, 0.875rem);
 }
 
 .back-btn {
-  border: none;
-  padding: 11px 16px;
-  border-radius: 14px;
-  cursor: pointer;
-  margin-bottom: 12px;
-  font-weight: 800;
-  color: #0f172a;
-  background: #f8fafc;
-  box-shadow: 0 10px 18px rgba(2, 6, 23, 0.12);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2, 8px);
+  border: 1px solid var(--color-border, #e5e7eb);
+  padding: 8px 16px;
+  border-radius: var(--radius-md, 12px);
+  background: var(--color-surface, #fff);
+  color: var(--color-text, #111827);
+  font-weight: var(--font-medium, 500);
+  font-size: var(--text-sm, 0.875rem);
+  margin-bottom: var(--space-3, 12px);
+  transition: background var(--transition-fast, 150ms ease);
 }
 
-.selected-chip {
-  padding: 10px 16px;
-  border-radius: 999px;
-  background: rgba(59, 130, 246, 0.14);
-  color: #93c5fd;
-  font-weight: 800;
-  border: 1px solid rgba(59, 130, 246, 0.12);
+.back-btn:hover {
+  background: var(--color-surface-alt, #f3f4f6);
 }
 
-@media (max-width: 900px) {
-  .plans-shell {
-    padding: 18px;
-    border-radius: 22px;
-  }
+.count-chip {
+  padding: 6px 14px;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--color-primary-soft, rgba(37,99,235,0.08));
+  color: var(--color-primary, #2563eb);
+  font-weight: var(--font-semibold, 600);
+  font-size: var(--text-sm, 0.875rem);
+  flex-shrink: 0;
+}
 
-  .section-header {
+@media (max-width: 768px) {
+  .plans-header {
     flex-direction: column;
     align-items: flex-start;
-  }
-}
-
-@media (max-width: 600px) {
-  .plans-shell {
-    padding: 16px;
   }
 
   .back-btn {
     width: 100%;
+    justify-content: center;
   }
 }
 </style>

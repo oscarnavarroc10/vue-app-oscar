@@ -1,11 +1,8 @@
 <template>
   <Transition name="floating-fade">
-    <div
-      v-if="showFloating"
-      class="floating-socials"
-    >
-      <div class="floating-brand" aria-hidden="true">
-        <span class="floating-brand-text">Síguenos Aquí</span>
+    <div v-if="showFloating" class="floating-socials">
+      <div class="floating-brand">
+        <span class="floating-brand-text">Síguenos</span>
       </div>
 
       <a
@@ -16,25 +13,14 @@
         rel="noopener noreferrer"
         class="floating-btn"
         :class="item.variant"
-        :style="{ '--delay': `${index * 90}ms` }"
-        :aria-label="`Contactarnos por ${item.name}`"
+        :style="{ '--delay': index * 90 + 'ms' }"
+        :aria-label="'Contactarnos por ' + item.name"
         :title="item.name"
       >
-        <span class="floating-tooltip">
-          {{ item.name }}
-        </span>
-
         <span class="floating-btn-icon-wrap">
-          <img
-            :src="item.icon"
-            :alt="item.name"
-            class="floating-btn-icon"
-          />
+          <img :src="item.icon" :alt="item.name" class="floating-btn-icon" />
         </span>
-
-        <span class="floating-btn-label">
-          {{ item.label }}
-        </span>
+        <span class="floating-btn-label">{{ item.label }}</span>
       </a>
     </div>
   </Transition>
@@ -43,32 +29,29 @@
 <script setup>
 import { computed } from "vue";
 import { useRoute } from "vue-router";
+import { WHATSAPP_NUMBER, INSTAGRAM_URL } from "@/config/constants";
 
-import instagramNeon from "../assets/instagram_neon.svg";
-import whatsappNeon from "../assets/whatsapp_neon.svg";
+import instagramNeon from "@/assets/instagram_neon.svg";
+import whatsappNeon from "@/assets/whatsapp_neon.svg";
 
 const route = useRoute();
 
-const hiddenRoutes = [
-  "/cart",
-];
+const hiddenRoutes = ["/cart"];
 
-const showFloating = computed(() => {
-  return !hiddenRoutes.includes(route.path);
-});
+const showFloating = computed(() => !hiddenRoutes.includes(route.path));
 
 const socialLinks = [
   {
     name: "Instagram",
     label: "Instagram",
-    href: "https://www.instagram.com/impulsoredes.mx/",
+    href: INSTAGRAM_URL,
     icon: instagramNeon,
     variant: "instagram",
   },
   {
     name: "WhatsApp",
     label: "WhatsApp",
-    href: "https://wa.me/529991519771",
+    href: `https://wa.me/${WHATSAPP_NUMBER}`,
     icon: whatsappNeon,
     variant: "whatsapp",
   },
@@ -81,14 +64,12 @@ const socialLinks = [
   right: 18px;
   bottom: 18px;
   z-index: 50;
-
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 10px;
+  gap: var(--space-2, 8px);
 }
 
-/* transición al entrar/salir */
 .floating-fade-enter-active,
 .floating-fade-leave-active {
   transition: all 0.25s ease;
@@ -100,91 +81,60 @@ const socialLinks = [
   transform: translateY(12px) scale(0.95);
 }
 
-/* BRAND */
 .floating-brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-
-  min-height: 52px;
-  padding: 8px 14px;
-
-  border-radius: 999px;
-
-  border: 1px solid rgba(255, 255, 255, 0.08);
-
-  background: linear-gradient(
-    180deg,
-    rgba(7, 12, 24, 0.9) 0%,
-    rgba(10, 18, 34, 0.86) 100%
-  );
-
-  box-shadow:
-    0 14px 28px rgba(2, 6, 23, 0.26),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
-
-  backdrop-filter: blur(16px);
+  gap: var(--space-2, 8px);
+  min-height: 40px;
+  padding: 6px 14px;
+  border-radius: var(--radius-full, 9999px);
+  border: 1px solid var(--color-border, #e5e7eb);
+  background: var(--color-surface, #fff);
+  box-shadow: var(--shadow-md, 0 4px 12px rgba(0,0,0,0.06));
 }
 
 .floating-brand-text {
-  color: #e2e8f0;
-  font-size: 0.86rem;
-  font-weight: 800;
+  color: var(--color-text-secondary, #6b7280);
+  font-size: var(--text-xs, 0.75rem);
+  font-weight: var(--font-semibold, 600);
 }
 
-/* BUTTON */
 .floating-btn {
   position: relative;
-
   display: inline-flex;
   align-items: center;
-  gap: 12px;
-
-  min-width: 64px;
-  height: 64px;
-  padding: 0 16px 0 12px;
-
-  border-radius: 999px;
+  gap: var(--space-2, 8px);
+  min-width: 52px;
+  height: 52px;
+  padding: 0 14px 0 10px;
+  border-radius: var(--radius-full, 9999px);
   text-decoration: none;
-
-  color: white;
-
-  border: 1px solid rgba(255, 255, 255, 0.08);
-
-  background: linear-gradient(
-    180deg,
-    rgba(7, 12, 24, 0.92) 0%,
-    rgba(10, 18, 34, 0.88) 100%
-  );
-
-  box-shadow:
-    0 16px 34px rgba(2, 6, 23, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
-
-  transition: all 0.2s ease;
+  color: var(--color-text, #111827);
+  border: 1px solid var(--color-border, #e5e7eb);
+  background: var(--color-surface, #fff);
+  box-shadow: var(--shadow-md, 0 4px 12px rgba(0,0,0,0.06));
+  transition: all var(--transition-fast, 150ms ease);
 }
 
 .floating-btn:hover {
-  min-width: 190px;
+  min-width: 160px;
   transform: translateY(-2px);
+  box-shadow: var(--shadow-lg, 0 8px 24px rgba(0,0,0,0.08));
 }
 
 .floating-btn-icon-wrap {
-  width: 40px;
-  height: 40px;
-
-  border-radius: 999px;
-
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full, 9999px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--color-surface-alt, #f3f4f6);
 }
 
 .floating-btn-icon {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
 }
 
 .floating-btn-label {
@@ -192,23 +142,16 @@ const socialLinks = [
   overflow: hidden;
   max-width: 0;
   opacity: 0;
-
-  font-size: 0.95rem;
-  font-weight: 800;
-
+  font-size: var(--text-sm, 0.875rem);
+  font-weight: var(--font-semibold, 600);
   transition: all 0.2s ease;
 }
 
 .floating-btn:hover .floating-btn-label {
-  max-width: 140px;
+  max-width: 120px;
   opacity: 1;
 }
 
-.floating-tooltip {
-  display: none;
-}
-
-/* COLORS */
 .instagram {
   border-color: rgba(236, 72, 153, 0.2);
 }
@@ -217,11 +160,10 @@ const socialLinks = [
   border-color: rgba(34, 197, 94, 0.2);
 }
 
-/* TABLET */
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .floating-socials {
-    right: 14px;
-    bottom: 14px;
+    right: 12px;
+    bottom: 12px;
   }
 
   .floating-brand {
@@ -229,54 +171,19 @@ const socialLinks = [
   }
 
   .floating-btn {
-    width: 56px;
-    min-width: 56px;
-    height: 56px;
+    width: 48px;
+    min-width: 48px;
+    height: 48px;
     padding: 0;
     justify-content: center;
   }
 
   .floating-btn:hover {
-    min-width: 56px;
+    min-width: 48px;
   }
 
   .floating-btn-label {
     display: none;
-  }
-
-  .floating-btn-icon-wrap {
-    width: 36px;
-    height: 36px;
-  }
-
-  .floating-btn-icon {
-    width: 20px;
-    height: 20px;
-  }
-}
-
-/* MOBILE */
-@media (max-width: 600px) {
-  .floating-socials {
-    right: 10px;
-    bottom: 12px;
-    gap: 8px;
-  }
-
-  .floating-btn {
-    width: 50px;
-    min-width: 50px;
-    height: 50px;
-  }
-
-  .floating-btn-icon-wrap {
-    width: 32px;
-    height: 32px;
-  }
-
-  .floating-btn-icon {
-    width: 18px;
-    height: 18px;
   }
 }
 </style>

@@ -5,7 +5,7 @@ import PlansView from "@/views/PlansView.vue";
 import SocialCategoriesView from "@/views/SocialCategoriesView.vue";
 import SocialServicesView from "@/views/SocialServicesView.vue";
 import CartView from "@/views/CartView.vue";
-import FaqView from "@/views/FaqView.vue";
+import NotFoundView from "@/views/NotFoundView.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -43,8 +43,12 @@ const router = createRouter({
     {
       path: "/faq",
       name: "faq",
-      component: FaqView,
-      alias: ["/Faq"],
+      redirect: "/#faq",
+    },
+    {
+      path: "/:pathMatch(.*)*",
+      name: "not-found",
+      component: NotFoundView,
     },
   ],
   scrollBehavior(to, from, savedPosition) {

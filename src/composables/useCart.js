@@ -1,8 +1,32 @@
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
+import { CART_STORAGE_KEY, DISCOUNT_TIERS } from "@/config/constants";
 
-const cart = ref([]);
+/* ── Persistence helpers ── */
+const loadCart = () => {
+  try {
+    const raw = localStorage.getItem(CART_STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+};
+
+const saveCart = (items) => {
+  try {
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+  } catch {
+    /* quota exceeded – silently ignore */
+  }
+};
+
+const cart = ref(loadCart());
 
 export function useCart() {
+  /* Persist on every change */
+  watch(cart, (value) => saveCart(value), { deep: true });
+
   const normalizeProfile = (value) => {
     return (value || "").trim().replace(/\/+$/, "");
   };
@@ -169,8 +193,9 @@ export function useCart() {
   const discountPercentage = computed(() => {
     const count = cart.value.length;
 
-    if (count > 10) return 15;
-    if (count >= 2) return 10;
+    for (const tier of DISCOUNT_TIERS) {
+      if (count >= tier.minItems) return tier.percentage;
+    }
     return 0;
   });
 

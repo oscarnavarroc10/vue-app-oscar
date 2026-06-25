@@ -1,43 +1,31 @@
 <template>
   <section class="builder-layout">
-    <div class="details-main">
-      <div class="section-header details-header">
+    <GlassCard>
+      <div class="categories-header">
         <div>
           <button class="back-btn" type="button" @click="goHome">
-            ← Volver a home
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m0 0l7 7m-7-7l7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Volver
           </button>
-
           <h2>Crea tu paquete personalizado</h2>
-
-          <p class="selected-description">
-            Elige una red social para comenzar y después selecciona los servicios
-            que quieres agregar a tu carrito.
+          <p class="categories-subtitle">
+            Elige una red social para comenzar y después selecciona los servicios que quieres agregar a tu carrito.
           </p>
         </div>
-
-        <div class="selected-chip">
-          {{ enabledServices.length }} categorías
-        </div>
+        <span class="count-chip">{{ enabledServices.length }} categorías</span>
       </div>
 
-      <section class="custom-builder-hero">
-        <div class="custom-builder-copy">
-          <span class="custom-builder-kicker">
-            Constructor personalizado
-          </span>
-
+      <section class="builder-hero">
+        <div class="builder-hero-copy">
+          <span class="builder-kicker">Constructor personalizado</span>
           <h3>Selecciona una plataforma para empezar</h3>
-
           <p>
             Aquí puedes construir tu paquete a la medida. Primero elige la red
             social que quieres impulsar y después selecciona los servicios que
             deseas agregar.
           </p>
         </div>
-
-        <div class="custom-builder-badge">
-          Tú eliges qué incluir
-        </div>
+        <span class="builder-badge">Tú eliges qué incluir</span>
       </section>
 
       <section class="main-services-grid">
@@ -48,31 +36,29 @@
           @open="handleOpenMainService"
         />
       </section>
-    </div>
+    </GlassCard>
   </section>
 </template>
 
 <script setup>
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
-
 import servicesData from "@/data/services.json";
+import GlassCard from "@/components/GlassCard.vue";
 import MainServiceCard from "@/components/MainServiceCard.vue";
 
 const router = useRouter();
 const availableServices = ref(servicesData);
 
-const enabledServices = computed(() => {
-  return availableServices.value.filter((service) => service.isEnabled);
-});
+const enabledServices = computed(() =>
+  availableServices.value.filter((s) => s.isEnabled)
+);
 
 const handleOpenMainService = (service) => {
   router.push(`/social-services/${service.category.toLowerCase()}`);
 };
 
-const goHome = () => {
-  router.push("/");
-};
+const goHome = () => router.push("/");
 </script>
 
 <style scoped>
@@ -81,162 +67,130 @@ const goHome = () => {
   margin: 0 auto;
 }
 
-.details-main {
-  background: rgba(15, 23, 42, 0.7);
-  border-radius: 26px;
-  padding: 24px;
-  overflow: hidden;
-  min-width: 0;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow:
-    0 18px 40px rgba(2, 6, 23, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-.section-header {
+.categories-header {
   display: flex;
   justify-content: space-between;
-  align-items: end;
-  gap: 14px;
-  margin-bottom: 18px;
+  align-items: flex-end;
+  gap: var(--space-4, 16px);
+  margin-bottom: var(--space-5, 20px);
 }
 
-.details-header {
-  margin-bottom: 20px;
-}
-
-.section-header h2 {
+.categories-header h2 {
   margin: 0;
-  color: white;
-  line-height: 1.08;
+  font-size: var(--text-2xl, 1.5rem);
+  font-weight: var(--font-bold, 700);
+  color: var(--color-text, #111827);
 }
 
-.selected-description {
-  color: #94a3b8;
+.categories-subtitle {
+  margin: var(--space-1, 4px) 0 0;
+  color: var(--color-text-secondary, #6b7280);
+  font-size: var(--text-sm, 0.875rem);
 }
 
 .back-btn {
-  border: none;
-  padding: 11px 16px;
-  border-radius: 14px;
-  cursor: pointer;
-  margin-bottom: 12px;
-  font-weight: 800;
-  color: #0f172a;
-  background: #f8fafc;
-  box-shadow: 0 10px 18px rgba(2, 6, 23, 0.12);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2, 8px);
+  border: 1px solid var(--color-border, #e5e7eb);
+  padding: 8px 16px;
+  border-radius: var(--radius-md, 12px);
+  background: var(--color-surface, #fff);
+  color: var(--color-text, #111827);
+  font-weight: var(--font-medium, 500);
+  font-size: var(--text-sm, 0.875rem);
+  margin-bottom: var(--space-3, 12px);
+  transition: background var(--transition-fast, 150ms ease);
 }
 
-.selected-chip {
-  padding: 10px 16px;
-  border-radius: 999px;
-  background: rgba(59, 130, 246, 0.14);
-  color: #93c5fd;
-  font-weight: 800;
-  border: 1px solid rgba(59, 130, 246, 0.12);
+.back-btn:hover {
+  background: var(--color-surface-alt, #f3f4f6);
 }
 
-.custom-builder-hero {
+.count-chip {
+  padding: 6px 14px;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--color-primary-soft, rgba(37,99,235,0.08));
+  color: var(--color-primary, #2563eb);
+  font-weight: var(--font-semibold, 600);
+  font-size: var(--text-sm, 0.875rem);
+  flex-shrink: 0;
+}
+
+/* Builder hero */
+.builder-hero {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 18px;
-  margin-bottom: 24px;
-  padding: 22px 22px 20px;
-  border-radius: 24px;
-  background: linear-gradient(
-    180deg,
-    rgba(10, 18, 34, 0.74) 0%,
-    rgba(8, 14, 26, 0.84) 100%
-  );
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow:
-    0 16px 30px rgba(2, 6, 23, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  gap: var(--space-4, 16px);
+  margin-bottom: var(--space-6, 24px);
+  padding: var(--space-5, 20px);
+  border-radius: var(--radius-lg, 16px);
+  background: var(--color-surface-alt, #f9fafb);
+  border: 1px solid var(--color-border, #e5e7eb);
 }
 
-.custom-builder-copy {
-  min-width: 0;
-}
-
-.custom-builder-kicker {
+.builder-kicker {
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 12px;
-  padding: 8px 14px;
-  border-radius: 999px;
-  background: rgba(124, 58, 237, 0.16);
-  color: #ddd6fe;
-  font-size: 0.8rem;
-  font-weight: 800;
-  letter-spacing: 0.02em;
+  padding: 6px 14px;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--color-primary-soft, rgba(37,99,235,0.08));
+  color: var(--color-primary, #2563eb);
+  font-size: var(--text-xs, 0.75rem);
+  font-weight: var(--font-semibold, 600);
+  margin-bottom: var(--space-3, 12px);
 }
 
-.custom-builder-copy h3 {
-  margin: 0 0 10px;
-  color: #ffffff;
-  font-size: clamp(1.45rem, 3vw, 2rem);
-  line-height: 1.08;
-  letter-spacing: -0.02em;
+.builder-hero-copy h3 {
+  margin: 0 0 var(--space-2, 8px);
+  font-size: var(--text-xl, 1.25rem);
+  font-weight: var(--font-bold, 700);
+  color: var(--color-text, #111827);
 }
 
-.custom-builder-copy p {
+.builder-hero-copy p {
   margin: 0;
-  max-width: 760px;
-  color: #94a3b8;
+  color: var(--color-text-secondary, #6b7280);
   line-height: 1.7;
 }
 
-.custom-builder-badge {
+.builder-badge {
   flex-shrink: 0;
-  padding: 12px 16px;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.05);
-  color: #e2e8f0;
-  font-weight: 800;
-  text-align: center;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: var(--space-3, 12px) var(--space-4, 16px);
+  border-radius: var(--radius-md, 12px);
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border, #e5e7eb);
+  color: var(--color-text, #111827);
+  font-weight: var(--font-semibold, 600);
+  font-size: var(--text-sm, 0.875rem);
 }
 
 .main-services-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
+  gap: var(--space-4, 16px);
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1024px) {
   .main-services-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-@media (max-width: 900px) {
-  .section-header,
-  .custom-builder-hero {
+@media (max-width: 768px) {
+  .categories-header,
+  .builder-hero {
     flex-direction: column;
     align-items: flex-start;
-  }
-
-  .details-main {
-    padding: 18px;
-    border-radius: 22px;
   }
 
   .main-services-grid {
     grid-template-columns: 1fr;
   }
-}
-
-@media (max-width: 600px) {
-  .details-main {
-    padding: 16px;
-  }
 
   .back-btn {
     width: 100%;
+    justify-content: center;
   }
 }
 </style>

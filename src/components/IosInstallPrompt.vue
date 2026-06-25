@@ -13,20 +13,25 @@
         @click="dismissPrompt"
         aria-label="Cerrar"
       >
-        ×
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
       </button>
 
       <div class="ios-install-content">
-        <div class="ios-install-icon">📲</div>
+        <div class="ios-install-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
 
         <div class="ios-install-text">
           <h4>Instala ImpulsoRedes</h4>
           <p>
             Para tener acceso rápido desde tu iPhone, abre el menú
             <strong>Compartir</strong>
-            <span class="share-icon">⎋</span>
             y luego toca
-            <strong>“Agregar a pantalla de inicio”</strong>.
+            <strong>"Agregar a pantalla de inicio"</strong>.
           </p>
         </div>
       </div>
@@ -51,34 +56,28 @@ const isIos = computed(() => {
   return /iphone|ipad|ipod/.test(ua);
 });
 
-const isInStandaloneMode = computed(() => {
-  return window.matchMedia("(display-mode: standalone)").matches ||
-    window.navigator.standalone === true;
-});
+const isInStandaloneMode = computed(() =>
+  window.matchMedia("(display-mode: standalone)").matches ||
+  window.navigator.standalone === true
+);
 
 const isSafari = computed(() => {
   const ua = window.navigator.userAgent.toLowerCase();
-  const isSafariBrowser =
+  return (
     ua.includes("safari") &&
     !ua.includes("crios") &&
     !ua.includes("fxios") &&
     !ua.includes("edgios") &&
-    !ua.includes("opr");
-  return isSafariBrowser;
-});
-
-const shouldShow = computed(() => {
-  return (
-    isIos.value &&
-    isSafari.value &&
-    !isInStandaloneMode.value &&
-    !dismissed.value
+    !ua.includes("opr")
   );
 });
 
+const shouldShow = computed(() =>
+  isIos.value && isSafari.value && !isInStandaloneMode.value && !dismissed.value
+);
+
 onMounted(() => {
-  const wasDismissed = localStorage.getItem(STORAGE_KEY) === "true";
-  dismissed.value = wasDismissed;
+  dismissed.value = localStorage.getItem(STORAGE_KEY) === "true";
 });
 
 const dismissPrompt = () => {
@@ -94,20 +93,11 @@ const dismissPrompt = () => {
   right: 16px;
   bottom: 18px;
   z-index: 9999;
-  border-radius: 22px;
-  padding: 16px 16px 14px;
-  background: linear-gradient(
-    180deg,
-    rgba(15, 23, 42, 0.96) 0%,
-    rgba(17, 24, 39, 0.96) 100%
-  );
-  border: 1px solid rgba(96, 165, 250, 0.22);
-  box-shadow:
-    0 18px 40px rgba(2, 6, 23, 0.45),
-    0 0 22px rgba(59, 130, 246, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  border-radius: var(--radius-xl, 20px);
+  padding: var(--space-4, 16px);
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border, #e5e7eb);
+  box-shadow: var(--shadow-lg, 0 8px 24px rgba(0,0,0,0.08));
 }
 
 .ios-install-close {
@@ -116,80 +106,75 @@ const dismissPrompt = () => {
   right: 12px;
   width: 28px;
   height: 28px;
-  border: none;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  color: #fff;
-  font-size: 1rem;
-  font-weight: 800;
+  border: 1px solid var(--color-border, #e5e7eb);
+  border-radius: var(--radius-full, 9999px);
+  background: var(--color-surface, #fff);
+  color: var(--color-text-secondary, #6b7280);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
 }
 
 .ios-install-content {
   display: flex;
-  gap: 12px;
+  gap: var(--space-3, 12px);
   align-items: flex-start;
   padding-right: 30px;
 }
 
 .ios-install-icon {
-  width: 42px;
-  height: 42px;
+  width: 40px;
+  height: 40px;
   flex-shrink: 0;
-  border-radius: 14px;
+  border-radius: var(--radius-md, 12px);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
-  background: linear-gradient(135deg, #2563eb, #22c55e);
-  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.22);
+  background: var(--color-primary-soft, rgba(37,99,235,0.08));
+  color: var(--color-primary, #2563eb);
 }
 
 .ios-install-text h4 {
-  margin: 0 0 6px;
-  color: #fff;
-  font-size: 0.98rem;
-  font-weight: 900;
+  margin: 0 0 4px;
+  color: var(--color-text, #111827);
+  font-size: var(--text-sm, 0.875rem);
+  font-weight: var(--font-bold, 700);
 }
 
 .ios-install-text p {
   margin: 0;
-  color: #cbd5e1;
-  font-size: 0.84rem;
-  line-height: 1.45;
-}
-
-.share-icon {
-  display: inline-block;
-  margin: 0 4px;
-  color: #93c5fd;
-  font-weight: 900;
+  color: var(--color-text-secondary, #6b7280);
+  font-size: var(--text-xs, 0.75rem);
+  line-height: 1.5;
 }
 
 .ios-install-actions {
-  margin-top: 14px;
+  margin-top: var(--space-3, 12px);
   display: flex;
   justify-content: flex-end;
 }
 
 .ios-install-btn {
-  min-height: 38px;
+  min-height: 34px;
   border: none;
-  border-radius: 12px;
+  border-radius: var(--radius-sm, 8px);
   padding: 0 14px;
-  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  background: var(--color-primary, #2563eb);
   color: #fff;
-  font-size: 0.84rem;
-  font-weight: 900;
+  font-size: var(--text-xs, 0.75rem);
+  font-weight: var(--font-semibold, 600);
   cursor: pointer;
-  box-shadow: 0 10px 18px rgba(37, 99, 235, 0.22);
+  transition: background var(--transition-fast, 150ms ease);
+}
+
+.ios-install-btn:hover {
+  background: var(--color-primary-hover, #1d4ed8);
 }
 
 .install-fade-enter-active,
 .install-fade-leave-active {
-  transition:
-    opacity 0.22s ease,
-    transform 0.22s ease;
+  transition: opacity 0.22s ease, transform 0.22s ease;
 }
 
 .install-fade-enter-from,
