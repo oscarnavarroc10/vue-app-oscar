@@ -1,25 +1,24 @@
 <template>
   <article class="sub-service-card" :style="cardStyle">
-    <div class="sub-card-glow glow-1"></div>
-    <div class="sub-card-glow glow-2"></div>
-    <div class="sub-card-grid"></div>
+    <div class="sub-card-accent"></div>
 
     <div class="sub-card-top">
       <span class="sub-card-badge">
-        <img
-          v-if="platformIcon"
-          :src="platformIcon"
-          :alt="service.category"
-          class="sub-card-icon"
-          aria-hidden="true"
-        />
-        {{ service.category }}
+        <span v-if="platformIcon" class="sub-card-icon-wrap">
+          <img
+            :src="platformIcon"
+            :alt="normalizedCategory"
+            class="sub-card-icon"
+            aria-hidden="true"
+          />
+        </span>
+        {{ normalizedCategory }}
       </span>
 
       <div class="sub-card-price-wrap">
         <span class="sub-card-price-label">Precio</span>
         <strong class="sub-card-price">
-          ${{ formatPrice(service.price) }} por cada
+          ${{ displayPrice(service.price) }} por cada
           {{ formatNumber(service.unitBase || 100) }}
         </strong>
       </div>
@@ -40,12 +39,12 @@
         class="selected-info"
       >
         <span class="selected-badge">
-          {{ entriesReadyCount }}
+          {{ formatNumber(entriesReadyCount) }}
         </span>
         <small>
           {{ entriesReadyCount === 1 ? "fila lista" : "filas listas" }}
           <template v-if="existingCartRowsCount > 0">
-            · {{ existingCartRowsCount }} en carrito
+            · {{ formatNumber(existingCartRowsCount) }} en carrito
           </template>
         </small>
       </div>
@@ -94,10 +93,7 @@
         >
           <div class="row-main">
             <div class="row-link-col">
-              <label
-                class="sr-only"
-                :for="`profile-${service.id}-${index}`"
-              >
+              <label class="sr-only" :for="`profile-${service.id}-${index}`">
                 Link {{ index + 1 }}
               </label>
 
@@ -194,17 +190,14 @@
 
 <script setup>
 import { computed, ref, onMounted, onBeforeUnmount } from "vue";
-import instagramIcon from "@/assets/instagram_neon.svg";
-import facebookIcon from "@/assets/facebook_neon.svg";
-import tiktokIcon from "@/assets/tiktok_neon.svg";
-import youtubeIcon from "@/assets/youtube_neon.svg";
-import snapchatIcon from "@/assets/snapchat_neon.svg";
-import xIcon from "@/assets/twitter_neon.svg";
-import discordIcon from "@/assets/discord_neon.svg";
-import twitchIcon from "@/assets/twitch_neon.svg";
-import spotifyIcon from "@/assets/spotify_neon.svg";
-import whatsappIcon from "@/assets/whatsapp_neon.svg";
-import telegramIcon from "@/assets/telegram_neon.svg";
+import {
+  normalizeCategory,
+  usePlatformTheme,
+} from "@/composables/usePlatformTheme.js";
+import {
+  formatNumber,
+  formatPrice as sharedFormatPrice,
+} from "@/utils/format.js";
 
 const props = defineProps({
   service: {
@@ -236,12 +229,21 @@ const createEntry = () => ({
 
 const entries = ref([createEntry()]);
 
+const normalizedCategory = computed(() =>
+  normalizeCategory(props.service.category),
+);
+const platformTheme = computed(() =>
+  usePlatformTheme(normalizedCategory.value),
+);
+const colors = computed(() => platformTheme.value.colors);
+const platformIcon = computed(() => platformTheme.value.icon);
+
 const normalizeProfile = (value) => {
   return (value || "").trim().replace(/\/+$/, "");
 };
 
-const formatNumber = (value) => {
-  return new Intl.NumberFormat("es-MX").format(Number(value || 0));
+const displayPrice = (value) => {
+  return props.formatPrice?.(value) ?? sharedFormatPrice(value);
 };
 
 const handleClickOutside = () => {
@@ -380,159 +382,6 @@ const handleAddToCart = () => {
   entries.value = [createEntry()];
 };
 
-const SOCIAL_THEME_MAP = {
-  Instagram: {
-    glow1: "rgba(225, 48, 108, 0.18)",
-    glow2: "rgba(245, 133, 41, 0.14)",
-    badgeBg:
-      "linear-gradient(135deg, rgba(245, 133, 41, 0.18), rgba(221, 42, 123, 0.20), rgba(129, 52, 175, 0.18))",
-    badgeColor: "#f9a8d4",
-    badgeBorder: "rgba(221, 42, 123, 0.20)",
-    badgeShadow: "rgba(221, 42, 123, 0.18)",
-    buttonGradient: "linear-gradient(135deg, #f58529, #dd2a7b, #8134af)",
-    icon: instagramIcon,
-    accent: "#f9a8d4",
-  },
-  Facebook: {
-    glow1: "rgba(24, 119, 242, 0.18)",
-    glow2: "rgba(96, 165, 250, 0.14)",
-    badgeBg:
-      "linear-gradient(135deg, rgba(24, 119, 242, 0.16), rgba(96, 165, 250, 0.18))",
-    badgeColor: "#93c5fd",
-    badgeBorder: "rgba(24, 119, 242, 0.20)",
-    badgeShadow: "rgba(24, 119, 242, 0.16)",
-    buttonGradient: "linear-gradient(135deg, #1877f2, #60a5fa)",
-    icon: facebookIcon,
-    accent: "#93c5fd",
-  },
-  TikTok: {
-    glow1: "rgba(37, 244, 238, 0.16)",
-    glow2: "rgba(254, 44, 85, 0.14)",
-    badgeBg:
-      "linear-gradient(135deg, rgba(37, 244, 238, 0.14), rgba(17, 24, 39, 0.18), rgba(254, 44, 85, 0.14))",
-    badgeColor: "#e2e8f0",
-    badgeBorder: "rgba(148, 163, 184, 0.16)",
-    badgeShadow: "rgba(17, 24, 39, 0.10)",
-    buttonGradient: "linear-gradient(135deg, #111827, #25f4ee, #fe2c55)",
-    icon: tiktokIcon,
-    accent: "#e2e8f0",
-  },
-  YouTube: {
-    glow1: "rgba(255, 0, 0, 0.18)",
-    glow2: "rgba(248, 113, 113, 0.14)",
-    badgeBg:
-      "linear-gradient(135deg, rgba(255, 0, 0, 0.14), rgba(239, 68, 68, 0.18))",
-    badgeColor: "#fca5a5",
-    badgeBorder: "rgba(220, 38, 38, 0.20)",
-    badgeShadow: "rgba(220, 38, 38, 0.16)",
-    buttonGradient: "linear-gradient(135deg, #dc2626, #ef4444)",
-    icon: youtubeIcon,
-    accent: "#fca5a5",
-  },
-  Snapchat: {
-    glow1: "rgba(250, 204, 21, 0.18)",
-    glow2: "rgba(253, 224, 71, 0.14)",
-    badgeBg:
-      "linear-gradient(135deg, rgba(250, 204, 21, 0.22), rgba(245, 158, 11, 0.18))",
-    badgeColor: "#fde68a",
-    badgeBorder: "rgba(245, 158, 11, 0.20)",
-    badgeShadow: "rgba(245, 158, 11, 0.18)",
-    buttonGradient: "linear-gradient(135deg, #facc15, #f59e0b)",
-    icon: snapchatIcon,
-    accent: "#fde68a",
-  },
-  X: {
-    glow1: "rgba(15, 23, 42, 0.18)",
-    glow2: "rgba(71, 85, 105, 0.14)",
-    badgeBg:
-      "linear-gradient(135deg, rgba(30, 41, 59, 0.14), rgba(71, 85, 105, 0.16))",
-    badgeColor: "#cbd5e1",
-    badgeBorder: "rgba(148, 163, 184, 0.14)",
-    badgeShadow: "rgba(15, 23, 42, 0.12)",
-    buttonGradient: "linear-gradient(135deg, #111827, #334155)",
-    icon: xIcon,
-    accent: "#cbd5e1",
-  },
-  Discord: {
-    glow1: "rgba(88, 101, 242, 0.18)",
-    glow2: "rgba(129, 140, 248, 0.14)",
-    badgeBg:
-      "linear-gradient(135deg, rgba(88, 101, 242, 0.16), rgba(129, 140, 248, 0.18))",
-    badgeColor: "#c4b5fd",
-    badgeBorder: "rgba(88, 101, 242, 0.20)",
-    badgeShadow: "rgba(88, 101, 242, 0.16)",
-    buttonGradient: "linear-gradient(135deg, #5865f2, #818cf8)",
-    icon: discordIcon,
-    accent: "#c4b5fd",
-  },
-  Twitch: {
-    glow1: "rgba(145, 70, 255, 0.18)",
-    glow2: "rgba(196, 181, 253, 0.14)",
-    badgeBg:
-      "linear-gradient(135deg, rgba(145, 70, 255, 0.16), rgba(168, 85, 247, 0.18))",
-    badgeColor: "#d8b4fe",
-    badgeBorder: "rgba(145, 70, 255, 0.20)",
-    badgeShadow: "rgba(145, 70, 255, 0.16)",
-    buttonGradient: "linear-gradient(135deg, #9146ff, #a855f7)",
-    icon: twitchIcon,
-    accent: "#d8b4fe",
-  },
-  Spotify: {
-    glow1: "rgba(29, 185, 84, 0.18)",
-    glow2: "rgba(74, 222, 128, 0.14)",
-    badgeBg:
-      "linear-gradient(135deg, rgba(29, 185, 84, 0.16), rgba(34, 197, 94, 0.18))",
-    badgeColor: "#86efac",
-    badgeBorder: "rgba(29, 185, 84, 0.20)",
-    badgeShadow: "rgba(29, 185, 84, 0.16)",
-    buttonGradient: "linear-gradient(135deg, #1db954, #22c55e)",
-    icon: spotifyIcon,
-    accent: "#86efac",
-  },
-  Telegram: {
-    glow1: "rgba(0, 136, 204, 0.18)",
-    glow2: "rgba(56, 189, 248, 0.14)",
-    badgeBg:
-      "linear-gradient(135deg, rgba(0, 136, 204, 0.16), rgba(56, 189, 248, 0.18))",
-    badgeColor: "#7dd3fc",
-    badgeBorder: "rgba(0, 136, 204, 0.20)",
-    badgeShadow: "rgba(0, 136, 204, 0.16)",
-    buttonGradient: "linear-gradient(135deg, #0088cc, #38bdf8)",
-    icon: telegramIcon,
-    accent: "#7dd3fc",
-  },
-  WhatsApp: {
-    glow1: "rgba(37, 211, 102, 0.18)",
-    glow2: "rgba(134, 239, 172, 0.14)",
-    badgeBg:
-      "linear-gradient(135deg, rgba(37, 211, 102, 0.16), rgba(74, 222, 128, 0.18))",
-    badgeColor: "#86efac",
-    badgeBorder: "rgba(37, 211, 102, 0.20)",
-    badgeShadow: "rgba(37, 211, 102, 0.16)",
-    buttonGradient: "linear-gradient(135deg, #25d366, #4ade80)",
-    icon: whatsappIcon,
-    accent: "#86efac",
-  },
-  default: {
-    glow1: "rgba(148, 163, 184, 0.16)",
-    glow2: "rgba(203, 213, 225, 0.12)",
-    badgeBg:
-      "linear-gradient(135deg, rgba(148, 163, 184, 0.12), rgba(203, 213, 225, 0.16))",
-    badgeColor: "#cbd5e1",
-    badgeBorder: "rgba(148, 163, 184, 0.14)",
-    badgeShadow: "rgba(148, 163, 184, 0.12)",
-    buttonGradient: "linear-gradient(135deg, #334155, #64748b)",
-    icon: null,
-    accent: "#cbd5e1",
-  },
-};
-
-const socialTheme = computed(() => {
-  return SOCIAL_THEME_MAP[props.service.category] || SOCIAL_THEME_MAP.default;
-});
-
-const platformIcon = computed(() => socialTheme.value.icon);
-
 const profilePlaceholder = computed(() => {
   const map = {
     Instagram: "Ejemplo: https://www.instagram.com/tu_usuario/",
@@ -548,95 +397,78 @@ const profilePlaceholder = computed(() => {
     WhatsApp: "Ejemplo: https://wa.me/5219999999999",
   };
 
-  return map[props.service.category] || "Pega aquí tu perfil o enlace";
+  return map[normalizedCategory.value] || "Pega aquí tu perfil o enlace";
 });
 
+const hexToRgba = (hexColor, alpha) => {
+  const hex = hexColor?.replace("#", "");
+
+  if (!hex || hex.length !== 6) {
+    return `rgba(37, 99, 235, ${alpha})`;
+  }
+
+  const r = Number.parseInt(hex.slice(0, 2), 16);
+  const g = Number.parseInt(hex.slice(2, 4), 16);
+  const b = Number.parseInt(hex.slice(4, 6), 16);
+
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
+
+const getContrastText = (hexColor) => {
+  const hex = hexColor?.replace("#", "");
+
+  if (!hex || hex.length !== 6) {
+    return "var(--color-white)";
+  }
+
+  const r = Number.parseInt(hex.slice(0, 2), 16);
+  const g = Number.parseInt(hex.slice(2, 4), 16);
+  const b = Number.parseInt(hex.slice(4, 6), 16);
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+
+  return luminance > 0.65 ? "var(--color-text-primary)" : "var(--color-white)";
+};
+
 const cardStyle = computed(() => ({
-  "--glow-1": socialTheme.value.glow1,
-  "--glow-2": socialTheme.value.glow2,
-  "--badge-bg": socialTheme.value.badgeBg,
-  "--badge-color": socialTheme.value.badgeColor,
-  "--badge-border": socialTheme.value.badgeBorder,
-  "--badge-shadow": socialTheme.value.badgeShadow,
-  "--button-gradient": socialTheme.value.buttonGradient,
-  "--accent-color": socialTheme.value.accent,
+  "--platform-accent": colors.value.accent,
+  "--platform-accent-soft": colors.value.bg,
+  "--platform-text": colors.value.text,
+  "--platform-border-strong": hexToRgba(colors.value.accent, 0.18),
+  "--platform-shadow": hexToRgba(colors.value.accent, 0.16),
+  "--platform-button-text": getContrastText(colors.value.accent),
 }));
 </script>
 
 <style scoped>
 .sub-service-card {
   position: relative;
-  min-height: 278px;
+  min-height: 320px;
   display: flex;
   flex-direction: column;
+  gap: var(--space-4);
   overflow: hidden;
-  border-radius: 18px;
-  padding: 14px;
-  background: linear-gradient(
-    180deg,
-    rgba(10, 18, 34, 0.9) 0%,
-    rgba(8, 14, 26, 0.95) 100%
-  );
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow:
-    0 16px 28px rgba(2, 6, 23, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  padding: var(--space-5);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-md);
   transition:
-    transform 0.22s ease,
-    box-shadow 0.22s ease,
-    border-color 0.22s ease;
+    transform var(--transition-base),
+    border-color var(--transition-base),
+    box-shadow var(--transition-base);
 }
 
 .sub-service-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(255, 255, 255, 0.12);
-  box-shadow:
-    0 20px 34px rgba(2, 6, 23, 0.24),
-    0 0 14px rgba(59, 130, 246, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transform: translateY(-4px);
+  border-color: var(--platform-border-strong);
+  box-shadow: 0 18px 38px var(--platform-shadow);
 }
 
-.sub-card-glow,
-.sub-card-grid {
+.sub-card-accent {
   position: absolute;
-  pointer-events: none;
-}
-
-.sub-card-glow {
-  border-radius: 999px;
-  filter: blur(24px);
-  z-index: 0;
-}
-
-.glow-1 {
-  width: 112px;
-  height: 112px;
-  top: -22px;
-  right: -18px;
-  opacity: 0.68;
-  background: var(--glow-1);
-}
-
-.glow-2 {
-  width: 82px;
-  height: 82px;
-  bottom: -18px;
-  left: -10px;
-  opacity: 0.42;
-  background: var(--glow-2);
-}
-
-.sub-card-grid {
-  inset: 0;
-  z-index: 0;
-  opacity: 0.04;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
-  background-size: 22px 22px;
-  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.85), transparent 88%);
+  inset: 0 0 auto;
+  height: 4px;
+  background: var(--platform-accent);
 }
 
 .sub-card-top,
@@ -651,24 +483,32 @@ const cardStyle = computed(() => ({
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 10px;
+  gap: var(--space-3);
 }
 
 .sub-card-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 5px 10px;
-  border-radius: 999px;
-  font-size: 0.68rem;
-  font-weight: 800;
-  letter-spacing: 0.01em;
-  background: var(--badge-bg);
-  color: var(--badge-color);
-  border: 1px solid var(--badge-border);
-  box-shadow:
-    0 8px 18px var(--badge-shadow),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  gap: var(--space-2);
+  min-height: 40px;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--platform-border-strong);
+  background: var(--platform-accent-soft);
+  color: var(--platform-text);
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
+}
+
+.sub-card-icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
 }
 
 .sub-card-icon {
@@ -677,150 +517,151 @@ const cardStyle = computed(() => ({
   object-fit: contain;
   display: block;
   flex-shrink: 0;
-  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.12));
 }
 
 .sub-card-price-wrap {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 2px;
+  gap: var(--space-1);
   text-align: right;
 }
 
 .sub-card-price-label {
-  color: #94a3b8;
-  font-size: 0.62rem;
-  font-weight: 700;
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
 }
 
 .sub-card-price {
-  color: #ffffff;
-  font-size: 0.82rem;
-  line-height: 1.14;
+  color: var(--color-text-primary);
+  font-size: var(--text-sm);
+  line-height: 1.4;
 }
 
 .sub-card-body {
-  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
 }
 
 .sub-card-body h3 {
-  margin: 0 0 5px;
-  font-size: 1.06rem;
-  line-height: 1.02;
-  font-weight: 900;
-  letter-spacing: -0.03em;
-  color: #ffffff;
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: clamp(1.125rem, 2vw, 1.375rem);
+  line-height: 1.2;
+  font-weight: var(--font-bold);
+  letter-spacing: -0.02em;
 }
 
 .sub-card-description {
   margin: 0;
-  color: #94a3b8;
-  font-size: 0.75rem;
-  line-height: 1.32;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  line-height: 1.6;
 }
 
 .selected-info {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-top: 8px;
+  gap: var(--space-2);
+  flex-wrap: wrap;
 }
 
 .selected-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 34px;
-  height: 20px;
-  padding: 0 8px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.07);
-  color: #ffffff;
-  font-size: 0.68rem;
-  font-weight: 800;
+  min-width: 36px;
+  min-height: 24px;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-full);
+  background: var(--platform-accent-soft);
+  color: var(--platform-text);
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+  border: 1px solid var(--platform-border-strong);
 }
 
 .selected-info small {
-  color: #94a3b8;
-  font-weight: 700;
-  font-size: 0.68rem;
+  color: var(--color-text-secondary);
+  font-weight: var(--font-semibold);
+  font-size: var(--text-xs);
 }
 
 .sub-card-form {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-top: 10px;
+  gap: var(--space-3);
 }
 
 .field-topline {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 10px;
+  gap: var(--space-3);
   flex-wrap: wrap;
 }
 
 .field-topline-actions {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
   margin-left: auto;
 }
 
 .field-label {
-  color: #e2e8f0;
-  font-size: 0.74rem;
-  font-weight: 800;
+  color: var(--color-text-primary);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
 }
 
 .field-label--multi {
-  line-height: 1.16;
+  line-height: 1.4;
   max-width: 68%;
 }
 
 .field-help-text {
-  color: var(--accent-color);
-  font-size: 0.64rem;
-  font-weight: 800;
+  color: var(--platform-text);
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
   white-space: nowrap;
 }
 
 .field-note {
-  color: #94a3b8;
-  font-size: 0.64rem;
-  line-height: 1.22;
+  color: var(--color-text-secondary);
+  font-size: var(--text-xs);
+  line-height: 1.4;
 }
 
 .field-note--muted {
-  margin-top: 2px;
+  margin-top: calc(var(--space-1) * -1);
 }
 
 .field-error-label {
-  font-size: 0.65rem;
-  color: #fca5a5;
-  line-height: 1.2;
+  font-size: var(--text-xs);
+  color: var(--color-danger);
+  line-height: 1.35;
 }
 
 .rows-stack {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-3);
 }
 
 .service-row {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-2);
 }
 
 .row-main {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 92px auto;
-  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) 104px auto;
+  gap: var(--space-2);
   align-items: center;
 }
 
@@ -832,83 +673,84 @@ const cardStyle = computed(() => ({
 .field-input {
   width: 100%;
   box-sizing: border-box;
-  min-height: 35px;
-  border-radius: 11px;
-  border: 1px solid rgba(148, 163, 184, 0.16);
-  padding: 0 10px;
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.05);
+  min-height: 42px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  padding: 0 var(--space-3);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--color-text-primary);
+  background: var(--color-surface-subtle);
   transition:
-    border-color 0.18s ease,
-    box-shadow 0.18s ease,
-    background 0.18s ease;
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background var(--transition-fast);
 }
 
 .field-input--qty {
   text-align: center;
-  padding: 0 8px;
+  padding: 0 var(--space-2);
 }
 
 .field-input::placeholder {
-  color: #94a3b8;
+  color: var(--color-text-muted);
 }
 
 .field-input:focus {
   outline: none;
-  border-color: rgba(96, 165, 250, 0.4);
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
-  background: rgba(255, 255, 255, 0.07);
+  border-color: var(--platform-accent);
+  box-shadow: 0 0 0 4px var(--platform-shadow);
+  background: var(--color-surface);
 }
 
 .field-input-error {
-  border-color: rgba(248, 113, 113, 0.45);
-  box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.08);
+  border-color: rgba(220, 38, 38, 0.4);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.08);
 }
 
 .row-actions {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-2);
 }
 
 .row-action-btn {
-  width: 32px;
-  min-width: 32px;
-  height: 32px;
-  border: none;
-  border-radius: 10px;
+  width: 36px;
+  min-width: 36px;
+  height: 36px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition:
-    transform 0.18s ease,
-    filter 0.18s ease,
-    background 0.18s ease;
+    transform var(--transition-fast),
+    border-color var(--transition-fast),
+    background var(--transition-fast);
   font-size: 1rem;
-  font-weight: 900;
+  font-weight: var(--font-bold);
   line-height: 1;
 }
 
 .row-action-btn:hover {
   transform: translateY(-1px);
-  filter: brightness(1.05);
 }
 
 .row-action-btn--add {
-  background: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
+  background: var(--platform-accent-soft);
+  color: var(--platform-text);
+  border-color: var(--platform-border-strong);
 }
 
 .row-action-btn--remove {
-  background: rgba(248, 113, 113, 0.12);
-  color: #fca5a5;
+  background: rgba(220, 38, 38, 0.08);
+  color: var(--color-danger);
+  border-color: rgba(220, 38, 38, 0.14);
 }
 
 .row-meta {
-  min-height: 15px;
+  min-height: 18px;
 }
 
 .profile-help-wrap {
@@ -918,14 +760,14 @@ const cardStyle = computed(() => ({
 }
 
 .profile-help-btn {
-  width: 20px;
-  height: 20px;
-  border: none;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
-  font-size: 0.72rem;
-  font-weight: 900;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--platform-border-strong);
+  border-radius: var(--radius-full);
+  background: var(--platform-accent-soft);
+  color: var(--platform-text);
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
   line-height: 1;
   cursor: pointer;
   display: inline-flex;
@@ -933,11 +775,12 @@ const cardStyle = computed(() => ({
   justify-content: center;
   padding: 0;
   flex-shrink: 0;
-  transition: background 0.18s ease, transform 0.18s ease;
+  transition:
+    transform var(--transition-fast),
+    background var(--transition-fast);
 }
 
 .profile-help-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
   transform: translateY(-1px);
 }
 
@@ -949,16 +792,14 @@ const cardStyle = computed(() => ({
   z-index: 30;
   min-width: 220px;
   max-width: 280px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  background: rgba(7, 12, 24, 0.96);
-  color: #ffffff;
-  font-size: 0.72rem;
-  line-height: 1.35;
-  box-shadow:
-    0 14px 28px rgba(2, 6, 23, 0.26),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-size: var(--text-xs);
+  line-height: 1.5;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--color-border);
   white-space: normal;
 }
 
@@ -967,44 +808,42 @@ const cardStyle = computed(() => ({
   position: absolute;
   top: 50%;
   left: -6px;
-  transform: translateY(-50%);
-  border-top: 6px solid transparent;
-  border-bottom: 6px solid transparent;
-  border-right: 6px solid rgba(7, 12, 24, 0.96);
+  width: 12px;
+  height: 12px;
+  transform: translateY(-50%) rotate(45deg);
+  background: var(--color-surface);
+  border-left: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .sub-card-footer {
   margin-top: auto;
-  padding-top: 10px;
+  padding-top: var(--space-2);
 }
 
 .sub-card-btn {
   width: 100%;
-  min-height: 38px;
+  min-height: 46px;
   border: none;
-  border-radius: 13px;
-  padding: 9px 12px;
-  font-size: 0.82rem;
-  font-weight: 900;
+  border-radius: var(--radius-lg);
+  padding: 0 var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
   letter-spacing: 0.01em;
   cursor: pointer;
-  color: #ffffff;
-  background: var(--button-gradient);
-  box-shadow:
-    0 12px 20px rgba(15, 23, 42, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  color: var(--platform-button-text);
+  background: var(--platform-accent);
+  box-shadow: var(--shadow-sm);
   transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease,
-    filter 0.18s ease;
+    transform var(--transition-fast),
+    filter var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
 .sub-card-btn:hover {
   transform: translateY(-1px);
-  filter: brightness(1.03);
-  box-shadow:
-    0 16px 24px rgba(15, 23, 42, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  filter: brightness(0.98);
+  box-shadow: var(--shadow-md);
 }
 
 .sr-only {
@@ -1021,28 +860,18 @@ const cardStyle = computed(() => ({
 
 @media (max-width: 768px) {
   .sub-service-card {
-    min-height: 320px;
-    padding: 14px;
-    border-radius: 18px;
+    min-height: 0;
+    padding: var(--space-4);
   }
 
   .sub-card-top {
     flex-direction: column;
     align-items: flex-start;
-    gap: 8px;
   }
 
   .sub-card-price-wrap {
     align-items: flex-start;
     text-align: left;
-  }
-
-  .sub-card-body h3 {
-    font-size: 1rem;
-  }
-
-  .sub-card-description {
-    font-size: 0.76rem;
   }
 
   .field-label--multi {
@@ -1057,7 +886,6 @@ const cardStyle = computed(() => ({
 
   .row-main {
     grid-template-columns: 1fr;
-    gap: 6px;
   }
 
   .row-actions {
@@ -1066,11 +894,6 @@ const cardStyle = computed(() => ({
 
   .field-input--qty {
     text-align: left;
-  }
-
-  .sub-card-btn {
-    min-height: 40px;
-    font-size: 0.84rem;
   }
 
   .profile-help-tooltip {
@@ -1084,7 +907,9 @@ const cardStyle = computed(() => ({
     left: auto;
     right: 10px;
     top: -6px;
-    transform: rotate(-90deg);
+    transform: rotate(45deg);
+    border-left: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
   }
 }
 </style>

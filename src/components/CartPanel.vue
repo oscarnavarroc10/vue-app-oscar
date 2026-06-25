@@ -1,5 +1,9 @@
 <template>
   <aside class="cart-panel">
+    <p class="cart-panel-offer">
+      Agrega 2 o más servicios y obtén 10% de descuento
+    </p>
+
     <div class="section-header">
       <div class="section-header-left">
         <span class="cart-kicker">Resumen</span>
@@ -25,7 +29,16 @@
           aria-label="Vaciar carrito"
           title="Vaciar carrito"
         >
-          <span class="trash-icon">🗑️</span>
+          <svg
+            class="trash-icon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path
+              d="M9 3.75h6a1.5 1.5 0 0 1 1.5 1.5v.75H21a.75.75 0 0 1 0 1.5h-1.08l-.78 11.01A2.25 2.25 0 0 1 16.9 20.6H7.1a2.25 2.25 0 0 1-2.24-2.09L4.08 7.5H3a.75.75 0 0 1 0-1.5h4.5v-.75A1.5 1.5 0 0 1 9 3.75Zm6 2.25v-.75h-6V6h6Zm-8.42 1.5.77 10.9a.75.75 0 0 0 .75.7h9.8a.75.75 0 0 0 .75-.7l.77-10.9H6.58Zm3 2.25c.41 0 .75.34.75.75v5.25a.75.75 0 0 1-1.5 0V10.5c0-.41.34-.75.75-.75Zm4.84 0c.41 0 .75.34.75.75v5.25a.75.75 0 0 1-1.5 0V10.5c0-.41.34-.75.75-.75Z"
+            />
+          </svg>
           <span>Vaciar carrito</span>
         </button>
       </div>
@@ -73,17 +86,20 @@
         type="button"
         @click="sendWhatsApp"
       >
-        Solicitar servicios por WhatsApp
+        📲 Solicitar servicios por WhatsApp
       </button>
 
       <p class="summary-note">
-        Revisa tus servicios y cuando estés listo, envíanos tu solicitud para darte seguimiento inmediato.
+        Revisa tus servicios y cuando estés listo, envíanos tu solicitud para
+        darte seguimiento inmediato.
       </p>
     </div>
   </aside>
 </template>
 
 <script setup>
+import { WHATSAPP_NUMBER } from "@/config/constants.js";
+
 const props = defineProps({
   cart: { type: Array, required: true },
   subtotal: { type: Number, required: true },
@@ -96,15 +112,13 @@ const props = defineProps({
 defineEmits(["clear-cart", "close-cart"]);
 
 const sendWhatsApp = () => {
-  const phone = "529991519771";
-
   const servicesText = props.cart
     .map((item, index) => {
       if (item.cartType === "plan") {
         const included = (item.planItems || [])
           .map(
             (planItem) =>
-              `   - ${planItem.category}: ${planItem.name} (${planItem.quantity})`
+              `   - ${planItem.category}: ${planItem.name} (${planItem.quantity})`,
           )
           .join("\n");
 
@@ -128,45 +142,39 @@ Resumen:
 - Seleccionados: ${props.cart.length}
 - Total: $${props.formatPrice(props.total)} MXN`;
 
-  const url = `https://wa.me/${phone}?text=${encodeURIComponent(finalMessage)}`;
+  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(finalMessage)}`;
 
   window.open(url, "_blank", "noopener,noreferrer");
 };
 </script>
 
 <style scoped>
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+.cart-panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-md);
 }
 
-.cart-panel {
-  background:
-    linear-gradient(
-      180deg,
-      rgba(10, 18, 34, 0.88) 0%,
-      rgba(8, 14, 26, 0.92) 100%
-    );
-
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 24px;
-  padding: 20px;
-
-  box-shadow:
-    0 18px 40px rgba(2, 6, 23, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+.cart-panel-offer {
+  margin: 0 0 var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-subtle);
+  border: 1px solid var(--color-border);
+  color: var(--color-success);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  line-height: 1.5;
 }
 
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 16px;
-  margin-bottom: 20px;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
 }
 
 .section-header-left {
@@ -176,179 +184,186 @@ Resumen:
 }
 
 .cart-kicker {
-  color: #93c5fd;
+  color: var(--color-accent);
   font-size: 0.78rem;
-  font-weight: 800;
+  font-weight: var(--font-extrabold);
   letter-spacing: 0.03em;
   text-transform: uppercase;
 }
 
 .section-header h2 {
   margin: 0;
-  font-size: 2rem;
-  line-height: 1;
-  color: #ffffff;
+  font-size: var(--text-3xl);
+  line-height: 1.05;
+  color: var(--color-text-primary);
 }
 
 .cart-header-actions {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .close-cart-btn,
-.clear-cart-btn {
-  transition: all 0.2s ease;
+.clear-cart-btn,
+.quote-btn {
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    transform var(--transition-fast),
+    color var(--transition-fast);
 }
 
 .close-cart-btn {
   width: 40px;
   height: 40px;
-
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-
-  background: rgba(255, 255, 255, 0.05);
-  color: #ffffff;
-
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-subtle);
+  color: var(--color-text-primary);
   font-size: 1rem;
-  font-weight: 900;
+  font-weight: var(--font-bold);
   cursor: pointer;
 }
 
 .close-cart-btn:hover {
   transform: translateY(-1px);
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--color-surface);
+  border-color: var(--color-accent);
 }
 
 .clear-cart-btn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-
+  gap: var(--space-2);
   min-height: 42px;
   padding: 0 14px;
-
-  border-radius: 12px;
-  border: 1px solid rgba(248, 113, 113, 0.16);
-
-  background: rgba(127, 29, 29, 0.14);
-  color: #fca5a5;
-
-  font-weight: 800;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-danger);
+  font-weight: var(--font-bold);
   cursor: pointer;
 }
 
 .clear-cart-btn:hover {
   transform: translateY(-1px);
-  background: rgba(127, 29, 29, 0.22);
+  background: var(--color-surface-subtle);
+  border-color: var(--color-danger);
+}
+
+.trash-icon {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  flex-shrink: 0;
 }
 
 .summary-cards {
   display: grid;
-  gap: 10px;
-  margin-bottom: 18px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
 }
 
 .summary-mini-card {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
-  gap: 12px;
-  padding: 14px 16px;
-
-  border-radius: 16px;
-
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-subtle);
+  border: 1px solid var(--color-border);
 }
 
 .summary-mini-card span {
-  color: #94a3b8;
-  font-weight: 700;
+  color: var(--color-text-secondary);
+  font-weight: var(--font-semibold);
 }
 
 .summary-mini-card strong {
-  color: #ffffff;
+  color: var(--color-text-primary);
+}
+
+.summary-mini-card--discount {
+  grid-column: 1 / -1;
 }
 
 .summary-mini-card--discount strong {
-  color: #86efac;
+  color: var(--color-success);
 }
 
 .summary {
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding-top: 18px;
-
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--space-5);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .summary-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: #cbd5e1;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-subtle);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
 }
 
 .summary-row strong {
-  color: #ffffff;
+  color: var(--color-text-primary);
 }
 
 .total-row {
-  margin-top: 4px;
-  padding-top: 8px;
-  font-size: 1.2rem;
+  color: var(--color-text-primary);
+  font-size: var(--text-lg);
+  font-weight: var(--font-bold);
 }
 
-.total-row span,
 .total-row strong {
-  color: #ffffff;
-  font-weight: 900;
+  color: var(--color-text-primary);
+  font-weight: var(--font-extrabold);
 }
 
 .quote-btn {
-  margin-top: 8px;
-
-  border: none;
-  border-radius: 16px;
-
+  margin-top: var(--space-2);
+  border: 1px solid var(--color-success);
+  border-radius: var(--radius-lg);
   min-height: 54px;
   padding: 0 18px;
-
   font-size: 1rem;
-  font-weight: 900;
+  font-weight: var(--font-extrabold);
   cursor: pointer;
-
-  background: linear-gradient(135deg, #22c55e, #16a34a);
-  color: #ffffff;
-
-  box-shadow: 0 14px 26px rgba(34, 197, 94, 0.22);
-
-  transition: all 0.18s ease;
+  background: var(--color-success);
+  color: var(--color-white);
+  box-shadow: var(--shadow-sm);
 }
 
 .quote-btn:hover:not(:disabled) {
   transform: translateY(-1px);
-  filter: brightness(1.03);
+  background: var(--color-success-hover);
+  border-color: var(--color-success-hover);
 }
 
 .quote-btn:disabled {
-  opacity: 0.5;
+  background: var(--color-text-muted);
+  border-color: var(--color-text-muted);
+  opacity: 0.75;
   cursor: not-allowed;
 }
 
 .summary-note {
-  margin: 6px 0 0;
-  color: #94a3b8;
+  margin: var(--space-1) 0 0;
+  color: var(--color-text-secondary);
   line-height: 1.6;
-  font-size: 0.9rem;
+  font-size: var(--text-sm);
 }
 
-/* TABLET */
 @media (max-width: 900px) {
   .section-header {
     flex-direction: column;
@@ -362,19 +377,22 @@ Resumen:
   }
 }
 
-/* MOBILE */
 @media (max-width: 600px) {
   .cart-panel {
-    padding: 16px;
-    border-radius: 22px;
+    padding: var(--space-4);
+    border-radius: var(--radius-xl);
   }
 
   .section-header h2 {
-    font-size: 1.55rem;
+    font-size: var(--text-2xl);
   }
 
-  .summary-mini-card {
-    padding: 12px 14px;
+  .summary-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-mini-card--discount {
+    grid-column: auto;
   }
 
   .quote-btn {
@@ -388,12 +406,7 @@ Resumen:
   }
 }
 
-/* SMALL PHONE */
 @media (max-width: 420px) {
-  .cart-panel {
-    padding: 14px;
-  }
-
   .cart-header-actions {
     flex-direction: column;
     align-items: stretch;
@@ -409,7 +422,8 @@ Resumen:
     font-size: 0.92rem;
   }
 
-  .summary-note {
+  .summary-note,
+  .cart-panel-offer {
     font-size: 0.84rem;
   }
 }

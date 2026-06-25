@@ -1,6 +1,46 @@
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 
-const cart = ref([]);
+const CART_STORAGE_KEY = "impulsoredes-cart";
+
+export const getItemUnitPrice = (item) => {
+  return Number(item.price || 0);
+};
+
+export const getItemUnitBase = (item) => {
+  return Number(item.unitBase || 100);
+};
+
+export const getItemTotal = (item) => {
+  if (item.cartType === "plan") {
+    return Number(item.price || 0) * Number(item.quantity || 1);
+  }
+
+  const quantity = Number(item.quantity || 0);
+  const unitPrice = getItemUnitPrice(item);
+  const unitBase = getItemUnitBase(item);
+
+  return (quantity / unitBase) * unitPrice;
+};
+
+// Load from localStorage
+let initialCart = [];
+try {
+  const saved = localStorage.getItem(CART_STORAGE_KEY);
+  if (saved) initialCart = JSON.parse(saved);
+} catch {}
+
+const cart = ref(initialCart);
+
+// Save to localStorage on change
+watch(
+  cart,
+  (val) => {
+    try {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(val));
+    } catch {}
+  },
+  { deep: true },
+);
 
 export function useCart() {
   const normalizeProfile = (value) => {
@@ -78,7 +118,8 @@ export function useCart() {
     const parsedQuantity = Number(quantity);
 
     if (Number.isNaN(parsedQuantity)) {
-      item.quantity = item.cartType === "plan" ? 1 : Number(item.minQuantity || 100);
+      item.quantity =
+        item.cartType === "plan" ? 1 : Number(item.minQuantity || 100);
       return;
     }
 
@@ -126,26 +167,6 @@ export function useCart() {
     item.quantity = Math.max(minQuantity, item.quantity - step);
   };
 
-  const getItemUnitPrice = (item) => {
-    return Number(item.price || 0);
-  };
-
-  const getItemUnitBase = (item) => {
-    return Number(item.unitBase || 100);
-  };
-
-  const getItemTotal = (item) => {
-    if (item.cartType === "plan") {
-      return Number(item.price || 0) * Number(item.quantity || 1);
-    }
-
-    const quantity = Number(item.quantity || 0);
-    const unitPrice = getItemUnitPrice(item);
-    const unitBase = getItemUnitBase(item);
-
-    return (quantity / unitBase) * unitPrice;
-  };
-
   const subtotal = computed(() => {
     return cart.value.reduce((sum, item) => sum + getItemTotal(item), 0);
   });
@@ -158,7 +179,8 @@ export function useCart() {
           (item.planItems || []).reduce(
             (innerSum, planItem) => innerSum + (Number(planItem.quantity) || 0),
             0,
-          ) * Number(item.quantity || 1)
+          ) *
+            Number(item.quantity || 1)
         );
       }
 

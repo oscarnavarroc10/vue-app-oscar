@@ -52,8 +52,10 @@ const isIos = computed(() => {
 });
 
 const isInStandaloneMode = computed(() => {
-  return window.matchMedia("(display-mode: standalone)").matches ||
-    window.navigator.standalone === true;
+  return (
+    window.matchMedia("(display-mode: standalone)").matches ||
+    window.navigator.standalone === true
+  );
 });
 
 const isSafari = computed(() => {

@@ -34,7 +34,11 @@
             un paquete pensado específicamente para tu negocio.
           </p>
 
-          <button class="custom-package-btn" type="button" @click="$emit('customize')">
+          <button
+            class="custom-package-btn"
+            type="button"
+            @click="$emit('customize')"
+          >
             Crear paquete personalizado
           </button>
 
@@ -53,60 +57,63 @@ defineEmits(["customize"]);
 
 <style scoped>
 .custom-package-banner {
+  --custom-surface: var(--color-surface);
+  --custom-surface-subtle: var(--color-surface-subtle);
+  --custom-border: var(--color-border);
+  --custom-text: var(--color-text-primary);
+  --custom-text-secondary: var(--color-text-secondary);
+  --custom-text-muted: var(--color-text-muted);
+
   margin-top: 30px;
 }
 
 .custom-package-shell {
   position: relative;
   overflow: hidden;
-
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
   gap: 24px;
   align-items: stretch;
-
   padding: 28px;
   border-radius: 30px;
-
   background:
-    linear-gradient(
-      180deg,
-      rgba(10, 18, 34, 0.9) 0%,
-      rgba(8, 14, 26, 0.94) 100%
-    );
-
-  border: 1px solid rgba(255, 255, 255, 0.08);
-
-  box-shadow:
-    0 24px 50px rgba(2, 6, 23, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
-
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+    radial-gradient(
+      circle at top left,
+      rgba(37, 99, 235, 0.08),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba(96, 165, 250, 0.08),
+      transparent 30%
+    ),
+    var(--custom-surface);
+  border: 1px solid var(--custom-border);
+  box-shadow: var(--shadow-lg);
 }
 
 .custom-package-glow {
   position: absolute;
   border-radius: 999px;
-  filter: blur(36px);
+  filter: blur(40px);
   pointer-events: none;
-  opacity: 0.55;
+  opacity: 0.45;
 }
 
 .glow-1 {
-  width: 240px;
-  height: 240px;
+  width: 220px;
+  height: 220px;
   top: -90px;
   left: -60px;
-  background: rgba(124, 58, 237, 0.22);
+  background: rgba(96, 165, 250, 0.14);
 }
 
 .glow-2 {
-  width: 220px;
-  height: 220px;
+  width: 200px;
+  height: 200px;
   right: -70px;
   bottom: -90px;
-  background: rgba(59, 130, 246, 0.22);
+  background: rgba(37, 99, 235, 0.12);
 }
 
 .custom-package-copy,
@@ -126,14 +133,12 @@ defineEmits(["customize"]);
   width: fit-content;
   align-items: center;
   justify-content: center;
-
   margin-bottom: 14px;
   padding: 8px 14px;
-  border-radius: 999px;
-
-  background: rgba(124, 58, 237, 0.16);
-  color: #ddd6fe;
-
+  border-radius: var(--radius-full);
+  background: rgba(37, 99, 235, 0.08);
+  color: var(--color-accent);
+  border: 1px solid rgba(37, 99, 235, 0.12);
   font-size: 0.82rem;
   font-weight: 800;
   letter-spacing: 0.02em;
@@ -141,7 +146,7 @@ defineEmits(["customize"]);
 
 .custom-package-copy h2 {
   margin: 0 0 14px;
-  color: #ffffff;
+  color: var(--custom-text);
   font-size: clamp(2rem, 4vw, 3rem);
   line-height: 1.04;
   letter-spacing: -0.03em;
@@ -151,8 +156,7 @@ defineEmits(["customize"]);
 .custom-package-description {
   margin: 0;
   max-width: 720px;
-
-  color: #94a3b8;
+  color: var(--custom-text-secondary);
   font-size: 1rem;
   line-height: 1.75;
 }
@@ -166,13 +170,10 @@ defineEmits(["customize"]);
 
 .custom-point {
   padding: 10px 14px;
-  border-radius: 999px;
-
-  background: rgba(255, 255, 255, 0.05);
-  color: #e2e8f0;
-
-  border: 1px solid rgba(255, 255, 255, 0.06);
-
+  border-radius: var(--radius-full);
+  background: var(--custom-surface-subtle);
+  color: var(--custom-text-secondary);
+  border: 1px solid var(--custom-border);
   font-size: 0.9rem;
   font-weight: 700;
 }
@@ -185,40 +186,25 @@ defineEmits(["customize"]);
 .custom-package-card {
   width: 100%;
   height: 100%;
-
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 14px;
-
   padding: 24px;
   border-radius: 24px;
-
-  background:
-    linear-gradient(
-      180deg,
-      rgba(15, 23, 42, 0.72) 0%,
-      rgba(17, 24, 39, 0.8) 100%
-    );
-
-  border: 1px solid rgba(255, 255, 255, 0.07);
-
-  box-shadow:
-    0 18px 34px rgba(2, 6, 23, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid var(--custom-border);
+  box-shadow: var(--shadow-md);
 }
 
 .custom-card-badge {
   display: inline-flex;
   width: fit-content;
   padding: 8px 12px;
-  border-radius: 999px;
-
-  background: rgba(59, 130, 246, 0.14);
-  color: #93c5fd;
-
-  border: 1px solid rgba(59, 130, 246, 0.12);
-
+  border-radius: var(--radius-full);
+  background: rgba(37, 99, 235, 0.08);
+  color: var(--color-accent);
+  border: 1px solid rgba(37, 99, 235, 0.12);
   font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 0.02em;
@@ -226,7 +212,7 @@ defineEmits(["customize"]);
 
 .custom-package-card h3 {
   margin: 0;
-  color: #ffffff;
+  color: var(--custom-text);
   font-size: 1.4rem;
   line-height: 1.1;
   letter-spacing: -0.02em;
@@ -234,7 +220,7 @@ defineEmits(["customize"]);
 
 .custom-package-card p {
   margin: 0;
-  color: #cbd5e1;
+  color: var(--custom-text-secondary);
   font-size: 0.96rem;
   line-height: 1.7;
 }
@@ -242,33 +228,29 @@ defineEmits(["customize"]);
 .custom-package-btn {
   margin-top: 4px;
   min-height: 52px;
-  border: none;
+  border: 1px solid transparent;
   border-radius: 16px;
   padding: 14px 18px;
-
-  background: linear-gradient(135deg, #2563eb, #3b82f6);
-  color: #ffffff;
-
+  background: linear-gradient(135deg, var(--color-accent), #60a5fa);
+  color: var(--color-white);
   font-size: 1rem;
   font-weight: 900;
   cursor: pointer;
-
-  box-shadow: 0 14px 26px rgba(37, 99, 235, 0.24);
-
+  box-shadow: 0 14px 26px rgba(37, 99, 235, 0.18);
   transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease,
-    filter 0.18s ease;
+    transform var(--transition-base),
+    box-shadow var(--transition-base),
+    filter var(--transition-base);
 }
 
 .custom-package-btn:hover {
   transform: translateY(-1px);
   filter: brightness(1.03);
-  box-shadow: 0 16px 30px rgba(37, 99, 235, 0.28);
+  box-shadow: 0 18px 32px rgba(37, 99, 235, 0.22);
 }
 
 .custom-package-note {
-  color: #94a3b8;
+  color: var(--custom-text-muted);
   font-size: 0.84rem;
   line-height: 1.5;
 }
@@ -278,10 +260,7 @@ defineEmits(["customize"]);
     grid-template-columns: 1fr;
   }
 
-  .custom-package-copy h2 {
-    max-width: none;
-  }
-
+  .custom-package-copy h2,
   .custom-package-description {
     max-width: none;
   }

@@ -46,6 +46,11 @@ const router = createRouter({
       component: FaqView,
       alias: ["/Faq"],
     },
+    {
+      path: "/:pathMatch(.*)*",
+      name: "not-found",
+      redirect: "/",
+    },
   ],
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) return savedPosition;

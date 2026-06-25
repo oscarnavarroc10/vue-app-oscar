@@ -1,54 +1,52 @@
 <template>
   <section class="builder-layout">
-    <div class="details-main">
-      <section class="subservices-stage-head">
-        <button
-          class="subservices-back-btn"
-          type="button"
-          @click="goBack"
-        >
-          ← Cambiar plataforma
-        </button>
+    <SectionShell class="builder-shell">
+      <div class="services-stage" :style="viewStyle">
+        <section class="subservices-stage-head">
+          <button class="subservices-back-btn" type="button" @click="goBack">
+            ← Cambiar plataforma
+          </button>
 
-        <div class="subservices-stage-copy">
-          <span class="subservices-kicker">
-            {{ selectedServiceCategory }}
-          </span>
+          <div class="subservices-stage-copy">
+            <span class="subservices-kicker">
+              {{ selectedServiceCategory }}
+            </span>
 
-          <h3>Servicios para {{ selectedServiceCategory }}</h3>
+            <h3>Servicios para {{ selectedServiceCategory }}</h3>
+
+            <p>
+              Elige los servicios que quieras agregar a tu carrito y arma tu
+              paquete personalizado.
+            </p>
+          </div>
+
+          <div class="subservices-counter">
+            {{ formatNumber(filteredSubServices.length) }} servicios
+          </div>
+        </section>
+
+        <section v-if="filteredSubServices.length" class="subservices-grid">
+          <SubServiceCard
+            v-for="subService in filteredSubServices"
+            :key="subService.id"
+            :service="subService"
+            :cart="cart"
+            :format-price="formatPrice"
+            @add="handleAddSubService"
+          />
+        </section>
+
+        <div v-else class="subservices-empty">
+          <div class="subservices-empty-icon">✨</div>
+
+          <h4>Próximamente más servicios</h4>
 
           <p>
-            Elige los servicios que quieras agregar a tu carrito y arma tu
-            paquete personalizado.
+            Estamos preparando más opciones para {{ selectedServiceCategory }}.
           </p>
         </div>
-
-        <div class="subservices-counter">
-          {{ filteredSubServices.length }} servicios
-        </div>
-      </section>
-
-      <section v-if="filteredSubServices.length" class="subservices-grid">
-        <SubServiceCard
-          v-for="subService in filteredSubServices"
-          :key="subService.id"
-          :service="subService"
-          :cart="cart"
-          :format-price="formatPrice"
-          @add="handleAddSubService"
-        />
-      </section>
-
-      <div v-else class="subservices-empty">
-        <div class="subservices-empty-icon">✨</div>
-
-        <h4>Próximamente más servicios</h4>
-
-        <p>
-          Estamos preparando más opciones para {{ selectedServiceCategory }}.
-        </p>
       </div>
-    </div>
+    </SectionShell>
   </section>
 </template>
 
@@ -58,6 +56,12 @@ import { useRoute, useRouter } from "vue-router";
 import { flyToCart } from "@/utils/flyToCart";
 import serviceOptionsData from "@/data/service-options.json";
 import { useCart } from "@/composables/useCart";
+import {
+  normalizeCategory,
+  usePlatformTheme,
+} from "@/composables/usePlatformTheme.js";
+import { formatNumber, formatPrice } from "@/utils/format.js";
+import SectionShell from "@/components/SectionShell.vue";
 import SubServiceCard from "@/components/SubServiceCard.vue";
 
 const route = useRoute();
@@ -66,32 +70,20 @@ const router = useRouter();
 const { cart, addToCart } = useCart();
 const serviceOptions = ref(serviceOptionsData);
 
-const normalizeCategory = (value) => {
-  const map = {
-    instagram: "Instagram",
-    facebook: "Facebook",
-    tiktok: "TikTok",
-    youtube: "YouTube",
-    x: "X",
-    discord: "Discord",
-    twitch: "Twitch",
-    spotify: "Spotify",
-    snapchat: "Snapchat",
-    telegram: "Telegram",
-    whatsapp: "WhatsApp",
-  };
-
-  return map[value?.toLowerCase()] || value;
-};
-
 const selectedServiceCategory = computed(() => {
   return normalizeCategory(route.params.category);
 });
 
+const platformTheme = computed(() =>
+  usePlatformTheme(selectedServiceCategory.value),
+);
+const colors = computed(() => platformTheme.value.colors);
+
 const filteredSubServices = computed(() => {
   return serviceOptions.value.filter(
     (item) =>
-      item.category?.toLowerCase() === String(route.params.category).toLowerCase()
+      item.category?.toLowerCase() ===
+      String(route.params.category).toLowerCase(),
   );
 });
 
@@ -113,51 +105,57 @@ const goBack = () => {
   router.push("/social-categories");
 };
 
-const formatPrice = (value) => {
-  return new Intl.NumberFormat("es-MX", {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  }).format(value);
+const hexToRgba = (hexColor, alpha) => {
+  const hex = hexColor?.replace("#", "");
+
+  if (!hex || hex.length !== 6) {
+    return `rgba(37, 99, 235, ${alpha})`;
+  }
+
+  const r = Number.parseInt(hex.slice(0, 2), 16);
+  const g = Number.parseInt(hex.slice(2, 4), 16);
+  const b = Number.parseInt(hex.slice(4, 6), 16);
+
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 };
+
+const viewStyle = computed(() => ({
+  "--platform-accent": colors.value.accent,
+  "--platform-accent-soft": colors.value.bg,
+  "--platform-text": colors.value.text,
+  "--platform-border-strong": hexToRgba(colors.value.accent, 0.18),
+  "--platform-shadow": hexToRgba(colors.value.accent, 0.14),
+}));
 </script>
 
 <style scoped>
 .builder-layout {
-  max-width: 1180px;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
-.details-main {
-  background: rgba(15, 23, 42, 0.7);
-  border-radius: 26px;
-  padding: 24px;
-  overflow: hidden;
-  min-width: 0;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow:
-    0 18px 40px rgba(2, 6, 23, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+.services-stage {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
 }
 
 .subservices-stage-head {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 18px;
-  margin-bottom: 22px;
-  padding: 22px;
-  border-radius: 24px;
-  background: linear-gradient(
-    180deg,
-    rgba(10, 18, 34, 0.74) 0%,
-    rgba(8, 14, 26, 0.84) 100%
-  );
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow:
-    0 16px 30px rgba(2, 6, 23, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  gap: var(--space-5);
+  padding: clamp(20px, 4vw, 30px);
+  border-radius: var(--radius-2xl);
+  background:
+    linear-gradient(
+      135deg,
+      var(--platform-accent-soft),
+      rgba(255, 255, 255, 0.96)
+    ),
+    var(--color-surface-subtle);
+  border: 1px solid var(--platform-border-strong);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
 .subservices-stage-copy {
@@ -169,81 +167,106 @@ const formatPrice = (value) => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 12px;
+  margin-bottom: var(--space-3);
   padding: 8px 14px;
-  border-radius: 999px;
-  background: rgba(124, 58, 237, 0.16);
-  color: #ddd6fe;
-  font-size: 0.8rem;
-  font-weight: 800;
-  letter-spacing: 0.02em;
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  color: var(--platform-text);
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 1px solid var(--platform-border-strong);
 }
 
 .subservices-stage-copy h3 {
-  margin: 0 0 10px;
-  color: #ffffff;
-  font-size: clamp(1.45rem, 3vw, 2rem);
-  line-height: 1.08;
-  letter-spacing: -0.02em;
+  margin: 0 0 var(--space-3);
+  color: var(--color-text-primary);
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  line-height: 1.12;
+  letter-spacing: -0.03em;
 }
 
 .subservices-stage-copy p {
   margin: 0;
   max-width: 760px;
-  color: #94a3b8;
-  line-height: 1.7;
+  color: var(--color-text-secondary);
+  line-height: 1.75;
+  font-size: var(--text-base);
 }
 
 .subservices-counter {
   flex-shrink: 0;
   padding: 12px 16px;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.05);
-  color: #e2e8f0;
-  font-weight: 800;
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  color: var(--platform-text);
+  font-weight: var(--font-bold);
   text-align: center;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--platform-border-strong);
+  box-shadow: var(--shadow-sm);
+  white-space: nowrap;
 }
 
 .subservices-back-btn {
   flex-shrink: 0;
-  border: 1px solid rgba(255, 255, 255, 0.08);
   min-height: 46px;
-  padding: 0 16px;
-  border-radius: 14px;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-lg);
   cursor: pointer;
-  color: #ffffff;
-  font-weight: 800;
-  background: rgba(255, 255, 255, 0.05);
+  color: var(--platform-text);
+  font-weight: var(--font-bold);
+  background: var(--color-surface);
+  border: 1px solid var(--platform-border-strong);
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.subservices-back-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--platform-accent);
 }
 
 .subservices-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
+  gap: var(--space-5);
 }
 
 .subservices-empty {
-  padding: 36px 20px;
-  border-radius: 22px;
+  padding: clamp(32px, 5vw, 48px) var(--space-5);
+  border-radius: var(--radius-2xl);
   text-align: center;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--color-surface-subtle);
+  border: 1px dashed var(--platform-border-strong);
 }
 
 .subservices-empty-icon {
-  font-size: 2rem;
-  margin-bottom: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: var(--space-3);
+  border-radius: var(--radius-full);
+  background: var(--platform-accent-soft);
+  font-size: 1.6rem;
 }
 
 .subservices-empty h4 {
-  margin: 0 0 8px;
-  color: #ffffff;
+  margin: 0 0 var(--space-2);
+  color: var(--color-text-primary);
+  font-size: var(--text-xl);
 }
 
 .subservices-empty p {
   margin: 0;
-  color: #94a3b8;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
 }
 
 @media (max-width: 1200px) {
@@ -257,19 +280,11 @@ const formatPrice = (value) => {
     flex-direction: column;
     align-items: flex-start;
   }
-
-  .details-main {
-    padding: 18px;
-    border-radius: 22px;
-  }
 }
 
 @media (max-width: 600px) {
-  .details-main {
-    padding: 16px;
-  }
-
-  .subservices-back-btn {
+  .subservices-back-btn,
+  .subservices-counter {
     width: 100%;
   }
 }

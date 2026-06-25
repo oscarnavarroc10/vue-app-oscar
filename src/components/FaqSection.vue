@@ -83,6 +83,14 @@ const toggleFaq = (index) => {
 
 <style scoped>
 .faq-section-pro {
+  --faq-surface: var(--color-surface);
+  --faq-surface-subtle: var(--color-surface-subtle);
+  --faq-border: var(--color-border);
+  --faq-text: var(--color-text-primary);
+  --faq-text-secondary: var(--color-text-secondary);
+  --faq-kicker-bg: rgba(37, 99, 235, 0.08);
+  --faq-kicker-color: var(--color-accent);
+
   margin-top: 42px;
 }
 
@@ -98,11 +106,10 @@ const toggleFaq = (index) => {
   justify-content: center;
   margin-bottom: 14px;
   padding: 8px 14px;
-  border-radius: 999px;
-
-  background: rgba(124, 58, 237, 0.16);
-  color: #ddd6fe;
-
+  border-radius: var(--radius-full);
+  background: var(--faq-kicker-bg);
+  color: var(--faq-kicker-color);
+  border: 1px solid rgba(37, 99, 235, 0.12);
   font-size: 0.82rem;
   font-weight: 800;
   letter-spacing: 0.02em;
@@ -110,7 +117,7 @@ const toggleFaq = (index) => {
 
 .faq-header h2 {
   margin: 0 0 12px;
-  color: #ffffff;
+  color: var(--faq-text);
   font-size: clamp(2rem, 4vw, 3rem);
   line-height: 1.06;
   letter-spacing: -0.03em;
@@ -119,54 +126,37 @@ const toggleFaq = (index) => {
 .faq-header p {
   margin: 0 auto;
   max-width: 760px;
-  color: #94a3b8;
+  color: var(--faq-text-secondary);
   font-size: 1rem;
   line-height: 1.7;
 }
 
 .faq-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
 }
 
 .faq-card {
-  border-radius: 22px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-
-  background: linear-gradient(
-    180deg,
-    rgba(10, 18, 34, 0.88) 0%,
-    rgba(8, 14, 26, 0.92) 100%
-  );
-
-  box-shadow:
-    0 18px 36px rgba(2, 6, 23, 0.24),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
-
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-
   overflow: hidden;
-
+  border-radius: 22px;
+  border: 1px solid var(--faq-border);
+  background: var(--faq-surface);
+  box-shadow: var(--shadow-md);
   transition:
-    transform 0.2s ease,
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
+    border-color var(--transition-base),
+    box-shadow var(--transition-base),
+    transform var(--transition-base);
 }
 
 .faq-card:hover {
   transform: translateY(-2px);
-  border-color: rgba(96, 165, 250, 0.18);
-
-  box-shadow:
-    0 22px 40px rgba(2, 6, 23, 0.28),
-    0 0 18px rgba(59, 130, 246, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  box-shadow: var(--shadow-lg);
 }
 
 .faq-card.open {
-  border-color: rgba(96, 165, 250, 0.22);
+  border-color: rgba(37, 99, 235, 0.2);
+  box-shadow: var(--shadow-lg);
 }
 
 .faq-question {
@@ -174,19 +164,16 @@ const toggleFaq = (index) => {
   border: none;
   background: transparent;
   cursor: pointer;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-
   padding: 20px 22px;
-
   text-align: left;
 }
 
 .faq-question-text {
-  color: #ffffff;
+  color: var(--faq-text);
   font-size: 1rem;
   line-height: 1.45;
   font-weight: 800;
@@ -194,23 +181,27 @@ const toggleFaq = (index) => {
 
 .faq-icon {
   flex-shrink: 0;
-
   width: 34px;
   height: 34px;
   border-radius: 999px;
-
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
-  background: rgba(59, 130, 246, 0.12);
-  color: #93c5fd;
-
+  background: var(--faq-surface-subtle);
+  color: var(--color-accent);
   font-size: 1.2rem;
   font-weight: 900;
   line-height: 1;
+  border: 1px solid var(--faq-border);
+  transition:
+    background var(--transition-base),
+    border-color var(--transition-base),
+    color var(--transition-base);
+}
 
-  border: 1px solid rgba(59, 130, 246, 0.12);
+.faq-card.open .faq-icon {
+  background: rgba(37, 99, 235, 0.08);
+  border-color: rgba(37, 99, 235, 0.14);
 }
 
 .faq-answer-wrap {
@@ -225,25 +216,21 @@ const toggleFaq = (index) => {
 
 .faq-answer {
   overflow: hidden;
-
   padding: 0 22px 0;
-  margin-top: -2px;
-  margin-bottom: 0;
-
-  color: #94a3b8;
+  margin: 0;
+  border-top: 1px solid transparent;
+  color: var(--faq-text-secondary);
   font-size: 0.96rem;
   line-height: 1.7;
 }
 
 .faq-answer-wrap.open .faq-answer {
+  padding-top: 16px;
   padding-bottom: 20px;
+  border-top-color: var(--faq-border);
 }
 
 @media (max-width: 900px) {
-  .faq-grid {
-    grid-template-columns: 1fr;
-  }
-
   .faq-header {
     margin-bottom: 22px;
   }

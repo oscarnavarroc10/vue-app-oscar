@@ -1,8 +1,5 @@
 <template>
   <article class="package-card">
-    <div class="card-glow"></div>
-    <div class="card-grid"></div>
-
     <div class="package-card-header">
       <div class="package-card-topbar">
         <div class="mini-badge">
@@ -10,9 +7,15 @@
         </div>
 
         <div v-if="plan.price" class="price-badge">
-          <span class="price-currency">$</span>
-          <span class="price-value">{{ formatNumber(plan.price) }}</span>
-          <span class="price-label">MXN</span>
+          <div class="price-main">
+            <span class="price-currency">$</span>
+            <span class="price-value">{{ formatNumber(plan.price) }}</span>
+            <span class="price-label">MXN</span>
+          </div>
+
+          <span v-if="hasOldPrice" class="old-price">
+            ${{ formatNumber(plan.oldPrice) }}
+          </span>
         </div>
       </div>
 
@@ -48,12 +51,44 @@
         </span>
         <span>{{ normalizedButtonText }}</span>
       </button>
+
+      <form
+        v-if="showProfilePrompt"
+        class="profile-form"
+        @submit.prevent="confirmSelection"
+      >
+        <label class="profile-label" :for="profileInputId">
+          Perfil o URL (opcional)
+        </label>
+        <input
+          :id="profileInputId"
+          ref="profileInputRef"
+          v-model.trim="profileValue"
+          class="profile-input"
+          type="text"
+          placeholder="https://instagram.com/tu_perfil"
+        />
+
+        <div class="profile-actions">
+          <button class="profile-action profile-action--confirm" type="submit">
+            Confirmar
+          </button>
+          <button
+            class="profile-action profile-action--cancel"
+            type="button"
+            @click="cancelSelection"
+          >
+            Cancelar
+          </button>
+        </div>
+      </form>
     </div>
   </article>
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { computed, nextTick, ref } from "vue";
+import { formatNumber } from "@/utils/format.js";
 
 const props = defineProps({
   plan: {
@@ -68,12 +103,15 @@ const props = defineProps({
 
 const emit = defineEmits(["choose"]);
 const chooseBtnRef = ref(null);
+const showProfilePrompt = ref(false);
+const profileValue = ref("");
+const profileInputRef = ref(null);
 
 const WHATSAPP_NUMBER = "529991519771";
 
-const formatNumber = (num) => {
-  return new Intl.NumberFormat("es-MX").format(Number(num || 0));
-};
+const profileInputId = computed(
+  () => `plan-profile-url-${props.plan.id || props.plan.name}`,
+);
 
 const formattedDescription = computed(() => {
   return props.plan.description?.replace(/\n/g, "<br>") || "";
@@ -92,6 +130,10 @@ const displayBadge = computed(() => {
   if (props.plan.tag) return props.plan.tag;
   if (props.plan.style) return props.plan.style;
   return "Promoción";
+});
+
+const hasOldPrice = computed(() => {
+  return Number(props.plan.oldPrice || 0) > Number(props.plan.price || 0);
 });
 
 const buildWhatsAppMessage = () => {
@@ -122,7 +164,7 @@ const openWhatsAppCheckout = () => {
 
   const isMobile =
     /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(
-      navigator.userAgent
+      navigator.userAgent,
     );
 
   if (isMobile) {
@@ -133,20 +175,36 @@ const openWhatsAppCheckout = () => {
   window.open(url, "_blank", "noopener,noreferrer");
 };
 
-const handlePrimaryAction = () => {
-  if (isWhatsAppAction.value) {
-    openWhatsAppCheckout();
-    return;
-  }
-
+const confirmSelection = () => {
   emit("choose", {
     plan: {
       ...props.plan,
       cartType: "plan",
       quantity: 1,
+      profile: profileValue.value,
     },
+    profile: profileValue.value,
     sourceEl: chooseBtnRef.value,
   });
+
+  profileValue.value = "";
+  showProfilePrompt.value = false;
+};
+
+const cancelSelection = () => {
+  profileValue.value = "";
+  showProfilePrompt.value = false;
+};
+
+const handlePrimaryAction = async () => {
+  if (isWhatsAppAction.value) {
+    openWhatsAppCheckout();
+    return;
+  }
+
+  showProfilePrompt.value = true;
+  await nextTick();
+  profileInputRef.value?.focus();
 };
 </script>
 
@@ -158,150 +216,113 @@ const handlePrimaryAction = () => {
 }
 
 .package-card {
-  position: relative;
   width: 100%;
   max-width: 300px;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding: 18px;
-  border-radius: 26px;
-  border: 1px solid rgba(96, 165, 250, 0.2);
-  background:
-    linear-gradient(
-      180deg,
-      rgba(15, 23, 42, 0.96) 0%,
-      rgba(17, 24, 39, 0.93) 100%
-    );
-  box-shadow:
-    0 18px 36px rgba(2, 6, 23, 0.28),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border-radius: var(--radius-2xl);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-md);
   transition:
-    transform 0.22s ease,
-    box-shadow 0.22s ease,
-    border-color 0.22s ease;
+    transform var(--transition-base),
+    box-shadow var(--transition-base),
+    border-color var(--transition-base);
+  font-family: var(--font-sans);
 }
 
 .package-card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(96, 165, 250, 0.38);
-  box-shadow:
-    0 24px 48px rgba(2, 6, 23, 0.36),
-    0 0 18px rgba(59, 130, 246, 0.16);
-}
-
-.card-glow,
-.card-grid {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.card-glow {
-  background:
-    radial-gradient(circle at 85% 8%, rgba(59, 130, 246, 0.16), transparent 18%),
-    radial-gradient(circle at 12% 0%, rgba(168, 85, 247, 0.12), transparent 18%);
-}
-
-.card-grid {
-  opacity: 0.04;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
-  background-size: 24px 24px;
-  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), transparent 88%);
-}
-
-.package-card-header,
-.package-list,
-.package-footer {
-  position: relative;
-  z-index: 1;
+  transform: translateY(-4px);
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-lg);
 }
 
 .package-card-header {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--space-3);
 }
 
 .package-card-topbar {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .mini-badge {
   width: fit-content;
-  padding: 6px 12px;
-  border-radius: 999px;
-  font-size: 0.72rem;
-  font-weight: 800;
+  padding: 6px var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
   letter-spacing: 0.02em;
-  color: #93c5fd;
-  background: rgba(59, 130, 246, 0.14);
-  border: 1px solid rgba(59, 130, 246, 0.18);
+  color: var(--color-accent);
+  background: var(--color-surface-subtle);
+  border: 1px solid var(--color-border);
 }
 
 .price-badge {
   display: inline-flex;
   align-items: baseline;
-  gap: 4px;
+  gap: var(--space-2);
   padding: 10px 14px;
-  border-radius: 16px;
-  background: linear-gradient(
-    135deg,
-    rgba(37, 99, 235, 0.2),
-    rgba(59, 130, 246, 0.28)
-  );
-  border: 1px solid rgba(96, 165, 250, 0.24);
-  box-shadow:
-    0 10px 24px rgba(37, 99, 235, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  color: #ffffff;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-subtle);
+  border: 1px solid var(--color-border);
   flex-shrink: 0;
 }
 
+.price-main {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
 .price-currency {
-  font-size: 0.85rem;
-  font-weight: 800;
-  color: #93c5fd;
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
+  color: var(--color-text-secondary);
 }
 
 .price-value {
-  font-size: 1.35rem;
-  font-weight: 900;
+  font-size: var(--text-xl);
+  font-weight: var(--font-extrabold);
   line-height: 1;
   letter-spacing: -0.03em;
-  color: #ffffff;
+  color: var(--color-text-primary);
 }
 
 .price-label {
-  font-size: 0.68rem;
-  font-weight: 800;
-  color: #cbd5e1;
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+  color: var(--color-text-muted);
   text-transform: uppercase;
+}
+
+.old-price {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-decoration: line-through;
 }
 
 .package-card-header h3 {
   margin: 0;
-  font-size: 1.35rem;
-  line-height: 1.08;
+  font-size: var(--text-2xl);
+  line-height: 1.1;
   letter-spacing: -0.02em;
-  color: #ffffff;
-  font-weight: 900;
+  color: var(--color-text-primary);
+  font-weight: var(--font-extrabold);
 }
 
 .package-card-header p {
   margin: 0;
-  color: #94a3b8;
-  font-size: 0.9rem;
-  line-height: 1.55;
-  font-weight: 600;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  font-weight: var(--font-medium);
 }
 
 .package-list {
@@ -310,69 +331,78 @@ const handlePrimaryAction = () => {
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--space-3);
   flex: 1;
 }
 
 .package-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.035);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-subtle);
+  border: 1px solid var(--color-border-subtle);
 }
 
 .item-dot {
   flex-shrink: 0;
-  color: #60a5fa;
-  font-size: 0.82rem;
+  color: var(--color-success);
+  font-size: var(--text-sm);
 }
 
 .item-text {
-  color: #cbd5e1;
-  font-size: 0.95rem;
-  line-height: 1.35;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  line-height: 1.4;
 }
 
 .item-text strong {
-  color: #ffffff;
-  font-weight: 900;
+  color: var(--color-text-primary);
+  font-weight: var(--font-bold);
   margin-right: 6px;
 }
 
 .package-footer {
   margin-top: auto;
-  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.package-btn,
+.profile-action {
+  min-height: 48px;
+  border-radius: var(--radius-md);
+  padding: 12px var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background var(--transition-fast),
+    border-color var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  font-family: var(--font-sans);
 }
 
 .package-btn {
   width: 100%;
-  min-height: 50px;
-  border: none;
-  border-radius: 15px;
-  padding: 14px 16px;
-  background: linear-gradient(135deg, #22c55e, #16a34a);
-  color: #ffffff;
-  font-size: 0.95rem;
-  font-weight: 900;
-  cursor: pointer;
-  box-shadow: 0 12px 24px rgba(22, 163, 74, 0.22);
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease,
-    filter 0.15s ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+  border: 1px solid var(--color-success);
+  background: var(--color-success);
+  color: var(--color-white);
+  box-shadow: var(--shadow-md);
 }
 
-.package-btn:hover {
-  transform: translateY(-2px);
-  filter: brightness(1.03);
-  box-shadow: 0 16px 28px rgba(22, 163, 74, 0.28);
+.package-btn:hover,
+.profile-action--confirm:hover {
+  transform: translateY(-1px);
+  background: var(--color-success-hover);
+  border-color: var(--color-success-hover);
 }
 
 .package-btn-icon {
@@ -381,84 +411,104 @@ const handlePrimaryAction = () => {
   justify-content: center;
 }
 
-/* TABLET */
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-subtle);
+}
+
+.profile-label {
+  color: var(--color-text-primary);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+}
+
+.profile-input {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-size: var(--text-sm);
+  font-family: var(--font-sans);
+  outline: none;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.profile-input:focus {
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-sm);
+}
+
+.profile-actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.profile-action {
+  flex: 1;
+  border: 1px solid var(--color-border);
+}
+
+.profile-action--confirm {
+  background: var(--color-success);
+  border-color: var(--color-success);
+  color: var(--color-white);
+  box-shadow: var(--shadow-sm);
+}
+
+.profile-action--cancel {
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+}
+
+.profile-action--cancel:hover {
+  transform: translateY(-1px);
+  background: var(--color-surface-subtle);
+  border-color: var(--color-text-muted);
+}
+
 @media (max-width: 900px) {
   .package-card {
     max-width: 100%;
-    padding: 16px;
+    padding: var(--space-4);
   }
 
   .package-card-header h3 {
-    font-size: 1.18rem;
-  }
-
-  .package-card-header p {
-    font-size: 0.86rem;
-  }
-
-  .item-text {
-    font-size: 0.9rem;
-  }
-
-  .package-btn {
-    min-height: 48px;
-    font-size: 0.92rem;
+    font-size: var(--text-xl);
   }
 }
 
-/* MOBILE */
 @media (max-width: 700px) {
   .package-card {
     width: 86vw;
     min-width: 86vw;
     max-width: 86vw;
     padding: 15px;
-    border-radius: 22px;
-  }
-
-  .package-card-topbar {
-    gap: 10px;
+    border-radius: var(--radius-xl);
   }
 
   .price-badge {
     padding: 8px 12px;
-    border-radius: 14px;
   }
 
   .price-value {
-    font-size: 1.08rem;
-  }
-
-  .price-label {
-    font-size: 0.62rem;
+    font-size: var(--text-lg);
   }
 
   .package-card-header h3 {
-    font-size: 1.08rem;
-  }
-
-  .package-card-header p {
-    font-size: 0.84rem;
-    line-height: 1.45;
-  }
-
-  .package-item {
-    padding: 9px 10px;
-    border-radius: 12px;
-  }
-
-  .item-text {
-    font-size: 0.86rem;
-  }
-
-  .package-btn {
-    min-height: 46px;
-    border-radius: 13px;
-    font-size: 0.9rem;
+    font-size: var(--text-xl);
   }
 }
 
-/* SMALL IPHONE */
 @media (max-width: 480px) {
   .package-card {
     width: 88vw;
@@ -467,41 +517,19 @@ const handlePrimaryAction = () => {
     padding: 14px;
   }
 
-  .mini-badge {
-    font-size: 0.68rem;
+  .package-card-topbar,
+  .profile-actions {
+    flex-direction: column;
   }
 
-  .price-badge {
-    padding: 7px 10px;
-    border-radius: 12px;
-  }
-
-  .price-currency {
-    font-size: 0.72rem;
-  }
-
-  .price-value {
-    font-size: 0.96rem;
-  }
-
+  .mini-badge,
+  .old-price,
   .price-label {
-    font-size: 0.56rem;
+    font-size: var(--text-xs);
   }
 
   .package-card-header h3 {
-    font-size: 1rem;
-  }
-
-  .package-card-header p {
-    font-size: 0.8rem;
-  }
-
-  .item-text {
-    font-size: 0.82rem;
-  }
-
-  .package-btn {
-    font-size: 0.88rem;
+    font-size: var(--text-lg);
   }
 }
 </style>

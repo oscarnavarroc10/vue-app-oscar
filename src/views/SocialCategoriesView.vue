@@ -1,6 +1,6 @@
 <template>
   <section class="builder-layout">
-    <div class="details-main">
+    <SectionShell class="builder-shell">
       <div class="section-header details-header">
         <div>
           <button class="back-btn" type="button" @click="goHome">
@@ -10,21 +10,17 @@
           <h2>Crea tu paquete personalizado</h2>
 
           <p class="selected-description">
-            Elige una red social para comenzar y después selecciona los servicios
-            que quieres agregar a tu carrito.
+            Elige una red social para comenzar y después selecciona los
+            servicios que quieres agregar a tu carrito.
           </p>
         </div>
 
-        <div class="selected-chip">
-          {{ enabledServices.length }} categorías
-        </div>
+        <div class="selected-chip">{{ enabledServices.length }} categorías</div>
       </div>
 
       <section class="custom-builder-hero">
         <div class="custom-builder-copy">
-          <span class="custom-builder-kicker">
-            Constructor personalizado
-          </span>
+          <span class="custom-builder-kicker"> Constructor personalizado </span>
 
           <h3>Selecciona una plataforma para empezar</h3>
 
@@ -35,9 +31,7 @@
           </p>
         </div>
 
-        <div class="custom-builder-badge">
-          Tú eliges qué incluir
-        </div>
+        <div class="custom-builder-badge">Tú eliges qué incluir</div>
       </section>
 
       <section class="main-services-grid">
@@ -48,7 +42,7 @@
           @open="handleOpenMainService"
         />
       </section>
-    </div>
+    </SectionShell>
   </section>
 </template>
 
@@ -58,6 +52,7 @@ import { useRouter } from "vue-router";
 
 import servicesData from "@/data/services.json";
 import MainServiceCard from "@/components/MainServiceCard.vue";
+import SectionShell from "@/components/SectionShell.vue";
 
 const router = useRouter();
 const availableServices = ref(servicesData);
@@ -77,84 +72,87 @@ const goHome = () => {
 
 <style scoped>
 .builder-layout {
-  max-width: 1180px;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
-.details-main {
-  background: rgba(15, 23, 42, 0.7);
-  border-radius: 26px;
-  padding: 24px;
-  overflow: hidden;
-  min-width: 0;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow:
-    0 18px 40px rgba(2, 6, 23, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+.builder-shell {
+  display: block;
 }
 
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: end;
-  gap: 14px;
-  margin-bottom: 18px;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
 }
 
-.details-header {
-  margin-bottom: 20px;
-}
-
-.section-header h2 {
+.details-header h2 {
   margin: 0;
-  color: white;
-  line-height: 1.08;
+  color: var(--color-text-primary);
+  line-height: 1.12;
+  font-size: clamp(2rem, 3vw, 2.6rem);
+  font-weight: var(--font-bold);
+  letter-spacing: -0.03em;
 }
 
 .selected-description {
-  color: #94a3b8;
+  margin: var(--space-3) 0 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-base);
+  line-height: 1.7;
+  max-width: 720px;
 }
 
 .back-btn {
-  border: none;
-  padding: 11px 16px;
-  border-radius: 14px;
+  border: 1px solid var(--color-border);
+  min-height: 44px;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-lg);
   cursor: pointer;
-  margin-bottom: 12px;
-  font-weight: 800;
-  color: #0f172a;
-  background: #f8fafc;
-  box-shadow: 0 10px 18px rgba(2, 6, 23, 0.12);
+  margin-bottom: var(--space-3);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+  background: var(--color-surface);
+  transition:
+    border-color var(--transition-fast),
+    background var(--transition-fast),
+    transform var(--transition-fast);
+  font-size: var(--text-sm);
+  box-shadow: var(--shadow-sm);
+}
+
+.back-btn:hover {
+  border-color: rgba(37, 99, 235, 0.22);
+  background: var(--color-surface-subtle);
+  transform: translateY(-1px);
 }
 
 .selected-chip {
   padding: 10px 16px;
-  border-radius: 999px;
-  background: rgba(59, 130, 246, 0.14);
-  color: #93c5fd;
-  font-weight: 800;
-  border: 1px solid rgba(59, 130, 246, 0.12);
+  border-radius: var(--radius-full);
+  background: rgba(37, 99, 235, 0.08);
+  color: var(--color-accent);
+  font-weight: var(--font-semibold);
+  border: 1px solid rgba(37, 99, 235, 0.16);
+  font-size: var(--text-sm);
+  white-space: nowrap;
 }
 
 .custom-builder-hero {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 18px;
-  margin-bottom: 24px;
-  padding: 22px 22px 20px;
-  border-radius: 24px;
-  background: linear-gradient(
-    180deg,
-    rgba(10, 18, 34, 0.74) 0%,
-    rgba(8, 14, 26, 0.84) 100%
-  );
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow:
-    0 16px 30px rgba(2, 6, 23, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  gap: var(--space-5);
+  margin-bottom: var(--space-6);
+  padding: clamp(20px, 4vw, 32px);
+  border-radius: var(--radius-2xl);
+  background:
+    linear-gradient(135deg, rgba(37, 99, 235, 0.08), rgba(124, 58, 237, 0.05)),
+    var(--color-surface-subtle);
+  border: 1px solid var(--color-border);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 .custom-builder-copy {
@@ -165,46 +163,49 @@ const goHome = () => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 12px;
+  margin-bottom: var(--space-3);
   padding: 8px 14px;
-  border-radius: 999px;
-  background: rgba(124, 58, 237, 0.16);
-  color: #ddd6fe;
-  font-size: 0.8rem;
-  font-weight: 800;
-  letter-spacing: 0.02em;
+  border-radius: var(--radius-full);
+  background: rgba(124, 58, 237, 0.1);
+  color: #6d28d9;
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .custom-builder-copy h3 {
-  margin: 0 0 10px;
-  color: #ffffff;
-  font-size: clamp(1.45rem, 3vw, 2rem);
-  line-height: 1.08;
-  letter-spacing: -0.02em;
+  margin: 0 0 var(--space-3);
+  color: var(--color-text-primary);
+  font-size: clamp(1.6rem, 3vw, 2.3rem);
+  line-height: 1.12;
+  letter-spacing: -0.03em;
 }
 
 .custom-builder-copy p {
   margin: 0;
   max-width: 760px;
-  color: #94a3b8;
-  line-height: 1.7;
+  color: var(--color-text-secondary);
+  line-height: 1.75;
+  font-size: var(--text-base);
 }
 
 .custom-builder-badge {
   flex-shrink: 0;
   padding: 12px 16px;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.05);
-  color: #e2e8f0;
-  font-weight: 800;
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-weight: var(--font-semibold);
   text-align: center;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
 }
 
 .main-services-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
+  gap: var(--space-5);
 }
 
 @media (max-width: 1200px) {
@@ -220,23 +221,18 @@ const goHome = () => {
     align-items: flex-start;
   }
 
-  .details-main {
-    padding: 18px;
-    border-radius: 22px;
-  }
-
   .main-services-grid {
     grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 600px) {
-  .details-main {
-    padding: 16px;
-  }
-
   .back-btn {
     width: 100%;
+  }
+
+  .details-header h2 {
+    font-size: clamp(1.8rem, 8vw, 2.2rem);
   }
 }
 </style>

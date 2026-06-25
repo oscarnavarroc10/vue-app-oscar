@@ -1,10 +1,7 @@
 <template>
   <Transition name="floating-fade">
-    <div
-      v-if="showFloating"
-      class="floating-socials"
-    >
-      <div class="floating-brand" aria-hidden="true">
+    <div v-if="showFloating" class="floating-socials">
+      <div class="floating-brand">
         <span class="floating-brand-text">Síguenos Aquí</span>
       </div>
 
@@ -25,11 +22,7 @@
         </span>
 
         <span class="floating-btn-icon-wrap">
-          <img
-            :src="item.icon"
-            :alt="item.name"
-            class="floating-btn-icon"
-          />
+          <img :src="item.icon" :alt="item.name" class="floating-btn-icon" />
         </span>
 
         <span class="floating-btn-label">
@@ -49,9 +42,7 @@ import whatsappNeon from "../assets/whatsapp_neon.svg";
 
 const route = useRoute();
 
-const hiddenRoutes = [
-  "/cart",
-];
+const hiddenRoutes = ["/cart"];
 
 const showFloating = computed(() => {
   return !hiddenRoutes.includes(route.path);
@@ -81,14 +72,12 @@ const socialLinks = [
   right: 18px;
   bottom: 18px;
   z-index: 50;
-
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   gap: 10px;
 }
 
-/* transición al entrar/salir */
 .floating-fade-enter-active,
 .floating-fade-leave-active {
   transition: all 0.25s ease;
@@ -100,86 +89,61 @@ const socialLinks = [
   transform: translateY(12px) scale(0.95);
 }
 
-/* BRAND */
 .floating-brand {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-
   min-height: 52px;
   padding: 8px 14px;
-
-  border-radius: 999px;
-
-  border: 1px solid rgba(255, 255, 255, 0.08);
-
-  background: linear-gradient(
-    180deg,
-    rgba(7, 12, 24, 0.9) 0%,
-    rgba(10, 18, 34, 0.86) 100%
-  );
-
-  box-shadow:
-    0 14px 28px rgba(2, 6, 23, 0.26),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
-
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: var(--shadow-lg);
   backdrop-filter: blur(16px);
 }
 
 .floating-brand-text {
-  color: #e2e8f0;
+  color: var(--color-text-primary);
   font-size: 0.86rem;
   font-weight: 800;
 }
 
-/* BUTTON */
 .floating-btn {
   position: relative;
-
   display: inline-flex;
   align-items: center;
   gap: 12px;
-
   min-width: 64px;
   height: 64px;
   padding: 0 16px 0 12px;
-
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   text-decoration: none;
-
-  color: white;
-
-  border: 1px solid rgba(255, 255, 255, 0.08);
-
-  background: linear-gradient(
-    180deg,
-    rgba(7, 12, 24, 0.92) 0%,
-    rgba(10, 18, 34, 0.88) 100%
-  );
-
-  box-shadow:
-    0 16px 34px rgba(2, 6, 23, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
-
-  transition: all 0.2s ease;
+  color: var(--color-text-primary);
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(16px);
+  transition:
+    min-width var(--transition-base),
+    transform var(--transition-base),
+    box-shadow var(--transition-base),
+    border-color var(--transition-base);
 }
 
 .floating-btn:hover {
   min-width: 190px;
   transform: translateY(-2px);
+  box-shadow: var(--shadow-xl);
 }
 
 .floating-btn-icon-wrap {
   width: 40px;
   height: 40px;
-
   border-radius: 999px;
-
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--color-surface-subtle);
 }
 
 .floating-btn-icon {
@@ -192,10 +156,8 @@ const socialLinks = [
   overflow: hidden;
   max-width: 0;
   opacity: 0;
-
   font-size: 0.95rem;
   font-weight: 800;
-
   transition: all 0.2s ease;
 }
 
@@ -208,16 +170,14 @@ const socialLinks = [
   display: none;
 }
 
-/* COLORS */
-.instagram {
-  border-color: rgba(236, 72, 153, 0.2);
+.instagram:hover {
+  border-color: rgba(236, 72, 153, 0.3);
 }
 
-.whatsapp {
-  border-color: rgba(34, 197, 94, 0.2);
+.whatsapp:hover {
+  border-color: rgba(34, 197, 94, 0.3);
 }
 
-/* TABLET */
 @media (max-width: 900px) {
   .floating-socials {
     right: 14px;
@@ -255,7 +215,6 @@ const socialLinks = [
   }
 }
 
-/* MOBILE */
 @media (max-width: 600px) {
   .floating-socials {
     right: 10px;
